@@ -1,12 +1,11 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "FileDropperComponent.h"
 
 KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor& p)
 	: AudioProcessorEditor(&p), processor(p),
 	state(Stopped), openButton("Open"), playButton("Play"), stopButton("Stop")
 {
-	openButton.onClick = [this] { openButtonClicked(); };
-	addAndMakeVisible(openButton);
 
 	playButton.onClick = [this] { playButtonClicked(); };
 	playButton.setColour(TextButton::buttonColourId, Colours::green);
@@ -18,11 +17,13 @@ KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProce
 	stopButton.setEnabled(false);
 	addAndMakeVisible(stopButton);
 
+	fileDropperComponent.addChangeListener(this);
+	addAndMakeVisible(fileDropperComponent);
+
 	formatManager.registerBasicFormats(); // enable .wav and .aiff files
-	
 	processor.addChangeListener(this);
 
-	setSize(200, 150);
+	setSize(500, 300);
 }
 
 KeyRepeatAudioProcessorEditor::~KeyRepeatAudioProcessorEditor() {
@@ -33,44 +34,35 @@ void KeyRepeatAudioProcessorEditor::paint (Graphics& g) {
 }
 
 void KeyRepeatAudioProcessorEditor::resized() {
-	openButton.setBounds(10, 10, getWidth() - 20, 30);
+	fileDropperComponent.setCentrePosition(getWidth() / 2, 25);
 	playButton.setBounds(10, 50, getWidth() - 20, 30);
 	stopButton.setBounds(10, 90, getWidth() - 20, 30);
 }
 
-void KeyRepeatAudioProcessorEditor::openButtonClicked() {
+void KeyRepeatAudioProcessorEditor::loadNewFile(const String& absoluteFilePath) {
 
-	DBG("open button clicked");
+	DBG("loadNewFile() called");
 
-	// open file chooser
-	FileChooser chooser("Choose a WAV or AIFF file",
-		File::getSpecialLocation(File::userDesktopDirectory), "*.wav; *.aiff; *.mp3");
+	File myFile(absoluteFilePath);
+	AudioFormatReader *reader = formatManager.createReaderFor(myFile);
 
-	// if user chose a file
-	if (chooser.browseForFileToOpen()) {
-
-		File myFile = chooser.getResult();
-		AudioFormatReader *reader = formatManager.createReaderFor(myFile);
-
-		// if file successfully read
-		if (reader != nullptr) {
-			std::unique_ptr<AudioFormatReaderSource> tempSource(new AudioFormatReaderSource(reader, true));
-			processor.transportSource.setSource(tempSource.get(), 0, nullptr, reader->sampleRate);
-			changeState(Stopped);
-			processor.playSource.reset(tempSource.release());
-		}
-
+	// if file successfully read
+	if (reader != nullptr) {
+		std::unique_ptr<AudioFormatReaderSource> tempSource(new AudioFormatReaderSource(reader, true));
+		processor.transportSource.setSource(tempSource.get(), 0, nullptr, reader->sampleRate);
+		changeState(Stopped);
+		processor.playSource.reset(tempSource.release());
 	}
 
 }
 
 void KeyRepeatAudioProcessorEditor::playButtonClicked() {
-	DBG("play button clicked");
+	DBG("playButtonClicked()");
 	changeState(Starting);
 }
 
 void KeyRepeatAudioProcessorEditor::stopButtonClicked() {
-	DBG("stop button clicked");
+	DBG("stopButtonClicked()");
 	changeState(Stopping);
 }
 
@@ -105,18 +97,13 @@ void KeyRepeatAudioProcessorEditor::changeState(TransportState newState) {
 }
 
 void KeyRepeatAudioProcessorEditor::changeListenerCallback(ChangeBroadcaster *source) {
-	DBG("RECEIVED 1");
 	if (source == &processor) {
-		DBG("RECEIVED 2");
-
 		if (processor.transportSource.isPlaying()) {
-			DBG("RECEIVED 3");
-
 			changeState(Playing);
 		} else {
-			DBG("RECEIVED 4");
-
 			changeState(Stopped);
 		}
+	} else if (source == &fileDropperComponent) {
+		loadNewFile(fileDropperComponent.getAbsoluteFilePath());
 	}
 }

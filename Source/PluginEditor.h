@@ -2,6 +2,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "FileDropperComponent.h"
 
 class KeyRepeatAudioProcessorEditor :
 	public AudioProcessorEditor,
@@ -13,6 +14,8 @@ public:
 
     void paint(Graphics&) override;
     void resized() override;
+
+	void loadNewFile(const String& absoluteFilePath);
 
 private:
     KeyRepeatAudioProcessor& processor;
@@ -26,7 +29,6 @@ private:
 
 	TransportState state;
 
-	void openButtonClicked();
 	void playButtonClicked();
 	void stopButtonClicked();
 	void changeState(TransportState newState);
@@ -36,6 +38,8 @@ private:
 	TextButton openButton;
 	TextButton playButton;
 	TextButton stopButton;
+
+	FileDropperComponent fileDropperComponent;
 
 	void changeListenerCallback(ChangeBroadcaster *source) override;
 

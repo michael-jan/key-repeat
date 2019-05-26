@@ -7,6 +7,10 @@
               pluginCode="Keyr" pluginManufacturerCode="Mjan" pluginChannelConfigs="{2,2}">
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
+      <FILE id="JDN5y3" name="FileDropperComponent.cpp" compile="1" resource="0"
+            file="Source/FileDropperComponent.cpp"/>
+      <FILE id="udgrXd" name="FileDropperComponent.h" compile="0" resource="0"
+            file="Source/FileDropperComponent.h"/>
       <FILE id="dDq5gg" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="E5CcnD" name="PluginProcessor.h" compile="0" resource="0"
