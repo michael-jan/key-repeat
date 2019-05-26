@@ -1,18 +1,7 @@
-/*
-  ==============================================================================
-
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
-KeyrepeatAudioProcessor::KeyrepeatAudioProcessor()
+KeyRepeatAudioProcessor::KeyRepeatAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -24,20 +13,18 @@ KeyrepeatAudioProcessor::KeyrepeatAudioProcessor()
                        )
 #endif
 {
+	transportSource.addChangeListener(this);
 }
 
-KeyrepeatAudioProcessor::~KeyrepeatAudioProcessor()
-{
+KeyRepeatAudioProcessor::~KeyRepeatAudioProcessor() {
+
 }
 
-//==============================================================================
-const String KeyrepeatAudioProcessor::getName() const
-{
+const String KeyRepeatAudioProcessor::getName() const {
     return JucePlugin_Name;
 }
 
-bool KeyrepeatAudioProcessor::acceptsMidi() const
-{
+bool KeyRepeatAudioProcessor::acceptsMidi() const {
    #if JucePlugin_WantsMidiInput
     return true;
    #else
@@ -45,8 +32,7 @@ bool KeyrepeatAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool KeyrepeatAudioProcessor::producesMidi() const
-{
+bool KeyRepeatAudioProcessor::producesMidi() const {
    #if JucePlugin_ProducesMidiOutput
     return true;
    #else
@@ -54,8 +40,7 @@ bool KeyrepeatAudioProcessor::producesMidi() const
    #endif
 }
 
-bool KeyrepeatAudioProcessor::isMidiEffect() const
-{
+bool KeyRepeatAudioProcessor::isMidiEffect() const {
    #if JucePlugin_IsMidiEffect
     return true;
    #else
@@ -63,46 +48,40 @@ bool KeyrepeatAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double KeyrepeatAudioProcessor::getTailLengthSeconds() const
-{
+double KeyRepeatAudioProcessor::getTailLengthSeconds() const {
     return 0.0;
 }
 
-int KeyrepeatAudioProcessor::getNumPrograms()
-{
+int KeyRepeatAudioProcessor::getNumPrograms() {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int KeyrepeatAudioProcessor::getCurrentProgram()
-{
+int KeyRepeatAudioProcessor::getCurrentProgram() {
     return 0;
 }
 
-void KeyrepeatAudioProcessor::setCurrentProgram (int index)
-{
+void KeyRepeatAudioProcessor::setCurrentProgram(int index) {
 }
 
-const String KeyrepeatAudioProcessor::getProgramName (int index)
-{
+const String KeyRepeatAudioProcessor::getProgramName(int index) {
     return {};
 }
 
-void KeyrepeatAudioProcessor::changeProgramName (int index, const String& newName)
-{
+void KeyRepeatAudioProcessor::changeProgramName(int index, const String& newName) {
 }
 
 //==============================================================================
-void KeyrepeatAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
-{
+void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+	transportSource.prepareToPlay(samplesPerBlock, sampleRate);
 }
 
-void KeyrepeatAudioProcessor::releaseResources()
-{
+void KeyRepeatAudioProcessor::releaseResources() {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+	transportSource.releaseResources();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -129,63 +108,54 @@ bool KeyrepeatAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 }
 #endif
 
-void KeyrepeatAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
-{
+void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) {
+	/*
     ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+    int totalNumInputChannels  = getTotalNumInputChannels();
+    int totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+	for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
+		buffer.clear(i, 0, buffer.getNumSamples());
+	}
+	
+    for (int channel = 0; channel < totalNumInputChannels; ++channel) {
+        float* channelData = buffer.getWritePointer (channel);
     }
+	*/
+	AudioSourceChannelInfo channelInfo(buffer);
+	transportSource.getNextAudioBlock(channelInfo);
 }
 
 //==============================================================================
-bool KeyrepeatAudioProcessor::hasEditor() const
-{
+bool KeyRepeatAudioProcessor::hasEditor() const {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* KeyrepeatAudioProcessor::createEditor()
-{
-    return new KeyrepeatAudioProcessorEditor (*this);
+AudioProcessorEditor* KeyRepeatAudioProcessor::createEditor() {
+    return new KeyRepeatAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void KeyrepeatAudioProcessor::getStateInformation (MemoryBlock& destData)
-{
+void KeyRepeatAudioProcessor::getStateInformation (MemoryBlock& destData) {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void KeyrepeatAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
-{
+void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInBytes) {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
 
+void KeyRepeatAudioProcessor::changeListenerCallback(ChangeBroadcaster *source) {
+	if (source == &transportSource) {
+		sendChangeMessage();
+	}
+}
+
+
 //==============================================================================
 // This creates new instances of the plugin..
-AudioProcessor* JUCE_CALLTYPE createPluginFilter()
-{
-    return new KeyrepeatAudioProcessor();
+AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
+    return new KeyRepeatAudioProcessor();
 }

@@ -1,35 +1,43 @@
-/*
-  ==============================================================================
-
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 
-//==============================================================================
-/**
-*/
-class KeyrepeatAudioProcessorEditor  : public AudioProcessorEditor
+class KeyRepeatAudioProcessorEditor :
+	public AudioProcessorEditor,
+	public ChangeListener
 {
 public:
-    KeyrepeatAudioProcessorEditor (KeyrepeatAudioProcessor&);
-    ~KeyrepeatAudioProcessorEditor();
+    KeyRepeatAudioProcessorEditor (KeyRepeatAudioProcessor&);
+    ~KeyRepeatAudioProcessorEditor();
 
-    //==============================================================================
-    void paint (Graphics&) override;
+    void paint(Graphics&) override;
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
-    KeyrepeatAudioProcessor& processor;
+    KeyRepeatAudioProcessor& processor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyrepeatAudioProcessorEditor)
+	enum TransportState {
+		Stopped,
+		Starting,
+		Playing,
+		Stopping,
+	};
+
+	TransportState state;
+
+	void openButtonClicked();
+	void playButtonClicked();
+	void stopButtonClicked();
+	void changeState(TransportState newState);
+
+	AudioFormatManager formatManager;
+
+	TextButton openButton;
+	TextButton playButton;
+	TextButton stopButton;
+
+	void changeListenerCallback(ChangeBroadcaster *source) override;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyRepeatAudioProcessorEditor)
 };
