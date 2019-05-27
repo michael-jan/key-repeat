@@ -13,7 +13,7 @@ KeyRepeatAudioProcessor::KeyRepeatAudioProcessor()
                        )
 #endif
 {
-	transportSource.addChangeListener(this);
+	//transportSource.addChangeListener(this);
 }
 
 KeyRepeatAudioProcessor::~KeyRepeatAudioProcessor() {
@@ -75,13 +75,15 @@ void KeyRepeatAudioProcessor::changeProgramName(int index, const String& newName
 void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-	transportSource.prepareToPlay(samplesPerBlock, sampleRate);
+	//transportSource.prepareToPlay(samplesPerBlock, sampleRate);
+	synth.setup();
+	synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
 void KeyRepeatAudioProcessor::releaseResources() {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
-	transportSource.releaseResources();
+	//transportSource.releaseResources();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -122,8 +124,24 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
         float* channelData = buffer.getWritePointer (channel);
     }
 	*/
-	AudioSourceChannelInfo channelInfo(buffer);
-	transportSource.getNextAudioBlock(channelInfo);
+
+	AudioPlayHead *const playHead = getPlayHead();
+	double bpm = 120;
+	double ppqPosition = 0;
+	if (playHead != nullptr) {
+		AudioPlayHead::CurrentPositionInfo currPosInfo;
+		playHead->getCurrentPosition(currPosInfo);
+		bpm = currPosInfo.bpm;
+		ppqPosition = currPosInfo.ppqPosition;
+		DBG("bpm=" + std::to_string(bpm));
+		DBG("ppqPosition=" + std::to_string(ppqPosition));
+	}
+	double sRate = getSampleRate();
+	double samplesPerMeasure = sRate * 60 * 4 / bpm; // assumes 4/4 time sig
+
+	//AudioSourceChannelInfo channelInfo(buffer);
+	//transportSource.getNextAudioBlock(channelInfo);
+	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
 //==============================================================================
@@ -148,11 +166,10 @@ void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInB
 }
 
 void KeyRepeatAudioProcessor::changeListenerCallback(ChangeBroadcaster *source) {
-	if (source == &transportSource) {
-		sendChangeMessage();
-	}
+	//if (source == &transportSource) {
+	//	sendChangeMessage();
+	//}
 }
-
 
 //==============================================================================
 // This creates new instances of the plugin..

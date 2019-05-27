@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="GYCcUZ" name="KeyRepeat" projectType="audioplug" jucerVersion="5.4.3"
-              companyName="Michael Jan" pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginProducesMidiOut,pluginWantsMidiIn"
+              companyName="Michael Jan" pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Sampler" pluginRTASCategory="2048"
               pluginAAXCategory="2048" pluginVSTCategory="kPlugCategSynth"
               pluginCode="Keyr" pluginManufacturerCode="Mjan" pluginChannelConfigs="{2,2}">
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
+      <FILE id="LC42EF" name="SamplerSynth.cpp" compile="1" resource="0"
+            file="Source/SamplerSynth.cpp"/>
+      <FILE id="VHQwv7" name="SamplerSynth.h" compile="0" resource="0" file="Source/SamplerSynth.h"/>
       <FILE id="JDN5y3" name="FileDropperComponent.cpp" compile="1" resource="0"
             file="Source/FileDropperComponent.cpp"/>
       <FILE id="udgrXd" name="FileDropperComponent.h" compile="0" resource="0"

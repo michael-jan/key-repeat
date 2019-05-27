@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "SamplerSynth.h"
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor,
@@ -9,8 +10,10 @@ class KeyRepeatAudioProcessor :
 {
 public:
 
-	std::unique_ptr<AudioFormatReaderSource> playSource;
-	AudioTransportSource transportSource;
+	//std::unique_ptr<AudioFormatReaderSource> playSource;
+	//AudioTransportSource transportSource;
+
+	SamplerSynth synth;
 
 	KeyRepeatAudioProcessor();
     ~KeyRepeatAudioProcessor();
@@ -46,5 +49,6 @@ public:
 	void changeListenerCallback(ChangeBroadcaster *source) override;
 
 private:
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)
 };

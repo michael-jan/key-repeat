@@ -19,26 +19,7 @@ public:
 
 private:
     KeyRepeatAudioProcessor& processor;
-
-	enum TransportState {
-		Stopped,
-		Starting,
-		Playing,
-		Stopping,
-	};
-
-	TransportState state;
-
-	void playButtonClicked();
-	void stopButtonClicked();
-	void changeState(TransportState newState);
-
 	AudioFormatManager formatManager;
-
-	TextButton openButton;
-	TextButton playButton;
-	TextButton stopButton;
-
 	FileDropperComponent fileDropperComponent;
 
 	void changeListenerCallback(ChangeBroadcaster *source) override;
