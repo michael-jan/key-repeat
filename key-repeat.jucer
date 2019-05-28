@@ -9,6 +9,8 @@
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
       <FILE id="LC42EF" name="SamplerSynth.cpp" compile="1" resource="0"
             file="Source/SamplerSynth.cpp"/>
+      <FILE id="F8YfcL" name="ProcessBlockInfo.h" compile="0" resource="0"
+            file="Source/ProcessBlockInfo.h"/>
       <FILE id="VHQwv7" name="SamplerSynth.h" compile="0" resource="0" file="Source/SamplerSynth.h"/>
       <FILE id="JDN5y3" name="FileDropperComponent.cpp" compile="1" resource="0"
             file="Source/FileDropperComponent.cpp"/>
