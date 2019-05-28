@@ -13,7 +13,6 @@ KeyRepeatAudioProcessor::KeyRepeatAudioProcessor()
                        )
 #endif
 {
-	//transportSource.addChangeListener(this);
 }
 
 KeyRepeatAudioProcessor::~KeyRepeatAudioProcessor() {
@@ -75,7 +74,15 @@ void KeyRepeatAudioProcessor::changeProgramName(int index, const String& newName
 void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-	//transportSource.prepareToPlay(samplesPerBlock, sampleRate);
+
+	wasLastHitOnFour = false;
+	lastNextBeatsIntoMeasure = 0.0;
+	fakeSamplesIntoMeasure = 0.0;
+	std::fill_n(midiVelocities, 128, 0.0);
+	repeatState = EighthTriplet;
+
+	fillWhenToPlay();
+
 	synth.setup();
 	synth.setCurrentPlaybackSampleRate(sampleRate);
 }
@@ -83,7 +90,6 @@ void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 void KeyRepeatAudioProcessor::releaseResources() {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
-	//transportSource.releaseResources();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -111,37 +117,138 @@ bool KeyrepeatAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 #endif
 
 void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) {
-	/*
-    ScopedNoDenormals noDenormals;
-    int totalNumInputChannels  = getTotalNumInputChannels();
-    int totalNumOutputChannels = getTotalNumOutputChannels();
+
+	ScopedNoDenormals noDenormals;
+	int totalNumInputChannels = getTotalNumInputChannels();
+	int totalNumOutputChannels = getTotalNumOutputChannels();
 
 	for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
 		buffer.clear(i, 0, buffer.getNumSamples());
 	}
-	
-    for (int channel = 0; channel < totalNumInputChannels; ++channel) {
-        float* channelData = buffer.getWritePointer (channel);
-    }
-	*/
 
-	AudioPlayHead *const playHead = getPlayHead();
+
+	// default values, will be set by host later
 	double bpm = 120;
 	double ppqPosition = 0;
-	if (playHead != nullptr) {
-		AudioPlayHead::CurrentPositionInfo currPosInfo;
-		playHead->getCurrentPosition(currPosInfo);
-		bpm = currPosInfo.bpm;
-		ppqPosition = currPosInfo.ppqPosition;
-		DBG("bpm=" + std::to_string(bpm));
-		DBG("ppqPosition=" + std::to_string(ppqPosition));
-	}
-	double sRate = getSampleRate();
-	double samplesPerMeasure = sRate * 60 * 4 / bpm; // assumes 4/4 time sig
 
-	//AudioSourceChannelInfo channelInfo(buffer);
-	//transportSource.getNextAudioBlock(channelInfo);
-	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+	double samplesPerSecond = getSampleRate();
+	double samplesPerBeat;
+	double samplesPerMeasure;
+
+	double beatsIntoMeasure;
+	double samplesIntoMeasure;
+	double nextBeatsIntoMeasure;
+
+	MidiBuffer newMidiMessages;
+
+	if (repeatState == Off) {
+		// if repeat is off, just act like a normal midi sampler
+		newMidiMessages = midiMessages;
+	} else {
+		// if repeat is on, the we must use our given midi messages
+		// to generate the actual midi messages that will be played
+		AudioPlayHead *const playHead = getPlayHead();
+
+		AudioPlayHead::CurrentPositionInfo currPosInfo;
+		if (playHead != nullptr) {
+			playHead->getCurrentPosition(currPosInfo);
+		}
+
+		if (playHead != nullptr && currPosInfo.isPlaying) {
+			// playing in timeline
+			bpm = currPosInfo.bpm;
+			ppqPosition = currPosInfo.ppqPosition;
+
+			samplesPerBeat = samplesPerSecond * 60 / bpm;
+			samplesPerMeasure = samplesPerBeat * 4;
+			beatsIntoMeasure = std::fmod(ppqPosition, 4.0);
+			samplesIntoMeasure = samplesPerBeat * beatsIntoMeasure;
+		} else {
+			// not playing in timeline
+			samplesPerBeat = samplesPerSecond * 60 / bpm;
+			samplesPerMeasure = samplesPerBeat * 4;
+			samplesIntoMeasure = fakeSamplesIntoMeasure;
+			beatsIntoMeasure = samplesIntoMeasure / samplesPerBeat;
+		}
+		nextBeatsIntoMeasure = beatsIntoMeasure + (buffer.getNumSamples() / samplesPerBeat);
+
+		MidiBuffer::Iterator midiIterator(midiMessages);
+		MidiMessage m;
+		int pos;
+		while (midiIterator.getNextEvent(m, pos)) {
+			physicalKeyboardState.processNextMidiEvent(m);
+			if (m.isNoteOn()) {
+				midiVelocities[m.getNoteNumber()] = m.getFloatVelocity();
+			}
+		}
+
+		std::vector<double> *beats = &whenToPlayInfo[repeatState];
+
+		for (double triggerBeat : *beats) {
+			if (beatsIntoMeasure <= triggerBeat && triggerBeat < nextBeatsIntoMeasure) {
+
+				// hack to avoid double-tapping on beat 0 aka beat 4
+				if (wasLastHitOnFour && std::fabs(triggerBeat) < EPSILON) continue;
+				if (std::fabs(triggerBeat - 4.0) < EPSILON) wasLastHitOnFour = true;
+				else wasLastHitOnFour = false;
+
+				// we want our note repeats to be sample-accurate
+				int internalSample = (int)((samplesPerMeasure * triggerBeat / 4) - samplesIntoMeasure);
+				DBG("triggered, internalSample=" + std::to_string(internalSample));
+
+				for (int note = 0; note < 128; note++) {
+					for (int midiChannel = 0; midiChannel <= 16; midiChannel++) {
+						if (physicalKeyboardState.isNoteOn(midiChannel, note)) {
+							newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, midiVelocities[note]), internalSample);
+						}
+					}
+				}
+
+			}
+		}
+	}
+	
+	// fill the audio buffer with sounds given the new midi messages
+	synth.renderNextBlock(buffer, newMidiMessages, 0, buffer.getNumSamples());
+
+	// increment fake samples with modular arithmetic
+	fakeSamplesIntoMeasure = std::fmod(fakeSamplesIntoMeasure + buffer.getNumSamples(), samplesPerMeasure);
+
+}
+
+void KeyRepeatAudioProcessor::fillWhenToPlay() {
+	int playsPerMeasure[] =
+	{  -1,  // Off
+		2,  // Half
+		3,  // HalfTriplet
+		4,  // Quarter
+		6,  // QuarterTriplet
+		8,  // Eighth
+		12, // EighthTriplet
+		16, // Sixteenth
+		24, // SixteenthTriplet
+		32, // ThirtySecond
+		48, // ThirtySecondTriplet
+		64, // SixtyFourth
+		96  // SixtyFourthTriplet 
+	};
+	
+	// fill up the 0th space, whose RepeatState corresponds to "Off"
+	std::vector<double> dummy;
+	whenToPlayInfo.push_back(dummy);
+
+	// fill in the trigger times for the rest of the RepeatStates
+	int numKeySwitches = 12;
+	for (int i = 1; i <= numKeySwitches; i++) {
+		std::vector<double> temp;
+		temp.push_back(0.0);
+		for (int j = 1; j < playsPerMeasure[i]; j++) {
+			temp.push_back(4.0 / playsPerMeasure[i] * j);
+		}
+		temp.push_back(4.0);
+		whenToPlayInfo.push_back(temp);
+	}
+
 }
 
 //==============================================================================
@@ -150,6 +257,7 @@ bool KeyRepeatAudioProcessor::hasEditor() const {
 }
 
 AudioProcessorEditor* KeyRepeatAudioProcessor::createEditor() {
+	DBG("new editor");
     return new KeyRepeatAudioProcessorEditor (*this);
 }
 

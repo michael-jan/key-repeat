@@ -20,7 +20,6 @@ public:
 private:
     KeyRepeatAudioProcessor& processor;
 	AudioFormatManager formatManager;
-	FileDropperComponent fileDropperComponent;
 
 	void changeListenerCallback(ChangeBroadcaster *source) override;
 

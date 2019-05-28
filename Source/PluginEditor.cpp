@@ -6,8 +6,8 @@ KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProce
 	: AudioProcessorEditor(&p), processor(p)
 {
 
-	fileDropperComponent.addChangeListener(this);
-	addAndMakeVisible(fileDropperComponent);
+	processor.fileDropperComponent.addChangeListener(this);
+	addAndMakeVisible(processor.fileDropperComponent);
 
 	formatManager.registerBasicFormats(); // enable .wav and .aiff files
 	processor.addChangeListener(this);
@@ -23,7 +23,7 @@ void KeyRepeatAudioProcessorEditor::paint (Graphics& g) {
 }
 
 void KeyRepeatAudioProcessorEditor::resized() {
-	fileDropperComponent.setCentrePosition(getWidth() / 2, 25);
+	processor.fileDropperComponent.setCentrePosition(getWidth() / 2, 25);
 }
 
 void KeyRepeatAudioProcessorEditor::loadNewFile(const String& absoluteFilePath) {
@@ -39,12 +39,12 @@ void KeyRepeatAudioProcessorEditor::loadNewFile(const String& absoluteFilePath) 
 	// if file successfully read
 	if (reader != nullptr) {
 		std::unique_ptr<AudioFormatReaderSource> tempSource(new AudioFormatReaderSource(reader, true));
-		processor.synth.addSound(new SamplerSound("default", *reader, allNotes, 60, 0, 10, 10.0));
+		processor.synth.addSound(new SamplerSound("sampleSound", *reader, allNotes, 60, 0, 10, 10.0));
 	}
 }
 
 void KeyRepeatAudioProcessorEditor::changeListenerCallback(ChangeBroadcaster *source) {
-	if (source == &fileDropperComponent) {
-		loadNewFile(fileDropperComponent.getAbsoluteFilePath());
+	if (source == &processor.fileDropperComponent) {
+		loadNewFile(processor.fileDropperComponent.getAbsoluteFilePath());
 	}
 }

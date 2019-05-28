@@ -12,7 +12,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 class SamplerSynth : public Synthesiser {
+
 public:
+
 	void setup();
+
 private:
+
 };

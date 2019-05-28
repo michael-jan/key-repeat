@@ -2,6 +2,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SamplerSynth.h"
+#include "FileDropperComponent.h"
+
+#define EPSILON 0.0001f
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor,
@@ -10,10 +13,8 @@ class KeyRepeatAudioProcessor :
 {
 public:
 
-	//std::unique_ptr<AudioFormatReaderSource> playSource;
-	//AudioTransportSource transportSource;
-
 	SamplerSynth synth;
+	FileDropperComponent fileDropperComponent;
 
 	KeyRepeatAudioProcessor();
     ~KeyRepeatAudioProcessor();
@@ -49,6 +50,37 @@ public:
 	void changeListenerCallback(ChangeBroadcaster *source) override;
 
 private:
+
+	MidiKeyboardState physicalKeyboardState;
+
+	enum RepeatState {
+		Off,
+		Half,
+		HalfTriplet,
+		Quarter,
+		QuarterTriplet,
+		Eighth,
+		EighthTriplet,
+		Sixteenth,
+		SixteenthTriplet,
+		ThirtySecond,
+		ThirtySecondTriplet,
+		SixtyFourth,
+		SixtyFourthTriplet,
+	};
+	RepeatState repeatState;
+	std::vector< std::vector<double> > whenToPlayInfo;
+	void fillWhenToPlay();
+
+	// used when not playing/recording in timeline
+	double fakeSamplesIntoMeasure;
+
+	// because MidiKeyboardState does not store velocities
+	float midiVelocities[128];
+
+	// used in hack to avoid double-tapping on beat 0 aka beat 4
+	double lastNextBeatsIntoMeasure;
+	bool wasLastHitOnFour;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)
 };
