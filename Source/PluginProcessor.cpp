@@ -151,9 +151,11 @@ void KeyRepeatAudioProcessor::fillWhenToPlayInfo() {
 
 }
 
-void KeyRepeatAudioProcessor::fillProcessBlockInfo(ProcessBlockInfo& info, int bufferNumSamples) {
+void KeyRepeatAudioProcessor::fillProcessBlockInfo(ProcessBlockInfo& info, AudioBuffer<float>& buffer) {
+
 	int bpm = 120; // default, will be later set by host
-	int samplesPerSecond = getSampleRate();
+	info.samplesPerSecond = getSampleRate();
+	info.bufferNumSamples = buffer.getNumSamples();
 
 	AudioPlayHead *const playHead = getPlayHead();
 
@@ -167,36 +169,50 @@ void KeyRepeatAudioProcessor::fillProcessBlockInfo(ProcessBlockInfo& info, int b
 		// playing in timeline
 		double ppqPosition = currPosInfo.ppqPosition;
 
-		info.samplesPerBeat = samplesPerSecond * 60 / bpm;
+		info.samplesPerBeat = info.samplesPerSecond * 60 / bpm;
 		info.samplesPerMeasure = info.samplesPerBeat * 4;
-		info.beatsIntoMeasure = std::fmod(ppqPosition, 4.0);
+		info.beatsIntoMeasure = std::fmod(ppqPosition, 4.0) - EPSILON;
 		info.samplesIntoMeasure = info.samplesPerBeat * info.beatsIntoMeasure;
 	} else {
 		// not playing in timeline
-		info.samplesPerBeat = samplesPerSecond * 60 / bpm;
+		info.samplesPerBeat = info.samplesPerSecond * 60 / bpm;
 		info.samplesPerMeasure = info.samplesPerBeat * 4;
-		info.samplesIntoMeasure = fakeSamplesIntoMeasure;
+		info.samplesIntoMeasure = fakeSamplesIntoMeasure - EPSILON;
 		info.beatsIntoMeasure = info.samplesIntoMeasure / info.samplesPerBeat;
 	}
 
-	info.nextBeatsIntoMeasure = info.beatsIntoMeasure + (bufferNumSamples / info.samplesPerBeat);
+	info.nextBeatsIntoMeasure = info.beatsIntoMeasure + (info.bufferNumSamples / info.samplesPerBeat) - EPSILON;
 }
 
-void KeyRepeatAudioProcessor::updateKeyboardState(MidiBuffer& midiMessages) {
+void KeyRepeatAudioProcessor::updateKeyboardState(MidiBuffer& midiMessages, int fromSample, int toSample) {
 	MidiBuffer::Iterator midiIterator(midiMessages);
 	MidiMessage m;
 	int pos;
-	while (midiIterator.getNextEvent(m, pos)) {
+
+	midiIterator.setNextSamplePosition(fromSample);
+	while (midiIterator.getNextEvent(m, pos) && pos < toSample) {
 		physicalKeyboardState.processNextMidiEvent(m);
 		if (m.isNoteOn()) {
 			midiVelocities[m.getNoteNumber()] = m.getFloatVelocity();
+			wasLastMidiNoteOn[m.getNoteNumber()] = true;
+		} else if (m.isNoteOff()) {
+			wasLastMidiNoteOff[m.getNoteNumber()] = true;
 		}
 	}
 }
 
 void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& midiMessages, MidiBuffer& newMidiMessages, ProcessBlockInfo& info) {
 
+	MidiBuffer::Iterator midiIterator(midiMessages);
+	MidiMessage m;
+	int pos;
+
 	std::vector<double> *triggers = &whenToPlayInfo[repeatState];
+
+	DBG(" ");
+	DBG(info.beatsIntoMeasure);
+	DBG(info.nextBeatsIntoMeasure);
+
 	for (double triggerInBeats : *triggers) {
 		if (info.beatsIntoMeasure <= triggerInBeats && triggerInBeats < info.nextBeatsIntoMeasure) {
 
@@ -209,17 +225,24 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& midiMessages, Mi
 			int internalSample = (int)((info.samplesPerMeasure * triggerInBeats / 4) - info.samplesIntoMeasure);
 			DBG("triggered, internalSample=" + std::to_string(internalSample));
 
+			updateKeyboardState(midiMessages, 0, info.bufferNumSamples + 1);
+			//updateKeyboardState(midiMessages, 0, internalSample + 1);
+
 			for (int note = 0; note < 128; note++) {
-				for (int midiChannel = 0; midiChannel <= 16; midiChannel++) {
+				for (int midiChannel = 1; midiChannel <= 16; midiChannel++) {
 					if (physicalKeyboardState.isNoteOn(midiChannel, note)) {
 						newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, midiVelocities[note]), internalSample);
 					}
 				}
 			}
 
+			//updateKeyboardState(midiMessages, internalSample + 1, info.bufferNumSamples + 1);
+
+		} else {
+			updateKeyboardState(midiMessages, 0, info.bufferNumSamples + 1);
 		}
 	}
-
+	DBG("Middle C on? " + std::to_string(physicalKeyboardState.isNoteOn(1, 60)));
 }
 
 
@@ -242,16 +265,15 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 	} else {
 		// if repeat is on, the we must use our given midi messages
 		// to generate the actual midi messages that will be played
-		fillProcessBlockInfo(info, buffer.getNumSamples());
-		updateKeyboardState(midiMessages); // cant do this all at the same time
+		fillProcessBlockInfo(info, buffer);
 		transformMidiMessages(midiMessages, newMidiMessages, info);
 	}
 	
 	// fill the audio buffer with sounds given the new midi messages
-	synth.renderNextBlock(buffer, newMidiMessages, 0, buffer.getNumSamples());
+	synth.renderNextBlock(buffer, newMidiMessages, 0, info.bufferNumSamples);
 
 	// increment fake samples with modular arithmetic
-	fakeSamplesIntoMeasure = std::fmod(fakeSamplesIntoMeasure + buffer.getNumSamples(), info.samplesPerMeasure);
+	fakeSamplesIntoMeasure = std::fmod(fakeSamplesIntoMeasure + info.bufferNumSamples, info.samplesPerMeasure);
 
 }
 

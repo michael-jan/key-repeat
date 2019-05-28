@@ -5,7 +5,7 @@
 #include "FileDropperComponent.h"
 #include "ProcessBlockInfo.h"
 
-#define EPSILON 0.0001f
+#define EPSILON 0.001f
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor,
@@ -75,16 +75,15 @@ private:
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;
 
-	// because MidiKeyboardState does not store velocities
-	float midiVelocities[128];
+	float midiVelocities[128] = { 0.0 };
 
 	// used in hack to avoid double-tapping on beat 0 aka beat 4
 	double lastNextBeatsIntoMeasure;
 	bool wasLastHitOnFour;
 
 	void fillWhenToPlayInfo();
-	void fillProcessBlockInfo(ProcessBlockInfo& info, int bufferNumSamples);
-	void updateKeyboardState(MidiBuffer& midiMessages);
+	void fillProcessBlockInfo(ProcessBlockInfo& info, AudioBuffer<float>& buffer);
+	void updateKeyboardState(MidiBuffer& midiMessages, int fromSample, int toSample);
 	void transformMidiMessages(MidiBuffer& midiMessages, MidiBuffer& newMidiMessages, ProcessBlockInfo& info);
 
 

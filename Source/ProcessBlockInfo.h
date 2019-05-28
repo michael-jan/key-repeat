@@ -17,4 +17,5 @@ struct ProcessBlockInfo {
 	double beatsIntoMeasure;
 	double samplesIntoMeasure;
 	double nextBeatsIntoMeasure;
+	int bufferNumSamples;
 };
