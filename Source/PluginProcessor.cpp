@@ -79,7 +79,7 @@ void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 	lastNextBeatsIntoMeasure = 0.0;
 	fakeSamplesIntoMeasure = 0.0;
 	std::fill_n(midiVelocities, 128, 0.0);
-	repeatState = EighthTriplet;
+	repeatState = Off;
 
 	fillWhenToPlayInfo();
 
@@ -118,8 +118,7 @@ bool KeyrepeatAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 
 void KeyRepeatAudioProcessor::fillWhenToPlayInfo() {
 	int playsPerMeasure[] =
-	{ -1,  // Off
-		2,  // Half
+	{	2,  // Half
 		3,  // HalfTriplet
 		4,  // Quarter
 		6,  // QuarterTriplet
@@ -130,16 +129,13 @@ void KeyRepeatAudioProcessor::fillWhenToPlayInfo() {
 		32, // ThirtySecond
 		48, // ThirtySecondTriplet
 		64, // SixtyFourth
-		96  // SixtyFourthTriplet 
+		96, // SixtyFourthTriplet 
+		-1  // Off
 	};
-
-	// fill up the 0th space, whose RepeatState corresponds to "Off"
-	std::vector<double> dummy;
-	whenToPlayInfo.push_back(dummy);
 
 	// fill in the trigger times for the rest of the RepeatStates
 	int numKeySwitches = 12;
-	for (int i = 1; i <= numKeySwitches; i++) {
+	for (int i = 0; i < numKeySwitches; i++) {
 		std::vector<double> temp;
 		temp.push_back(0.0);
 		for (int j = 1; j < playsPerMeasure[i]; j++) {
@@ -148,6 +144,11 @@ void KeyRepeatAudioProcessor::fillWhenToPlayInfo() {
 		temp.push_back(4.0);
 		whenToPlayInfo.push_back(temp);
 	}
+
+	// corresponds to "Off"
+	std::vector<double> dummy;
+	whenToPlayInfo.push_back(dummy);
+
 
 }
 
@@ -171,32 +172,39 @@ void KeyRepeatAudioProcessor::fillProcessBlockInfo(ProcessBlockInfo& info, Audio
 
 		info.samplesPerBeat = info.samplesPerSecond * 60 / bpm;
 		info.samplesPerMeasure = info.samplesPerBeat * 4;
-		info.beatsIntoMeasure = std::fmod(ppqPosition, 4.0) - EPSILON;
+		info.beatsIntoMeasure = std::fmod(ppqPosition, 4.0);
 		info.samplesIntoMeasure = info.samplesPerBeat * info.beatsIntoMeasure;
 	} else {
 		// not playing in timeline
 		info.samplesPerBeat = info.samplesPerSecond * 60 / bpm;
 		info.samplesPerMeasure = info.samplesPerBeat * 4;
-		info.samplesIntoMeasure = fakeSamplesIntoMeasure - EPSILON;
+		info.samplesIntoMeasure = fakeSamplesIntoMeasure;
 		info.beatsIntoMeasure = info.samplesIntoMeasure / info.samplesPerBeat;
 	}
 
-	info.nextBeatsIntoMeasure = info.beatsIntoMeasure + (info.bufferNumSamples / info.samplesPerBeat) - EPSILON;
+	info.nextBeatsIntoMeasure = info.beatsIntoMeasure + (info.bufferNumSamples / info.samplesPerBeat);
 }
 
-void KeyRepeatAudioProcessor::updateKeyboardState(MidiBuffer& midiMessages, int fromSample, int toSample) {
+void KeyRepeatAudioProcessor::updateKeyboardState(MidiBuffer& midiMessages) {
 	MidiBuffer::Iterator midiIterator(midiMessages);
 	MidiMessage m;
 	int pos;
 
-	midiIterator.setNextSamplePosition(fromSample);
-	while (midiIterator.getNextEvent(m, pos) && pos < toSample) {
+	while (midiIterator.getNextEvent(m, pos)) {
 		physicalKeyboardState.processNextMidiEvent(m);
 		if (m.isNoteOn()) {
 			midiVelocities[m.getNoteNumber()] = m.getFloatVelocity();
-			wasLastMidiNoteOn[m.getNoteNumber()] = true;
-		} else if (m.isNoteOff()) {
-			wasLastMidiNoteOff[m.getNoteNumber()] = true;
+		}
+	}
+}
+
+void KeyRepeatAudioProcessor::updateKeyswitchRepeatState() {
+	int lo = 21; // note number for A0
+	int hi = lo + 12;
+	repeatState = Off;
+	for (int note = lo; note <= hi; note++) {
+		if (physicalKeyboardState.isNoteOnForChannels(ALL_CHANNELS, note)) {
+			repeatState = (RepeatState) (note - lo);
 		}
 	}
 }
@@ -214,7 +222,7 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& midiMessages, Mi
 	DBG(info.nextBeatsIntoMeasure);
 
 	for (double triggerInBeats : *triggers) {
-		if (info.beatsIntoMeasure <= triggerInBeats && triggerInBeats < info.nextBeatsIntoMeasure) {
+		if (info.beatsIntoMeasure - EPSILON <= triggerInBeats && triggerInBeats < info.nextBeatsIntoMeasure - EPSILON) {
 
 			// hack to avoid double-tapping on beat 0 aka beat 4
 			if (wasLastHitOnFour && std::fabs(triggerInBeats) < EPSILON) continue;
@@ -225,24 +233,17 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& midiMessages, Mi
 			int internalSample = (int)((info.samplesPerMeasure * triggerInBeats / 4) - info.samplesIntoMeasure);
 			DBG("triggered, internalSample=" + std::to_string(internalSample));
 
-			updateKeyboardState(midiMessages, 0, info.bufferNumSamples + 1);
-			//updateKeyboardState(midiMessages, 0, internalSample + 1);
-
 			for (int note = 0; note < 128; note++) {
 				for (int midiChannel = 1; midiChannel <= 16; midiChannel++) {
-					if (physicalKeyboardState.isNoteOn(midiChannel, note)) {
+					if (physicalKeyboardState.isNoteOn(midiChannel, note) && note > 21 + 12) {
 						newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, midiVelocities[note]), internalSample);
 					}
 				}
 			}
 
-			//updateKeyboardState(midiMessages, internalSample + 1, info.bufferNumSamples + 1);
-
-		} else {
-			updateKeyboardState(midiMessages, 0, info.bufferNumSamples + 1);
 		}
 	}
-	DBG("Middle C on? " + std::to_string(physicalKeyboardState.isNoteOn(1, 60)));
+
 }
 
 
@@ -257,15 +258,18 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 	}
 
 	ProcessBlockInfo info;
+	fillProcessBlockInfo(info, buffer);
+
 	MidiBuffer newMidiMessages;
+	updateKeyboardState(midiMessages);
+	updateKeyswitchRepeatState();
 
 	if (repeatState == Off) {
 		// if repeat is off, just act like a normal midi sampler
-		newMidiMessages = midiMessages;
+		newMidiMessages.swapWith(midiMessages);
 	} else {
 		// if repeat is on, the we must use our given midi messages
 		// to generate the actual midi messages that will be played
-		fillProcessBlockInfo(info, buffer);
 		transformMidiMessages(midiMessages, newMidiMessages, info);
 	}
 	

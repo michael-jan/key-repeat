@@ -5,7 +5,8 @@
 #include "FileDropperComponent.h"
 #include "ProcessBlockInfo.h"
 
-#define EPSILON 0.001f
+#define EPSILON 0.0001f
+#define ALL_CHANNELS 0xFFFFFFFF
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor,
@@ -55,7 +56,6 @@ private:
 	MidiKeyboardState physicalKeyboardState;
 
 	enum RepeatState {
-		Off,
 		Half,
 		HalfTriplet,
 		Quarter,
@@ -68,6 +68,7 @@ private:
 		ThirtySecondTriplet,
 		SixtyFourth,
 		SixtyFourthTriplet,
+		Off
 	};
 	RepeatState repeatState;
 	std::vector< std::vector<double> > whenToPlayInfo;
@@ -75,7 +76,8 @@ private:
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;
 
-	float midiVelocities[128] = { 0.0 };
+	// because MidiKeyboardState does not store velocity info
+	float midiVelocities[128];
 
 	// used in hack to avoid double-tapping on beat 0 aka beat 4
 	double lastNextBeatsIntoMeasure;
@@ -83,7 +85,8 @@ private:
 
 	void fillWhenToPlayInfo();
 	void fillProcessBlockInfo(ProcessBlockInfo& info, AudioBuffer<float>& buffer);
-	void updateKeyboardState(MidiBuffer& midiMessages, int fromSample, int toSample);
+	void updateKeyboardState(MidiBuffer& midiMessages);
+	void updateKeyswitchRepeatState();
 	void transformMidiMessages(MidiBuffer& midiMessages, MidiBuffer& newMidiMessages, ProcessBlockInfo& info);
 
 
