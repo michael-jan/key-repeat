@@ -2,7 +2,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-#include "FileDropperComponent.h"
 
 class KeyRepeatAudioProcessorEditor :
 	public AudioProcessorEditor,

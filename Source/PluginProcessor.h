@@ -4,9 +4,12 @@
 #include "SamplerSynth.h"
 #include "FileDropperComponent.h"
 #include "ProcessBlockInfo.h"
+#include "KeySwitchManager.h"
 
-#define EPSILON 0.0001f
-#define ALL_CHANNELS 0xFFFFFFFF
+const float EPSILON = 0.0001f;
+const int ALL_CHANNELS = 0xFFFFFFFF;
+const int NUM_MIDI_KEYS = 128;
+const int NUM_MIDI_CHANNELS = 16;
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor,
@@ -55,39 +58,22 @@ private:
 
 	MidiKeyboardState physicalKeyboardState;
 
-	enum RepeatState {
-		Half,
-		HalfTriplet,
-		Quarter,
-		QuarterTriplet,
-		Eighth,
-		EighthTriplet,
-		Sixteenth,
-		SixteenthTriplet,
-		ThirtySecond,
-		ThirtySecondTriplet,
-		SixtyFourth,
-		SixtyFourthTriplet,
-		Off
-	};
-	RepeatState repeatState;
-	std::vector< std::vector<double> > whenToPlayInfo;
+	KeySwitchManager keySwitchManager;
 
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;
 
 	// because MidiKeyboardState does not store velocity info
-	float midiVelocities[128];
+	float midiVelocities[NUM_MIDI_CHANNELS][NUM_MIDI_KEYS];
 
 	// used in hack to avoid double-tapping on beat 0 aka beat 4
 	double lastNextBeatsIntoMeasure;
 	bool wasLastHitOnFour;
 
-	void fillWhenToPlayInfo();
-	void fillProcessBlockInfo(ProcessBlockInfo& info, AudioBuffer<float>& buffer);
-	void updateKeyboardState(MidiBuffer& midiMessages);
-	void updateKeyswitchRepeatState();
-	void transformMidiMessages(MidiBuffer& midiMessages, MidiBuffer& newMidiMessages, ProcessBlockInfo& info);
+	void fillProcessBlockInfo(ProcessBlockInfo& info, const AudioBuffer<float>& buffer);
+	void updateKeyboardState(const MidiBuffer& midiMessages);
+	void addAllNonKeyswitchMidiMessages(MidiBuffer& newMidiMessages, const MidiBuffer& midiMessages);
+	void transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info);
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)

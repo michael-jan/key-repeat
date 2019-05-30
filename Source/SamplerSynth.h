@@ -11,6 +11,9 @@
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
+/*
+	Synth that plays sampled sounds.
+*/
 class SamplerSynth : public Synthesiser {
 
 public:

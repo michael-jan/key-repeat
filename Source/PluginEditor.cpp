@@ -5,7 +5,6 @@
 KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor& p)
 	: AudioProcessorEditor(&p), processor(p)
 {
-
 	processor.fileDropperComponent.addChangeListener(this);
 	addAndMakeVisible(processor.fileDropperComponent);
 

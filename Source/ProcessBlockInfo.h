@@ -10,6 +10,9 @@
 
 #pragma once
 
+/*
+	Meant to store info that is updated every time processBlock() is called.
+*/
 struct ProcessBlockInfo {
 	double samplesPerSecond;
 	double samplesPerBeat;
