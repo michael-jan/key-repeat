@@ -12,11 +12,9 @@
 #include "FileDropperComponent.h"
 
 //==============================================================================
-FileDropperComponent::FileDropperComponent() :
-	absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover)
+FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
+	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover)
 {
-	// In your constructor, you should add any child components, and
-	// initialise any special settings that your component needs.
 	setSize(300, 30);
 }
 
@@ -58,8 +56,6 @@ void FileDropperComponent::paint(Graphics& g) {
 }
 
 void FileDropperComponent::resized() {
-	// This method is where you should set the bounds of any child
-	// components that your component contains..
 
 }
 
@@ -103,8 +99,7 @@ void FileDropperComponent::fileDragExit(const StringArray& files) {
 
 void FileDropperComponent::filesDropped(const StringArray& files, int x, int y) {
 	changeState(Filled, NoHover);
-	absoluteFilePath = files[0];
-	sendChangeMessage();
+	processor.loadNewFile(files[0]);
 }
 /* End FileDragAndDropTarget callbacks */
 

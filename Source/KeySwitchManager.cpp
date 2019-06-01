@@ -128,18 +128,18 @@ void KeySwitchManager::fillWhenToPlayInfo() {
 		whenToPlayInfo.push_back(temp);
 	}
 
-	// corresponds to "Off"
-	std::vector<double> dummy;
 }
 
 void KeySwitchManager::handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
 	// if the triplet button is pressed, toggle triplet on current repeat state
-	if (source == keyboardStatePointer && latch && separateTripletButton && midiNoteNumber == getTripletNoteNumber()) {
-		isTripletLatched = !isTripletLatched;
-		if (isTripletLatched) {
-			currentRepeatState = (RepeatState)(currentRepeatState + 1);
-		} else {
-			currentRepeatState = (RepeatState)(currentRepeatState - 1);
+	if (latch && separateTripletButton) {
+		if (source == keyboardStatePointer && currentRepeatState != Off && midiNoteNumber == getTripletNoteNumber()) {
+			isTripletLatched = !isTripletLatched;
+			if (isTripletLatched) {
+				currentRepeatState = (RepeatState)(currentRepeatState + 1);
+			} else {
+				currentRepeatState = (RepeatState)(currentRepeatState - 1);
+			}
 		}
 	}
 }

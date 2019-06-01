@@ -21,7 +21,7 @@ public:
 
 	bool isKeyswitch(int midiNode) const;
 
-	std::vector<double>& getCurrentTriggers() { return whenToPlayInfo[currentRepeatState]; }
+	std::vector<double>& getCurrentTriggers() { DBG(currentRepeatState); return whenToPlayInfo[currentRepeatState]; }
 	void update();
 
 	void setKeyboardStatePointer(MidiKeyboardState *newKeyboardStatePointer);
@@ -59,10 +59,16 @@ private:
 	};
 
 	RepeatState currentRepeatState;
+
+	// KeySwitchManager is not responsible for the lifetime of the MidiKeyboardState
 	MidiKeyboardState *keyboardStatePointer;
+
 	int firstKeyswitchNoteNumber;
 	bool separateTripletButton;
 	bool latch;
+
+	// Stores the times (in quarter notes) of when to trigger samples for
+	// each repeat state. Should be filled upon construction.
 	std::vector< std::vector<double> > whenToPlayInfo;
 
 	bool isNoteOn(int noteNumber) const;
@@ -74,6 +80,7 @@ private:
 	// valid only when both latch and separateTripletButton are on
 	bool isTripletLatched;
 
+	// 
 	void handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
 	void handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
 

@@ -2,10 +2,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "MainComponent.h"
 
 class KeyRepeatAudioProcessorEditor :
-	public AudioProcessorEditor,
-	public ChangeListener
+	public AudioProcessorEditor
 {
 public:
     KeyRepeatAudioProcessorEditor (KeyRepeatAudioProcessor&);
@@ -14,13 +14,9 @@ public:
     void paint(Graphics&) override;
     void resized() override;
 
-	void loadNewFile(const String& absoluteFilePath);
-
 private:
     KeyRepeatAudioProcessor& processor;
-	AudioFormatManager formatManager;
-
-	void changeListenerCallback(ChangeBroadcaster *source) override;
+	MainComponent mainComponent;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyRepeatAudioProcessorEditor)
 };

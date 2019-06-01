@@ -11,6 +11,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "PluginProcessor.h"
 
 //==============================================================================
 
@@ -21,7 +22,7 @@ class FileDropperComponent :
 {
 public:
 
-	FileDropperComponent();
+	FileDropperComponent(KeyRepeatAudioProcessor& p);
 	~FileDropperComponent();
 
 	void paint(Graphics&) override;
@@ -30,6 +31,8 @@ public:
 	String getAbsoluteFilePath() const;
 
 private:
+
+	KeyRepeatAudioProcessor& processor;
 
 	enum FilledState {
 		Filled,

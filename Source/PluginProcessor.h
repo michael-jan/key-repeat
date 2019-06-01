@@ -2,7 +2,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SamplerSynth.h"
-#include "FileDropperComponent.h"
 #include "ProcessBlockInfo.h"
 #include "KeySwitchManager.h"
 
@@ -12,14 +11,11 @@ const int NUM_MIDI_KEYS = 128;
 const int NUM_MIDI_CHANNELS = 16;
 
 class KeyRepeatAudioProcessor :
-	public AudioProcessor,
-	public ChangeListener,
-	public ChangeBroadcaster
+	public AudioProcessor
 {
 public:
 
 	SamplerSynth synth;
-	FileDropperComponent fileDropperComponent;
 
 	KeyRepeatAudioProcessor();
     ~KeyRepeatAudioProcessor();
@@ -52,12 +48,12 @@ public:
 	void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-	void changeListenerCallback(ChangeBroadcaster *source) override;
+	void loadNewFile(const String& absoluteFilePath);
 
 private:
 
+	AudioFormatManager formatManager;
 	MidiKeyboardState physicalKeyboardState;
-
 	KeySwitchManager keySwitchManager;
 
 	// used when not playing/recording in timeline
@@ -74,7 +70,6 @@ private:
 	void updateKeyboardState(const MidiBuffer& midiMessages);
 	void addAllNonKeyswitchMidiMessages(MidiBuffer& newMidiMessages, const MidiBuffer& midiMessages);
 	void transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info);
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)
 };

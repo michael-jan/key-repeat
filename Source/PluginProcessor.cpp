@@ -75,6 +75,8 @@ void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 	lastNextBeatsIntoMeasure = 0.0;
 	fakeSamplesIntoMeasure = 0.0;
 
+	formatManager.registerBasicFormats(); // enable .wav and .aiff files
+
 	keySwitchManager.setLatch(true);
 	keySwitchManager.setSeparateTripletButton(true);
 	keySwitchManager.setKeyboardStatePointer(&physicalKeyboardState);
@@ -257,10 +259,19 @@ void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInB
     // whose contents will have been created by the getStateInformation() call.
 }
 
-void KeyRepeatAudioProcessor::changeListenerCallback(ChangeBroadcaster *source) {
-	//if (source == &transportSource) {
-	//	sendChangeMessage();
-	//}
+
+void KeyRepeatAudioProcessor::loadNewFile(const String& absoluteFilePath) {
+	File myFile(absoluteFilePath);
+	AudioFormatReader *reader = formatManager.createReaderFor(myFile);
+
+	BigInteger allNotes;
+	allNotes.setRange(0, 128, true);
+
+	// if file successfully read
+	if (reader != nullptr) {
+		std::unique_ptr<AudioFormatReaderSource> tempSource(new AudioFormatReaderSource(reader, true));
+		synth.addSound(new SamplerSound("sampleSound", *reader, allNotes, 60, 0, 10, 10.0));
+	}
 }
 
 //==============================================================================
