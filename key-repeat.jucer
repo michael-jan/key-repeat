@@ -8,31 +8,31 @@
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
       <GROUP id="{2FBFFFDF-06B9-AFDC-E66D-7BEA6D1467CC}" name="Components">
-        <FILE id="JDN5y3" name="FileDropperComponent.cpp" compile="1" resource="0"
-              file="Source/FileDropperComponent.cpp"/>
-        <FILE id="udgrXd" name="FileDropperComponent.h" compile="0" resource="0"
-              file="Source/FileDropperComponent.h"/>
-        <FILE id="MKKGDO" name="MainComponent.cpp" compile="1" resource="0"
-              file="Source/MainComponent.cpp"/>
-        <FILE id="tntVMq" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+        <FILE id="lJK6Lq" name="FileDropperComponent.cpp" compile="1" resource="0"
+              file="Source/Components/FileDropperComponent.cpp"/>
+        <FILE id="mTQjhp" name="FileDropperComponent.h" compile="0" resource="0"
+              file="Source/Components/FileDropperComponent.h"/>
+        <FILE id="jiueuh" name="MainComponent.cpp" compile="1" resource="0"
+              file="Source/Components/MainComponent.cpp"/>
+        <FILE id="LMZFo1" name="MainComponent.h" compile="0" resource="0" file="Source/Components/MainComponent.h"/>
       </GROUP>
       <GROUP id="{16B20DEF-04CD-0605-9898-1855B85C33BC}" name="Processing">
-        <FILE id="dDq5gg" name="PluginProcessor.cpp" compile="1" resource="0"
-              file="Source/PluginProcessor.cpp"/>
-        <FILE id="E5CcnD" name="PluginProcessor.h" compile="0" resource="0"
-              file="Source/PluginProcessor.h"/>
-        <FILE id="tdivUE" name="PluginEditor.cpp" compile="1" resource="0"
-              file="Source/PluginEditor.cpp"/>
-        <FILE id="fMNV5B" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-        <FILE id="oYtjac" name="KeySwitchManager.cpp" compile="1" resource="0"
-              file="Source/KeySwitchManager.cpp"/>
-        <FILE id="ZoJz5k" name="KeySwitchManager.h" compile="0" resource="0"
-              file="Source/KeySwitchManager.h"/>
-        <FILE id="LC42EF" name="SamplerSynth.cpp" compile="1" resource="0"
-              file="Source/SamplerSynth.cpp"/>
-        <FILE id="F8YfcL" name="ProcessBlockInfo.h" compile="0" resource="0"
-              file="Source/ProcessBlockInfo.h"/>
-        <FILE id="VHQwv7" name="SamplerSynth.h" compile="0" resource="0" file="Source/SamplerSynth.h"/>
+        <FILE id="l7HtPc" name="KeySwitchManager.cpp" compile="1" resource="0"
+              file="Source/Processing/KeySwitchManager.cpp"/>
+        <FILE id="I34lrq" name="KeySwitchManager.h" compile="0" resource="0"
+              file="Source/Processing/KeySwitchManager.h"/>
+        <FILE id="CUVvZm" name="PluginEditor.cpp" compile="1" resource="0"
+              file="Source/Processing/PluginEditor.cpp"/>
+        <FILE id="dnIN0x" name="PluginEditor.h" compile="0" resource="0" file="Source/Processing/PluginEditor.h"/>
+        <FILE id="cp8Umh" name="PluginProcessor.cpp" compile="1" resource="0"
+              file="Source/Processing/PluginProcessor.cpp"/>
+        <FILE id="Z7fJW0" name="PluginProcessor.h" compile="0" resource="0"
+              file="Source/Processing/PluginProcessor.h"/>
+        <FILE id="s7QQv9" name="ProcessBlockInfo.h" compile="0" resource="0"
+              file="Source/Processing/ProcessBlockInfo.h"/>
+        <FILE id="t7pjmN" name="SamplerSynth.cpp" compile="1" resource="0"
+              file="Source/Processing/SamplerSynth.cpp"/>
+        <FILE id="gVi74R" name="SamplerSynth.h" compile="0" resource="0" file="Source/Processing/SamplerSynth.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>

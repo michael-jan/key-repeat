@@ -1,6 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "FileDropperComponent.h"
+#include "../Components/FileDropperComponent.h"
 
 KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor& p)
 	: AudioProcessorEditor(&p), processor(p), mainComponent(p)

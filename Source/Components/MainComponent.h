@@ -12,7 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "FileDropperComponent.h"
-#include "PluginProcessor.h"
+#include "../Processing/PluginProcessor.h"
 
 //==============================================================================
 /*

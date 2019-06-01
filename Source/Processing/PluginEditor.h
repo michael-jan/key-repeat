@@ -2,7 +2,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-#include "MainComponent.h"
+#include "../Components/MainComponent.h"
 
 class KeyRepeatAudioProcessorEditor :
 	public AudioProcessorEditor
