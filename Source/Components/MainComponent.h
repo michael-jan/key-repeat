@@ -11,8 +11,11 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "FileDropperComponent.h"
 #include "../Processing/PluginProcessor.h"
+#include "TopComponent.h"
+#include "MiddleComponent.h"
+#include "BottomComponent.h"
+
 
 //==============================================================================
 /*
@@ -29,7 +32,9 @@ public:
 
 private:
 	KeyRepeatAudioProcessor& processor;
-	FileDropperComponent fileDropperComponent;
+	TopComponent topComponent;
+	MiddleComponent middleComponent;
+	BottomComponent bottomComponent;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

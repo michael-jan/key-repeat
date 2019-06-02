@@ -18,6 +18,7 @@
 class FileDropperComponent :
 	public Component,
 	public FileDragAndDropTarget,
+	public ChangeListener,
 	public ChangeBroadcaster
 {
 public:
@@ -33,6 +34,10 @@ public:
 private:
 
 	KeyRepeatAudioProcessor& processor;
+	AudioFormatManager formatManager;
+	AudioThumbnailCache thumbnailCache;
+	AudioThumbnail thumbnail;
+
 
 	enum FilledState {
 		Filled,
@@ -56,6 +61,10 @@ private:
 	void fileDragMove(const StringArray& files, int x, int y) override;
 	void fileDragExit(const StringArray& files) override;
 	void filesDropped(const StringArray& files, int x, int y) override;
+
+	void changeListenerCallback(ChangeBroadcaster* source) override;
+
+	void drawInnerShadow(Graphics& g, Path target);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FileDropperComponent)
 };

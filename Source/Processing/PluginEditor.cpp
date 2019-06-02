@@ -6,7 +6,7 @@ KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProce
 	: AudioProcessorEditor(&p), processor(p), mainComponent(p)
 {
 	addAndMakeVisible(mainComponent);
-	setSize(950, 450);
+	setSize(750, 450);
 }
 
 KeyRepeatAudioProcessorEditor::~KeyRepeatAudioProcessorEditor() {

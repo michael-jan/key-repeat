@@ -48,11 +48,10 @@ public:
 	void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-	void loadNewFile(const String& absoluteFilePath);
+	void loadNewFile(AudioFormatReader *reader);
 
 private:
 
-	AudioFormatManager formatManager;
 	MidiKeyboardState physicalKeyboardState;
 	KeySwitchManager keySwitchManager;
 

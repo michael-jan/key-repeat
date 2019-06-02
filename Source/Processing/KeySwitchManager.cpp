@@ -12,9 +12,10 @@
 
 KeySwitchManager::KeySwitchManager() :
 	currentRepeatState(Off),
-	firstKeyswitchNoteNumber(21),
-	separateTripletButton(false),
+	keyswitchOctave(0),
+	separateTripletButton(true),
 	latch(false),
+	swing(0.0f),
 	isTripletLatched(false)
 {
 	fillWhenToPlayInfo();
@@ -24,14 +25,25 @@ KeySwitchManager::~KeySwitchManager() {
 }
 
 bool KeySwitchManager::isKeyswitch(int midiNode) const {
-	if (separateTripletButton) {
-		// NUM_REPEAT_NOTES + 2 (one for Off button and one for the separate triplet button)
-		return firstKeyswitchNoteNumber <= midiNode && midiNode < firstKeyswitchNoteNumber + NUM_REPEAT_NOTES / 2 + 2;
-	} else {
-		// NUM_REPEAT_NOTES + 1 (for Off button)
-		return firstKeyswitchNoteNumber <= midiNode && midiNode < firstKeyswitchNoteNumber + NUM_REPEAT_NOTES + 1;
-	}
+		return getFirstKeyswitchNoteNumber() <= midiNode && midiNode < getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS;
 }
+
+std::vector<double>& KeySwitchManager::getCurrentTriggers() {
+	tempWhenToPlay = whenToPlayInfo[currentRepeatState];
+	if (!isRepeatOff() && !isCurrentRepeatStateTriplet()) {
+		double diff = tempWhenToPlay[1] - tempWhenToPlay[0];
+		double swingHangTime = (swing * 0.95) * diff;
+		bool isIndexOdd = false;
+		for (double& num : tempWhenToPlay) {
+			if (isIndexOdd) {
+				num += swingHangTime;
+			}
+			isIndexOdd = !isIndexOdd;
+		}
+	}
+	return tempWhenToPlay;
+}
+
 
 void KeySwitchManager::update() {
 
@@ -41,10 +53,10 @@ void KeySwitchManager::update() {
 		currentRepeatState = Off;
 	}
 
-	int lo = firstKeyswitchNoteNumber;
+	int lo = getFirstKeyswitchNoteNumber();
 
 	if (separateTripletButton) {
-		// [2] [4] [8] [16] [32] [64] [T] [Off]
+		// [4] [8] [16] [32] [64]   |  [T]  |  [Off]
 		int hi = lo + NUM_REPEAT_NOTES / 2;
 		for (int note = lo; note < hi; note++) {
 			if (isNoteOn(note)) {
@@ -62,11 +74,11 @@ void KeySwitchManager::update() {
 			}
 		}
 	} else {
-		// [2] [2T] [4] [4T] [8] [8T] [16] [16T] [32] [32T] [64] [64T] [Off]
-		int hi = lo + NUM_REPEAT_NOTES;
+		// [8] [8T] [16] [16T] [32] [32T]  |  [Off]
+		int hi = lo + NUM_REPEAT_NOTES - 4;
 		for (int note = lo; note < hi; note++) {
 			if (isNoteOn(note)) {
-				currentRepeatState = (RepeatState)(note - lo);
+				currentRepeatState = (RepeatState)(note - lo + 2);
 			}
 		}
 	}
@@ -86,25 +98,19 @@ bool KeySwitchManager::isNoteOn(int noteNumber) const {
 }
 
 int KeySwitchManager::getOffNoteNumber() const {
-	if (separateTripletButton) {
-		return firstKeyswitchNoteNumber + NUM_REPEAT_NOTES / 2 + 1;
-	} else {
-		return firstKeyswitchNoteNumber + NUM_REPEAT_NOTES;
-	}
+	return getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS - 1;
 }
 
 int KeySwitchManager::getTripletNoteNumber() const {
 	if (separateTripletButton) {
-		return firstKeyswitchNoteNumber + NUM_REPEAT_NOTES / 2;
+		return getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS - 2;
 	}
 	return -1;
 }
 
 void KeySwitchManager::fillWhenToPlayInfo() {
 	int playsPerMeasure[] =
-	{   2,  // Half
-		3,  // HalfTriplet
-		4,  // Quarter
+	{   4,  // Quarter
 		6,  // QuarterTriplet
 		8,  // Eighth
 		12, // EighthTriplet

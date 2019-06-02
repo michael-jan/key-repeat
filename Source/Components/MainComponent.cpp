@@ -13,10 +13,12 @@
 
 //==============================================================================
 MainComponent::MainComponent(KeyRepeatAudioProcessor& p) : 
-	processor(p), 
-	fileDropperComponent(p) 
+	processor(p),
+	middleComponent(p)
 {
-	addAndMakeVisible(fileDropperComponent);
+	addAndMakeVisible(bottomComponent);
+	addAndMakeVisible(middleComponent);
+	addAndMakeVisible(topComponent);
 }
 
 MainComponent::~MainComponent() {
@@ -24,25 +26,35 @@ MainComponent::~MainComponent() {
 
 void MainComponent::paint(Graphics& g) {
 
-	Colour light(40, 40, 40);
-	Colour dark(16, 16, 16);
+	Colour lightWhite(255, 255, 255);
+	Colour darkWhite(215, 215, 215);
+	Colour grey(60, 62, 68);
+	Colour darkGrey(40, 41, 49);
 
+	ColourGradient gradient(grey, getWidth() / 2, 0, darkGrey, getWidth() / 2, getHeight(), false);
+	g.setGradientFill(gradient);
+	g.fillAll();
+
+	/*
 	Path roundedRectangle;
-	roundedRectangle.addRoundedRectangle(getLocalBounds().toFloat().reduced(5), 10.0f);
+	roundedRectangle.addRoundedRectangle(getLocalBounds().toFloat().reduced(5), 12.0f);
 
 	Point<int> zerozero(0, 0);
-	DropShadow ds(light, 8, zerozero);
+	DropShadow ds(darkWhite, 12, zerozero);
 	ds.drawForPath(g, roundedRectangle);
 
-	ColourGradient gradient(light, getWidth() / 2, - getHeight() / 2, dark, getWidth() / 2, getHeight(), true);
+	ColourGradient gradient(lightWhite, getWidth() / 2, 0, darkWhite, getWidth() / 2, getHeight(), true);
 	g.setGradientFill(gradient);
 	g.fillPath(roundedRectangle);
+	*/
 
 }
 
 void MainComponent::resized() {
-	fileDropperComponent.setSize(getWidth() / 3, 100);
-	fileDropperComponent.setCentrePosition(getWidth() / 2, 70);
+	Rectangle<int> rect = getLocalBounds();
+	topComponent.setBounds(rect.removeFromTop(rect.getHeight() / 6));
+	middleComponent.setBounds(rect.removeFromTop(rect.getHeight() * 4/9));
+	bottomComponent.setBounds(rect);
 }
 
 

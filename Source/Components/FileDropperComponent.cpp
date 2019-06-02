@@ -13,9 +13,10 @@
 
 //==============================================================================
 FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
-	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover)
+	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover),
+	thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache)
 {
-	setSize(300, 30);
+	formatManager.registerBasicFormats();
 }
 
 FileDropperComponent::~FileDropperComponent() {
@@ -23,36 +24,32 @@ FileDropperComponent::~FileDropperComponent() {
 
 void FileDropperComponent::paint(Graphics& g) {
 
-	if (filledState == Filled) {
-		switch (hoverState) {
-			case FileDropperComponent::ValidHover:
-				g.setColour(Colours::green);
-				break;
-			case FileDropperComponent::InvalidHover:
-				g.setColour(Colours::lightgreen);
-				break;
-			case FileDropperComponent::NoHover:
-				g.setColour(Colours::lightgreen);
-				break;
-		}
-	} else {
-		switch (hoverState) {
-			case FileDropperComponent::ValidHover:
-				g.setColour(Colours::darkgrey);
-				break;
-			case FileDropperComponent::InvalidHover:
-				g.setColour(Colours::grey);
-				break;
-			case FileDropperComponent::NoHover:
-				g.setColour(Colours::grey);
-				break;
-		}
+	Colour lightGrey(43, 45, 49);
+	Colour darkGrey(35, 36, 41);
+	Colour orange(255, 136, 0);
 
+	Path roundedBoundsPath;
+	roundedBoundsPath.addRoundedRectangle(getLocalBounds().toFloat(), 10.0f);
+
+	g.setColour(darkGrey);
+	g.fillPath(roundedBoundsPath);
+
+	if (thumbnail.getNumChannels() > 0) {
+		g.setColour(orange);
+		thumbnail.drawChannel(g,
+			getLocalBounds().reduced(10),
+			0.0,                                    // start time
+			thumbnail.getTotalLength(),				// end time
+			0,										// channel num
+			1.0f);                                  // vertical zoom
 	}
-	g.fillAll();
 
-	g.setColour(Colours::black);
-	g.drawRoundedRectangle(getLocalBounds().toFloat(), 5, 3.0f);
+	if (hoverState == FileDropperComponent::ValidHover) {
+		g.setColour(lightGrey);
+		g.fillPath(roundedBoundsPath);
+	}
+
+	drawInnerShadow(g, roundedBoundsPath);
 }
 
 void FileDropperComponent::resized() {
@@ -99,7 +96,37 @@ void FileDropperComponent::fileDragExit(const StringArray& files) {
 
 void FileDropperComponent::filesDropped(const StringArray& files, int x, int y) {
 	changeState(Filled, NoHover);
-	processor.loadNewFile(files[0]);
+	File file(files[0]);
+	AudioFormatReader *reader = formatManager.createReaderFor(file);
+	if (reader != nullptr) {
+		thumbnail.setSource(new FileInputSource(file));
+		processor.loadNewFile(reader); // will also delete reader
+	}
 }
 /* End FileDragAndDropTarget callbacks */
 
+void FileDropperComponent::changeListenerCallback(ChangeBroadcaster* source) {
+	if (source == &thumbnail) {
+		repaint();
+	}
+}
+
+// Credit goes to CrushedPixel for coming up with this hack.
+// Code originally found here: https://forum.juce.com/t/inner-shadow-or-workarounds/19704/3
+void FileDropperComponent::drawInnerShadow(Graphics &g, Path target) {
+	// resets the Clip Region when the function returns
+	Graphics::ScopedSaveState saveState(g);
+
+	// invert the path's fill shape and enlarge it,
+	// so it casts a shadow
+	Path shadowPath(target);
+	shadowPath.addRectangle(target.getBounds().expanded(10));
+	shadowPath.setUsingNonZeroWinding(false);
+
+	// reduce clip region to avoid the shadow
+	// being drawn outside of the shape to cast the shadow on
+	g.reduceClipRegion(target);
+
+	DropShadow ds(Colour::fromRGB(27,28,31), 5, { 0, 0 });
+	ds.drawForPath(g, shadowPath);
+}

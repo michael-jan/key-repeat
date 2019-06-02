@@ -8,6 +8,10 @@
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
       <GROUP id="{2FBFFFDF-06B9-AFDC-E66D-7BEA6D1467CC}" name="Components">
+        <FILE id="VtVItY" name="BottomComponent.cpp" compile="1" resource="0"
+              file="Source/Components/BottomComponent.cpp"/>
+        <FILE id="nY4YCp" name="BottomComponent.h" compile="0" resource="0"
+              file="Source/Components/BottomComponent.h"/>
         <FILE id="lJK6Lq" name="FileDropperComponent.cpp" compile="1" resource="0"
               file="Source/Components/FileDropperComponent.cpp"/>
         <FILE id="mTQjhp" name="FileDropperComponent.h" compile="0" resource="0"
@@ -15,6 +19,13 @@
         <FILE id="jiueuh" name="MainComponent.cpp" compile="1" resource="0"
               file="Source/Components/MainComponent.cpp"/>
         <FILE id="LMZFo1" name="MainComponent.h" compile="0" resource="0" file="Source/Components/MainComponent.h"/>
+        <FILE id="bO88wA" name="MiddleComponent.cpp" compile="1" resource="0"
+              file="Source/Components/MiddleComponent.cpp"/>
+        <FILE id="geSdMM" name="MiddleComponent.h" compile="0" resource="0"
+              file="Source/Components/MiddleComponent.h"/>
+        <FILE id="reG1au" name="TopComponent.cpp" compile="1" resource="0"
+              file="Source/Components/TopComponent.cpp"/>
+        <FILE id="h20aZq" name="TopComponent.h" compile="0" resource="0" file="Source/Components/TopComponent.h"/>
       </GROUP>
       <GROUP id="{16B20DEF-04CD-0605-9898-1855B85C33BC}" name="Processing">
         <FILE id="l7HtPc" name="KeySwitchManager.cpp" compile="1" resource="0"
