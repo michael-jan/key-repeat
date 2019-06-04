@@ -13,26 +13,17 @@
 
 //==============================================================================
 TopComponent::TopComponent() {
-
 }
 
 TopComponent::~TopComponent() {
 }
 
 void TopComponent::paint(Graphics& g) {
-	Colour lightBlack(40, 42, 47);
-	Colour darkBlack(28, 29, 35);
+	Colour darkGrey(35, 36, 41);
 
-	Rectangle<int> solidRect = getLocalBounds().removeFromTop(getHeight() * 9/10);
+	Rectangle<int> solidRect = getLocalBounds();
 
-	Point<int> zerozero(0, 0);
-	DropShadow ds(Colours::black, getHeight() / 10, zerozero);
-	ds.drawForRectangle(g, solidRect);
-
-	g.setColour(lightBlack);
-	g.drawHorizontalLine(solidRect.getBottom(), 0, getWidth());
-
-	ColourGradient gradient(lightBlack, 0, 0, darkBlack, 0, getHeight(), false);
+	ColourGradient gradient(darkGrey.brighter(0.03f), 0, 0, darkGrey, 0, getHeight() / 2, false);
 	g.setGradientFill(gradient);
 	g.fillRect(solidRect);
 }

@@ -14,7 +14,7 @@
 //==============================================================================
 FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
 	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover),
-	thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache)
+	thumbnailCache(2), thumbnail(1<<16, formatManager, thumbnailCache)
 {
 	formatManager.registerBasicFormats();
 }
@@ -26,7 +26,7 @@ void FileDropperComponent::paint(Graphics& g) {
 
 	Colour lightGrey(43, 45, 49);
 	Colour darkGrey(35, 36, 41);
-	Colour orange(255, 136, 0);
+	Colour orange(255, 150, 0);
 
 	Path roundedBoundsPath;
 	roundedBoundsPath.addRoundedRectangle(getLocalBounds().toFloat(), 10.0f);
@@ -45,15 +45,18 @@ void FileDropperComponent::paint(Graphics& g) {
 	}
 
 	if (hoverState == FileDropperComponent::ValidHover) {
-		g.setColour(lightGrey);
+		g.setColour(Colours::black.withAlpha(0.12f));
 		g.fillPath(roundedBoundsPath);
 	}
 
 	drawInnerShadow(g, roundedBoundsPath);
+
+	g.setColour(Colours::whitesmoke.withAlpha(0.14f));
+	PathStrokeType pathStrokeType(1, PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
+	g.strokePath(roundedBoundsPath, pathStrokeType);
 }
 
 void FileDropperComponent::resized() {
-
 }
 
 String FileDropperComponent::getAbsoluteFilePath() const {
@@ -100,7 +103,8 @@ void FileDropperComponent::filesDropped(const StringArray& files, int x, int y) 
 	AudioFormatReader *reader = formatManager.createReaderFor(file);
 	if (reader != nullptr) {
 		thumbnail.setSource(new FileInputSource(file));
-		processor.loadNewFile(reader); // will also delete reader
+		processor.loadNewFile(reader);
+		delete reader;
 	}
 }
 /* End FileDragAndDropTarget callbacks */

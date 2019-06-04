@@ -53,7 +53,7 @@ void MainComponent::paint(Graphics& g) {
 void MainComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
 	topComponent.setBounds(rect.removeFromTop(rect.getHeight() / 6));
-	middleComponent.setBounds(rect.removeFromTop(rect.getHeight() * 4/9));
+	middleComponent.setBounds(rect.removeFromTop(rect.getHeight() / 2));
 	bottomComponent.setBounds(rect);
 }
 

@@ -15,7 +15,6 @@ KeySwitchManager::KeySwitchManager() :
 	keyswitchOctave(0),
 	separateTripletButton(true),
 	latch(false),
-	swing(0.0f),
 	isTripletLatched(false)
 {
 	fillWhenToPlayInfo();
@@ -28,11 +27,11 @@ bool KeySwitchManager::isKeyswitch(int midiNode) const {
 		return getFirstKeyswitchNoteNumber() <= midiNode && midiNode < getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS;
 }
 
-std::vector<double>& KeySwitchManager::getCurrentTriggers() {
+std::vector<double>& KeySwitchManager::getCurrentTriggers(float swing) {
 	tempWhenToPlay = whenToPlayInfo[currentRepeatState];
 	if (!isRepeatOff() && !isCurrentRepeatStateTriplet()) {
 		double diff = tempWhenToPlay[1] - tempWhenToPlay[0];
-		double swingHangTime = (swing * 0.95) * diff;
+		double swingHangTime = swing * diff;
 		bool isIndexOdd = false;
 		for (double& num : tempWhenToPlay) {
 			if (isIndexOdd) {

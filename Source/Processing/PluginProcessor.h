@@ -50,10 +50,16 @@ public:
 
 	void loadNewFile(AudioFormatReader *reader);
 
+	AudioProcessorValueTreeState& getVTS() { return parameters; }
+
 private:
 
+	const double MAX_SAMPLE_LENGTH = 20.0;
+
+	AudioProcessorValueTreeState parameters;
 	MidiKeyboardState physicalKeyboardState;
 	KeySwitchManager keySwitchManager;
+	SamplerSound *samplerSound;
 
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;
@@ -69,6 +75,14 @@ private:
 	void updateKeyboardState(const MidiBuffer& midiMessages);
 	void addAllNonKeyswitchMidiMessages(MidiBuffer& newMidiMessages, const MidiBuffer& midiMessages);
 	void transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info);
+	void updateADSR();
+
+	AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+	float *attackParameter;
+	float *decayParameter;
+	float *sustainParameter;
+	float *releaseParameter;
+	float *swingParameter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)
 };

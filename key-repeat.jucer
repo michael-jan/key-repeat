@@ -23,6 +23,10 @@
               file="Source/Components/MiddleComponent.cpp"/>
         <FILE id="geSdMM" name="MiddleComponent.h" compile="0" resource="0"
               file="Source/Components/MiddleComponent.h"/>
+        <FILE id="O2lwwH" name="SoundKnobsComponent.cpp" compile="1" resource="0"
+              file="Source/Components/SoundKnobsComponent.cpp"/>
+        <FILE id="cPfEiX" name="SoundKnobsComponent.h" compile="0" resource="0"
+              file="Source/Components/SoundKnobsComponent.h"/>
         <FILE id="reG1au" name="TopComponent.cpp" compile="1" resource="0"
               file="Source/Components/TopComponent.cpp"/>
         <FILE id="h20aZq" name="TopComponent.h" compile="0" resource="0" file="Source/Components/TopComponent.h"/>

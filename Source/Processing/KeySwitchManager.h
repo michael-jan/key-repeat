@@ -21,7 +21,7 @@ public:
 
 	bool isKeyswitch(int midiNode) const;
 
-	std::vector<double>& getCurrentTriggers();
+	std::vector<double>& getCurrentTriggers(float swing);
 	void update();
 
 	void setKeyboardStatePointer(MidiKeyboardState *newKeyboardStatePointer);
@@ -66,7 +66,6 @@ private:
 	int keyswitchOctave;
 	bool separateTripletButton;
 	bool latch;
-	double swing;
 
 	// Stores the times (in quarter notes) of when to trigger samples for
 	// each repeat state. Should be filled upon construction.

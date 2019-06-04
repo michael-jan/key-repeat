@@ -1,9 +1,16 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-KeyRepeatAudioProcessor::KeyRepeatAudioProcessor()
+KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
+	parameters(*this, nullptr, Identifier("PARAMETERS"), createParameterLayout()),
+	samplerSound(nullptr),
+	attackParameter(parameters.getRawParameterValue("attack")),
+	decayParameter(parameters.getRawParameterValue("decay")),
+	sustainParameter(parameters.getRawParameterValue("sustain")),
+	releaseParameter(parameters.getRawParameterValue("release")),
+	swingParameter(parameters.getRawParameterValue("swing"))
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
+     , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  AudioChannelSet::stereo(), true)
@@ -168,7 +175,7 @@ void KeyRepeatAudioProcessor::addAllNonKeyswitchMidiMessages(MidiBuffer& newMidi
 
 void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info) {
 
-	std::vector<double> *triggers = &keySwitchManager.getCurrentTriggers();
+	std::vector<double> *triggers = &keySwitchManager.getCurrentTriggers(*swingParameter);
 
 	DBG(" ");
 	DBG(info.beatsIntoMeasure);
@@ -199,6 +206,18 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 
 }
 
+void KeyRepeatAudioProcessor::updateADSR() {
+	if (samplerSound != nullptr) {
+		// Divide by 1000 to convert milliseconds -> seconds.
+		// Use jmax() to safeguard against 0.0f for a, d, and r.
+		float a = jmax(0.01f, *attackParameter) / 1000.0f;
+		float d = jmax(0.01f, *decayParameter) / 1000.0f;
+		float s = *sustainParameter;
+		float r = jmax(0.01f, *releaseParameter) / 1000.0f;
+		samplerSound->setEnvelopeParameters({ a, d, s, r });
+	}
+}
+
 
 void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) {
 
@@ -226,6 +245,8 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 		transformMidiMessages(newMidiMessages, info);
 	}
 	
+	updateADSR();
+
 	// fill the audio buffer with sounds using the new midi messages
 	synth.renderNextBlock(buffer, newMidiMessages, 0, info.bufferNumSamples);
 
@@ -255,12 +276,25 @@ void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInB
     // whose contents will have been created by the getStateInformation() call.
 }
 
-
 void KeyRepeatAudioProcessor::loadNewFile(AudioFormatReader *reader) {
 	BigInteger allNotes;
 	allNotes.setRange(0, 128, true);
-	std::unique_ptr<AudioFormatReaderSource> tempSource(new AudioFormatReaderSource(reader, true));
-	synth.addSound(new SamplerSound("sampleSound", *reader, allNotes, 60, 0, 10, 10.0));
+	samplerSound = new SamplerSound("samplerSound", *reader, allNotes, 60, 0.00001, 0.0, MAX_SAMPLE_LENGTH);
+	synth.addSound(samplerSound);
+}
+
+AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createParameterLayout() {
+	std::vector<std::unique_ptr<RangedAudioParameter>> params;
+
+	NormalisableRange<float> adrRange(0.0f, 20000.0f);
+	adrRange.setSkewForCentre(1000.0f);
+	params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", adrRange, 0.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", adrRange, 0.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", NormalisableRange<float>(0.0f, 1.0f), 1.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", adrRange, 200.0f));
+	
+	params.push_back(std::make_unique<AudioParameterFloat>("swing", "Swing", NormalisableRange<float>(0.0f, 1.0f), 0.0f));
+	return { params.begin(), params.end() };
 }
 
 //==============================================================================
