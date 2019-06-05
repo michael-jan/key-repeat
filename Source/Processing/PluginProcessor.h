@@ -5,10 +5,17 @@
 #include "ProcessBlockInfo.h"
 #include "KeySwitchManager.h"
 
-const float EPSILON = 0.0001f;
+
+const bool DEBUG_TRIGGER = false;
+
 const int ALL_CHANNELS = 0xFFFFFFFF;
 const int NUM_MIDI_KEYS = 128;
 const int NUM_MIDI_CHANNELS = 16;
+const double MAX_SAMPLE_LENGTH_SEC = 20.0;
+
+const float EPSILON = 0.0001f;
+const double PI = 3.141592653589793238463;
+
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor
@@ -54,8 +61,6 @@ public:
 
 private:
 
-	const double MAX_SAMPLE_LENGTH = 20.0;
-
 	AudioProcessorValueTreeState parameters;
 	MidiKeyboardState physicalKeyboardState;
 	KeySwitchManager keySwitchManager;
@@ -71,17 +76,33 @@ private:
 	double lastNextBeatsIntoMeasure;
 	bool wasLastHitOnFour;
 
+
 	void fillProcessBlockInfo(ProcessBlockInfo& info, const AudioBuffer<float>& buffer);
 	void updateKeyboardState(const MidiBuffer& midiMessages);
 	void addAllNonKeyswitchMidiMessages(MidiBuffer& newMidiMessages, const MidiBuffer& midiMessages);
 	void transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info);
+
 	void updateADSR();
+	void updatePitch(MidiBuffer& midiMessages);
+	void updateLevel(AudioBuffer<float>& buffer);
+	void updatePan(AudioBuffer<float>& buffer);
+
 
 	AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+
+	float *pitchParameter;
+	float *panParameter;
+	float *levelParameter;
+
+	float prevLevel;
+	float prevPanLeftLevel;
+	float prevPanRightLevel;
+
 	float *attackParameter;
 	float *decayParameter;
 	float *sustainParameter;
 	float *releaseParameter;
+
 	float *swingParameter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)

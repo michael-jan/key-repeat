@@ -4,6 +4,12 @@
 KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
 	parameters(*this, nullptr, Identifier("PARAMETERS"), createParameterLayout()),
 	samplerSound(nullptr),
+	pitchParameter(parameters.getRawParameterValue("pitch")),
+	panParameter(parameters.getRawParameterValue("pan")),
+	levelParameter(parameters.getRawParameterValue("level")),
+	prevLevel(*levelParameter),
+	prevPanLeftLevel(std::sin(PI)),
+	prevPanRightLevel(std::sin(PI)),
 	attackParameter(parameters.getRawParameterValue("attack")),
 	decayParameter(parameters.getRawParameterValue("decay")),
 	sustainParameter(parameters.getRawParameterValue("sustain")),
@@ -177,9 +183,11 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 
 	std::vector<double> *triggers = &keySwitchManager.getCurrentTriggers(*swingParameter);
 
-	DBG(" ");
-	DBG(info.beatsIntoMeasure);
-	DBG(info.nextBeatsIntoMeasure);
+	if (DEBUG_TRIGGER) {
+		DBG(" ");
+		DBG(info.beatsIntoMeasure);
+		DBG(info.nextBeatsIntoMeasure);
+	}
 
 	for (double triggerInBeats : *triggers) {
 		if (info.beatsIntoMeasure - EPSILON <= triggerInBeats && triggerInBeats < info.nextBeatsIntoMeasure - EPSILON) {
@@ -191,7 +199,7 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 
 			// we want our note repeats to be sample-accurate
 			int internalSample = (int)((info.samplesPerMeasure * triggerInBeats / 4) - info.samplesIntoMeasure);
-			DBG("triggered, internalSample=" + std::to_string(internalSample));
+			if (DEBUG_TRIGGER) { DBG("triggered, internalSample=" + std::to_string(internalSample)); }
 
 			for (int note = 0; note < NUM_MIDI_KEYS; note++) {
 				for (int midiChannel = 1; midiChannel <= NUM_MIDI_CHANNELS; midiChannel++) {
@@ -218,14 +226,48 @@ void KeyRepeatAudioProcessor::updateADSR() {
 	}
 }
 
+void KeyRepeatAudioProcessor::updatePitch(MidiBuffer& midiMessages) {
+	MidiBuffer newMidiMessages;
+	MidiBuffer::Iterator midiIterator(midiMessages);
+	MidiMessage m;
+	int pos;
+	while (midiIterator.getNextEvent(m, pos)) {
+		if (m.isNoteOn()) {
+			int newNoteNumber = m.getNoteNumber() + *pitchParameter;
+			if (0 <= newNoteNumber && newNoteNumber < NUM_MIDI_KEYS) {
+				m.setNoteNumber(newNoteNumber);
+				newMidiMessages.addEvent(m, pos);
+			}
+		}
+	}
+	newMidiMessages.swapWith(midiMessages);
+}
+
+void KeyRepeatAudioProcessor::updateLevel(AudioBuffer<float>& buffer) {
+	for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
+		buffer.applyGainRamp(channel, 0, buffer.getNumSamples(), prevLevel, *levelParameter);
+	}
+	prevLevel = *levelParameter;
+}
+
+void KeyRepeatAudioProcessor::updatePan(AudioBuffer<float>& buffer) {
+	if (buffer.getNumChannels() < 2) {
+		return;
+	}
+	float arg = PI / 2 * (*panParameter / 2 + 0.5f);
+	float left = std::cos(arg);
+	float right = std::sin(arg);
+	buffer.applyGainRamp(0, 0, buffer.getNumSamples(), prevPanLeftLevel, left);
+	buffer.applyGainRamp(1, 0, buffer.getNumSamples(), prevPanRightLevel, right);
+	prevPanLeftLevel = left;
+	prevPanRightLevel = right;
+}
 
 void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) {
 
 	ScopedNoDenormals noDenormals;
-	int totalNumInputChannels = getTotalNumInputChannels();
-	int totalNumOutputChannels = getTotalNumOutputChannels();
 
-	for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
+	for (int i = 0; i < buffer.getNumChannels(); i++) {
 		buffer.clear(i, 0, buffer.getNumSamples());
 	}
 
@@ -246,9 +288,13 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 	}
 	
 	updateADSR();
+	updatePitch(newMidiMessages);
 
 	// fill the audio buffer with sounds using the new midi messages
 	synth.renderNextBlock(buffer, newMidiMessages, 0, info.bufferNumSamples);
+	
+	updateLevel(buffer);
+	updatePan(buffer);
 
 	// increment the fake samples counter with modular arithmetic
 	fakeSamplesIntoMeasure = std::fmod(fakeSamplesIntoMeasure + info.bufferNumSamples, info.samplesPerMeasure);
@@ -279,21 +325,30 @@ void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInB
 void KeyRepeatAudioProcessor::loadNewFile(AudioFormatReader *reader) {
 	BigInteger allNotes;
 	allNotes.setRange(0, 128, true);
-	samplerSound = new SamplerSound("samplerSound", *reader, allNotes, 60, 0.00001, 0.0, MAX_SAMPLE_LENGTH);
+	samplerSound = new SamplerSound("samplerSound", *reader, allNotes, 60, 0.00001, 0.0, MAX_SAMPLE_LENGTH_SEC);
 	synth.addSound(samplerSound);
 }
 
 AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createParameterLayout() {
+
 	std::vector<std::unique_ptr<RangedAudioParameter>> params;
 
-	NormalisableRange<float> adrRange(0.0f, 20000.0f);
+	// Top right knobs
+	params.push_back(std::make_unique<AudioParameterInt>("pitch", "Pitch", -12, 12, 0));
+	params.push_back(std::make_unique<AudioParameterFloat>("pan", "Pan", NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("level", "Level", NormalisableRange<float>(0.0f, 1.0f), 0.8f));
+
+	// ADSR Envelope Params; ADR logarithmically skewed
+	NormalisableRange<float> adrRange(0.0f, MAX_SAMPLE_LENGTH_SEC * 1000.0f);
 	adrRange.setSkewForCentre(1000.0f);
 	params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", adrRange, 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", adrRange, 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", NormalisableRange<float>(0.0f, 1.0f), 1.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", adrRange, 200.0f));
 	
+	// Middle knobs
 	params.push_back(std::make_unique<AudioParameterFloat>("swing", "Swing", NormalisableRange<float>(0.0f, 1.0f), 0.0f));
+
 	return { params.begin(), params.end() };
 }
 

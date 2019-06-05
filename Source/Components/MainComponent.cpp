@@ -12,9 +12,10 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent(KeyRepeatAudioProcessor& p) : 
+MainComponent::MainComponent(KeyRepeatAudioProcessor& p) :
 	processor(p),
-	middleComponent(p)
+	middleComponent(p),
+	topComponent(p)
 {
 	addAndMakeVisible(bottomComponent);
 	addAndMakeVisible(middleComponent);

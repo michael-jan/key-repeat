@@ -4,7 +4,7 @@
               companyName="Michael Jan" pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Sampler" pluginRTASCategory="2048"
               pluginAAXCategory="2048" pluginVSTCategory="kPlugCategSynth"
-              pluginCode="Keyr" pluginManufacturerCode="Mjan" pluginChannelConfigs="{2,2}">
+              pluginCode="Keyr" pluginManufacturerCode="Mjan" pluginChannelConfigs="{0,2}">
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
       <GROUP id="{2FBFFFDF-06B9-AFDC-E66D-7BEA6D1467CC}" name="Components">

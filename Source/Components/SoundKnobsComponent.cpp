@@ -23,7 +23,6 @@ SoundKnobsComponent::SoundKnobsComponent(KeyRepeatAudioProcessor& p) :
 	addAndMakeVisible(attackSlider);
 	attackAttachment.reset(new SliderAttachment(p.getVTS(), "attack", attackSlider));
 
-
 	addAndMakeVisible(decaySlider);
 	decayAttachment.reset(new SliderAttachment(p.getVTS(), "decay", decaySlider));
 
