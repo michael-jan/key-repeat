@@ -11,18 +11,24 @@
 #pragma once
 
 #include "../../JuceLibraryCode/JuceHeader.h"
+#include "../Processing/PluginProcessor.h"
+#include "KeyswitchControlsComponent.h"
 
 //==============================================================================
 /*
 */
 class BottomComponent : public Component {
 public:
-	BottomComponent();
+	BottomComponent(KeyRepeatAudioProcessor& p);
 	~BottomComponent();
 
 	void paint(Graphics&) override;
 	void resized() override;
 
 private:
+
+	KeyRepeatAudioProcessor& processor;
+	KeyswitchControlsComponent keyswitchControlsComponent;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BottomComponent)
 };

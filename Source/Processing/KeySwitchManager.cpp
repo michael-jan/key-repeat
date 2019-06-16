@@ -24,7 +24,7 @@ KeySwitchManager::~KeySwitchManager() {
 }
 
 bool KeySwitchManager::isKeyswitch(int midiNode) const {
-		return getFirstKeyswitchNoteNumber() <= midiNode && midiNode < getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS;
+	return getFirstKeyswitchNoteNumber() <= midiNode && midiNode < getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS;
 }
 
 std::vector<double>& KeySwitchManager::getCurrentTriggers(float swing) {
@@ -109,7 +109,8 @@ int KeySwitchManager::getTripletNoteNumber() const {
 
 void KeySwitchManager::fillWhenToPlayInfo() {
 	int playsPerMeasure[] =
-	{   4,  // Quarter
+	{ 
+		4,  // Quarter
 		6,  // QuarterTriplet
 		8,  // Eighth
 		12, // EighthTriplet

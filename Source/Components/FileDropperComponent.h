@@ -38,6 +38,7 @@ private:
 	AudioThumbnailCache thumbnailCache;
 	AudioThumbnail thumbnail;
 
+	Label label;
 
 	enum FilledState {
 		Filled,

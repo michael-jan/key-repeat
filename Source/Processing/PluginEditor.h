@@ -8,7 +8,7 @@ class KeyRepeatAudioProcessorEditor :
 	public AudioProcessorEditor
 {
 public:
-    KeyRepeatAudioProcessorEditor (KeyRepeatAudioProcessor&);
+    KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor&, LookAndFeel *lookAndFeel);
     ~KeyRepeatAudioProcessorEditor();
 
     void paint(Graphics&) override;

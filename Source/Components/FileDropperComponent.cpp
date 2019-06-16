@@ -14,9 +14,13 @@
 //==============================================================================
 FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
 	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover),
-	thumbnailCache(2), thumbnail(1<<16, formatManager, thumbnailCache)
+	thumbnailCache(2), thumbnail(1<<16, formatManager, thumbnailCache), label("fileDropperLabel", "< Drop In Sample >")
 {
 	formatManager.registerBasicFormats();
+
+	addAndMakeVisible(label);
+	label.setJustificationType(Justification::centred);
+	label.setColour(Label::textColourId, Colours::grey.withAlpha(0.25f));
 }
 
 FileDropperComponent::~FileDropperComponent() {
@@ -54,9 +58,15 @@ void FileDropperComponent::paint(Graphics& g) {
 	g.setColour(Colours::whitesmoke.withAlpha(0.14f));
 	PathStrokeType pathStrokeType(1, PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
 	g.strokePath(roundedBoundsPath, pathStrokeType);
+
+	if (!label.isEnabled()) {
+		label.setAlpha(0.0f);
+	}
 }
 
 void FileDropperComponent::resized() {
+	label.setFont(Font(getHeight() / 5));
+	label.setBounds(getLocalBounds());
 }
 
 String FileDropperComponent::getAbsoluteFilePath() const {
@@ -68,8 +78,8 @@ void FileDropperComponent::changeState(FilledState newFilledState, HoverState ne
 	if (filledState != newFilledState || hoverState != newHoverState) {
 		filledState = newFilledState;
 		hoverState = newHoverState;
-		repaint();
 	}
+	repaint();
 }
 
 /* Begin FileDragAndDropTarget callbacks */
@@ -83,6 +93,7 @@ bool FileDropperComponent::isInterestedInFileDrag(const StringArray& files) {
 
 void FileDropperComponent::fileDragEnter(const StringArray& files, int x, int y) {
 	if (isInterestedInFileDrag(files)) {
+		label.setAlpha(0.4f);
 		changeState(filledState, ValidHover);
 	} else {
 		changeState(filledState, InvalidHover);
@@ -94,10 +105,12 @@ void FileDropperComponent::fileDragMove(const StringArray& files, int x, int y) 
 }
 
 void FileDropperComponent::fileDragExit(const StringArray& files) {
+	label.setAlpha(1.0f);
 	changeState(filledState, NoHover);
 }
 
 void FileDropperComponent::filesDropped(const StringArray& files, int x, int y) {
+	label.setEnabled(false);
 	changeState(Filled, NoHover);
 	File file(files[0]);
 	AudioFormatReader *reader = formatManager.createReaderFor(file);

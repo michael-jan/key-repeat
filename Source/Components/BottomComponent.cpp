@@ -12,16 +12,20 @@
 #include "BottomComponent.h"
 
 //==============================================================================
-BottomComponent::BottomComponent() {
+BottomComponent::BottomComponent(KeyRepeatAudioProcessor& p) : 
+	processor(p),
+	keyswitchControlsComponent(p)
+{
+	addAndMakeVisible(keyswitchControlsComponent);
 }
 
 BottomComponent::~BottomComponent() {
 }
 
 void BottomComponent::paint(Graphics& g) {
-	g.setColour(Colours::orange);
-	//g.drawRect(getLocalBounds(), 2.0f);
 }
 
 void BottomComponent::resized() {
+	Rectangle<int> rect = getLocalBounds();
+	keyswitchControlsComponent.setBounds(rect.removeFromLeft(getWidth() / 3));
 }

@@ -4,6 +4,7 @@
 #include "SamplerSynth.h"
 #include "ProcessBlockInfo.h"
 #include "KeySwitchManager.h"
+#include "../Components/MyLookAndFeel.h"
 
 
 const bool DEBUG_TRIGGER = false;
@@ -66,6 +67,8 @@ private:
 	KeySwitchManager keySwitchManager;
 	SamplerSound *samplerSound;
 
+	LookAndFeel_V4 myLookAndFeel;
+
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;
 
@@ -90,20 +93,25 @@ private:
 
 	AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
-	float *pitchParameter;
-	float *panParameter;
-	float *levelParameter;
+	Value pitchParameter;
+	Value panParameter;
+	Value levelParameter;
 
 	float prevLevel;
 	float prevPanLeftLevel;
 	float prevPanRightLevel;
 
-	float *attackParameter;
-	float *decayParameter;
-	float *sustainParameter;
-	float *releaseParameter;
+	Value attackParameter;
+	Value decayParameter;
+	Value sustainParameter;
+	Value releaseParameter;
 
-	float *swingParameter;
+	Value swingParameter;
+	Value humanizeParameter;
+
+	Value easyParameter;
+	Value latchParameter;
+	Value keyswitchOctaveParameter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)
 };

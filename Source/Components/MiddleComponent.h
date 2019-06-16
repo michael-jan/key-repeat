@@ -12,7 +12,7 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../Processing/PluginProcessor.h"
-#include "SoundKnobsComponent.h"
+#include "SoundControlsComponent.h"
 #include "FileDropperComponent.h"
 
 //==============================================================================
@@ -30,7 +30,7 @@ public:
 private:
 
 	KeyRepeatAudioProcessor& processor;
-	SoundKnobsComponent soundKnobsComponent;
+	SoundControlsComponent soundControlsComponent;
 	FileDropperComponent fileDropperComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MiddleComponent)

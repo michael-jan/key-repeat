@@ -4,17 +4,21 @@
 KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
 	parameters(*this, nullptr, Identifier("PARAMETERS"), createParameterLayout()),
 	samplerSound(nullptr),
-	pitchParameter(parameters.getRawParameterValue("pitch")),
-	panParameter(parameters.getRawParameterValue("pan")),
-	levelParameter(parameters.getRawParameterValue("level")),
-	prevLevel(*levelParameter),
+	pitchParameter(parameters.getParameterAsValue("pitch")),
+	panParameter(parameters.getParameterAsValue("pan")),
+	levelParameter(parameters.getParameterAsValue("level")),
+	prevLevel((float) levelParameter.getValue()),
 	prevPanLeftLevel(std::sin(PI)),
 	prevPanRightLevel(std::sin(PI)),
-	attackParameter(parameters.getRawParameterValue("attack")),
-	decayParameter(parameters.getRawParameterValue("decay")),
-	sustainParameter(parameters.getRawParameterValue("sustain")),
-	releaseParameter(parameters.getRawParameterValue("release")),
-	swingParameter(parameters.getRawParameterValue("swing"))
+	attackParameter(parameters.getParameterAsValue("attack")),
+	decayParameter(parameters.getParameterAsValue("decay")),
+	sustainParameter(parameters.getParameterAsValue("sustain")),
+	releaseParameter(parameters.getParameterAsValue("release")),
+	swingParameter(parameters.getParameterAsValue("swing")),
+	humanizeParameter(parameters.getParameterAsValue("humanize")),
+	easyParameter(parameters.getParameterAsValue("easy")),
+	latchParameter(parameters.getParameterAsValue("latch")),
+	keyswitchOctaveParameter(parameters.getParameterAsValue("octave"))
 #ifndef JucePlugin_PreferredChannelConfigurations
      , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -181,7 +185,7 @@ void KeyRepeatAudioProcessor::addAllNonKeyswitchMidiMessages(MidiBuffer& newMidi
 
 void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info) {
 
-	std::vector<double> *triggers = &keySwitchManager.getCurrentTriggers(*swingParameter);
+	std::vector<double> *triggers = &keySwitchManager.getCurrentTriggers(swingParameter.getValue());
 
 	if (DEBUG_TRIGGER) {
 		DBG(" ");
@@ -198,7 +202,7 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 			else wasLastHitOnFour = false;
 
 			// we want our note repeats to be sample-accurate
-			int internalSample = (int)((info.samplesPerMeasure * triggerInBeats / 4) - info.samplesIntoMeasure);
+			int internalSample = (int) ((info.samplesPerMeasure * triggerInBeats / 4) - info.samplesIntoMeasure);
 			if (DEBUG_TRIGGER) { DBG("triggered, internalSample=" + std::to_string(internalSample)); }
 
 			for (int note = 0; note < NUM_MIDI_KEYS; note++) {
@@ -218,10 +222,10 @@ void KeyRepeatAudioProcessor::updateADSR() {
 	if (samplerSound != nullptr) {
 		// Divide by 1000 to convert milliseconds -> seconds.
 		// Use jmax() to safeguard against 0.0f for a, d, and r.
-		float a = jmax(0.01f, *attackParameter) / 1000.0f;
-		float d = jmax(0.01f, *decayParameter) / 1000.0f;
-		float s = *sustainParameter;
-		float r = jmax(0.01f, *releaseParameter) / 1000.0f;
+		float a = jmax(0.01f, (float) attackParameter.getValue()) / 1000.0f;
+		float d = jmax(0.01f, (float) decayParameter.getValue()) / 1000.0f;
+		float s = sustainParameter.getValue();
+		float r = jmax(0.01f, (float) releaseParameter.getValue()) / 1000.0f;
 		samplerSound->setEnvelopeParameters({ a, d, s, r });
 	}
 }
@@ -233,7 +237,7 @@ void KeyRepeatAudioProcessor::updatePitch(MidiBuffer& midiMessages) {
 	int pos;
 	while (midiIterator.getNextEvent(m, pos)) {
 		if (m.isNoteOn()) {
-			int newNoteNumber = m.getNoteNumber() + *pitchParameter;
+			int newNoteNumber = m.getNoteNumber() + (int) pitchParameter.getValue();
 			if (0 <= newNoteNumber && newNoteNumber < NUM_MIDI_KEYS) {
 				m.setNoteNumber(newNoteNumber);
 				newMidiMessages.addEvent(m, pos);
@@ -245,16 +249,16 @@ void KeyRepeatAudioProcessor::updatePitch(MidiBuffer& midiMessages) {
 
 void KeyRepeatAudioProcessor::updateLevel(AudioBuffer<float>& buffer) {
 	for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
-		buffer.applyGainRamp(channel, 0, buffer.getNumSamples(), prevLevel, *levelParameter);
+		buffer.applyGainRamp(channel, 0, buffer.getNumSamples(), prevLevel, levelParameter.getValue());
 	}
-	prevLevel = *levelParameter;
+	prevLevel = levelParameter.getValue();
 }
 
 void KeyRepeatAudioProcessor::updatePan(AudioBuffer<float>& buffer) {
 	if (buffer.getNumChannels() < 2) {
 		return;
 	}
-	float arg = PI / 2 * (*panParameter / 2 + 0.5f);
+	float arg = PI / 2 * ((float) panParameter.getValue() / 2 + 0.5f);
 	float left = std::cos(arg);
 	float right = std::sin(arg);
 	buffer.applyGainRamp(0, 0, buffer.getNumSamples(), prevPanLeftLevel, left);
@@ -307,7 +311,7 @@ bool KeyRepeatAudioProcessor::hasEditor() const {
 }
 
 AudioProcessorEditor* KeyRepeatAudioProcessor::createEditor() {
-    return new KeyRepeatAudioProcessorEditor (*this);
+    return new KeyRepeatAudioProcessorEditor(*this, &myLookAndFeel);
 }
 
 //==============================================================================
@@ -338,7 +342,7 @@ AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createPar
 	params.push_back(std::make_unique<AudioParameterFloat>("pan", "Pan", NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
 	params.push_back(std::make_unique<AudioParameterFloat>("level", "Level", NormalisableRange<float>(0.0f, 1.0f), 0.8f));
 
-	// ADSR Envelope Params; ADR logarithmically skewed
+	// Middle ADSR envelope sliders (ADR logarithmically skewed)
 	NormalisableRange<float> adrRange(0.0f, MAX_SAMPLE_LENGTH_SEC * 1000.0f);
 	adrRange.setSkewForCentre(1000.0f);
 	params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", adrRange, 0.0f));
@@ -348,6 +352,12 @@ AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createPar
 	
 	// Middle knobs
 	params.push_back(std::make_unique<AudioParameterFloat>("swing", "Swing", NormalisableRange<float>(0.0f, 1.0f), 0.0f));
+	params.push_back(std::make_unique<AudioParameterFloat>("humanize", "Humanize", NormalisableRange<float>(0.0f, 1.0f), 0.0f));
+
+	// Bottom controls
+	params.push_back(std::make_unique<AudioParameterBool>("easy", "Easy", false));
+	params.push_back(std::make_unique<AudioParameterBool>("latch", "Latch", false));
+	params.push_back(std::make_unique<AudioParameterInt>("keyswitchOctave", "Keyswitch Octave", 0, 6, 0));
 
 	return { params.begin(), params.end() };
 }

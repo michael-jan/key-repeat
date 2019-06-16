@@ -16,6 +16,10 @@
               file="Source/Components/FileDropperComponent.cpp"/>
         <FILE id="mTQjhp" name="FileDropperComponent.h" compile="0" resource="0"
               file="Source/Components/FileDropperComponent.h"/>
+        <FILE id="GbPlZx" name="KeyswitchControlsComponent.cpp" compile="1"
+              resource="0" file="Source/Components/KeyswitchControlsComponent.cpp"/>
+        <FILE id="Jv7XCV" name="KeyswitchControlsComponent.h" compile="0" resource="0"
+              file="Source/Components/KeyswitchControlsComponent.h"/>
         <FILE id="jiueuh" name="MainComponent.cpp" compile="1" resource="0"
               file="Source/Components/MainComponent.cpp"/>
         <FILE id="LMZFo1" name="MainComponent.h" compile="0" resource="0" file="Source/Components/MainComponent.h"/>
@@ -23,10 +27,15 @@
               file="Source/Components/MiddleComponent.cpp"/>
         <FILE id="geSdMM" name="MiddleComponent.h" compile="0" resource="0"
               file="Source/Components/MiddleComponent.h"/>
-        <FILE id="O2lwwH" name="SoundKnobsComponent.cpp" compile="1" resource="0"
-              file="Source/Components/SoundKnobsComponent.cpp"/>
-        <FILE id="cPfEiX" name="SoundKnobsComponent.h" compile="0" resource="0"
-              file="Source/Components/SoundKnobsComponent.h"/>
+        <FILE id="CXwNrt" name="MyLookAndFeel.cpp" compile="1" resource="0"
+              file="Source/Components/MyLookAndFeel.cpp"/>
+        <FILE id="S1JQ12" name="MyLookAndFeel.h" compile="0" resource="0" file="Source/Components/MyLookAndFeel.h"/>
+        <FILE id="XOnmsc" name="ParameterLabel.h" compile="0" resource="0"
+              file="Source/Components/ParameterLabel.h"/>
+        <FILE id="O2lwwH" name="SoundControlsComponent.cpp" compile="1" resource="0"
+              file="Source/Components/SoundControlsComponent.cpp"/>
+        <FILE id="cPfEiX" name="SoundControlsComponent.h" compile="0" resource="0"
+              file="Source/Components/SoundControlsComponent.h"/>
         <FILE id="reG1au" name="TopComponent.cpp" compile="1" resource="0"
               file="Source/Components/TopComponent.cpp"/>
         <FILE id="h20aZq" name="TopComponent.h" compile="0" resource="0" file="Source/Components/TopComponent.h"/>
