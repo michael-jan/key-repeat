@@ -14,6 +14,6 @@
 class MyLookAndFeel : public LookAndFeel_V4 {
 
 public:
+	static const Colour WHITE, LIGHT_GREY, GREY, DARK_GREY, VERY_DARK_GREY, LIGHT_PINK, PINK, DARK_PINK;
 	MyLookAndFeel();
-
 };

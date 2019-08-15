@@ -10,34 +10,44 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "MiddleComponent.h"
+#include "Utils.h"
 
 //==============================================================================
 MiddleComponent::MiddleComponent(KeyRepeatAudioProcessor& p) :
 	processor(p),
-	soundControlsComponent(p),
-	fileDropperComponent(p)
+	adsrComponent(p),
+	fileDropperComponent(p),
+	soundControlsComponent(p)
 {
-	addAndMakeVisible(soundControlsComponent);
+	shadowComponent.setBufferedToImage(true);
+	addAndMakeVisible(shadowComponent);
+	addAndMakeVisible(adsrComponent);
 	addAndMakeVisible(fileDropperComponent);
+	addAndMakeVisible(soundControlsComponent);
 }
 
 MiddleComponent::~MiddleComponent() {
 }
 
 void MiddleComponent::paint(Graphics& g) {
-	g.setColour(Colours::purple);
-	//g.drawRect(getLocalBounds(), 2.0f);
-
-	Path topLine;
-	topLine.addRectangle(0, 0, getWidth(), 2);
-	DropShadow ds(Colours::black, getHeight() / 4, { 0, 0 });
-	ds.drawForPath(g, topLine);
-
 }
 
 void MiddleComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
-	rect.removeFromLeft(rect.getWidth() / 30);
-	soundControlsComponent.setBounds(rect.removeFromLeft(rect.getWidth() * 3/5));
-	fileDropperComponent.setBounds(rect.reduced(rect.getHeight() / 8) );
+	int originalRectWidth = rect.getWidth();
+
+	shadowComponent.setBounds(rect);
+	adsrComponent.setBounds(rect.removeFromLeft(originalRectWidth / 3));
+	fileDropperComponent.setBounds(rect.removeFromLeft(originalRectWidth / 3));
+	soundControlsComponent.setBounds(rect);
+}
+
+void MiddleShadowComponent::paint(Graphics& g) {
+	Line<float> topLine(0, 0, getWidth(), 0);
+	Line<float> bottomLine(0, getHeight(), getWidth(), getHeight());
+	Utils::drawLineShadow(g, topLine, getHeight() / 2);
+	Utils::drawLineShadow(g, bottomLine, getHeight() / 2);
+}
+
+void MiddleShadowComponent::resized() {
 }

@@ -3,9 +3,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SamplerSynth.h"
 #include "ProcessBlockInfo.h"
-#include "KeySwitchManager.h"
-#include "../Components/MyLookAndFeel.h"
-
+#include "KeyswitchManager.h"
+#include "../Graphics/MyLookAndFeel.h"
 
 const bool DEBUG_TRIGGER = false;
 
@@ -16,7 +15,6 @@ const double MAX_SAMPLE_LENGTH_SEC = 20.0;
 
 const float EPSILON = 0.0001f;
 const double PI = 3.141592653589793238463;
-
 
 class KeyRepeatAudioProcessor :
 	public AudioProcessor
@@ -59,15 +57,16 @@ public:
 	void loadNewFile(AudioFormatReader *reader);
 
 	AudioProcessorValueTreeState& getVTS() { return parameters; }
+	KeyswitchManager& getKeyswitchManager() { return keyswitchManager; }
 
 private:
 
 	AudioProcessorValueTreeState parameters;
 	MidiKeyboardState physicalKeyboardState;
-	KeySwitchManager keySwitchManager;
+	KeyswitchManager keyswitchManager;
 	SamplerSound *samplerSound;
 
-	LookAndFeel_V4 myLookAndFeel;
+	MyLookAndFeel myLookAndFeel;
 
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;

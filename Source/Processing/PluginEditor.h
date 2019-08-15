@@ -2,13 +2,14 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-#include "../Components/MainComponent.h"
+#include "../Graphics/MainComponent.h"
+#include "../Graphics/Utils.h"
 
 class KeyRepeatAudioProcessorEditor :
 	public AudioProcessorEditor
 {
 public:
-    KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor&, LookAndFeel *lookAndFeel);
+    KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor&, LookAndFeel_V4 *lookAndFeel);
     ~KeyRepeatAudioProcessorEditor();
 
     void paint(Graphics&) override;

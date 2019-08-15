@@ -12,7 +12,7 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../Processing/PluginProcessor.h"
-#include "ParameterLabel.h"
+#include "Utils.h"
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
@@ -33,15 +33,18 @@ private:
 
 	Slider pitchKnob;
 	std::unique_ptr<SliderAttachment> pitchAttachment;
-	ParameterLabel pitchLabel;
+	Label pitchLabel;
 
 	Slider panKnob;
 	std::unique_ptr<SliderAttachment> panAttachment;
-	ParameterLabel panLabel;
+	Label panLabel;
 
 	Slider levelKnob;
 	std::unique_ptr<SliderAttachment> levelAttachment;
-	ParameterLabel levelLabel;
+	Label levelLabel;
+
+	Label titleLabel;
+	Label authorLabel;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopComponent)
 };

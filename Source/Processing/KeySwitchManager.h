@@ -12,12 +12,14 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class KeySwitchManager : public MidiKeyboardStateListener {
+class KeyswitchManager : public MidiKeyboardStateListener {
 
 public:
 
-	KeySwitchManager();
-	~KeySwitchManager();
+	static const int NUM_KEYSWITCH_KEYS = 7;
+
+	KeyswitchManager();
+	~KeyswitchManager();
 
 	bool isKeyswitch(int midiNode) const;
 
@@ -39,10 +41,9 @@ public:
 
 private:
 		
-	const int NUM_REPEAT_NOTES = 10;
-	const int NUM_KEYSWITCH_KEYS = 7;
-	const int DEFAULT_KEYSWITCH_NUM = 24;
-	const int ALL_CHANNELS = 0xFFFFFFFF;
+	static const int NUM_REPEAT_NOTES = 10;
+	static const int DEFAULT_KEYSWITCH_NUM = 24;
+	static const int ALL_CHANNELS = 0xFFFFFFFF;
 
 	enum RepeatState {
 		Quarter,

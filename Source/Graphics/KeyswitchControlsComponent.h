@@ -12,7 +12,6 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../Processing/PluginProcessor.h"
-#include "ParameterLabel.h"
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
@@ -34,15 +33,15 @@ private:
 
 	ToggleButton easySwitch;
 	std::unique_ptr<ButtonAttachment> easyAttachment;
-	ParameterLabel easyLabel;
+	Label easyLabel;
 
 	ToggleButton latchSwitch;
 	std::unique_ptr<ButtonAttachment> latchAttachment;
-	ParameterLabel latchLabel;
+	Label latchLabel;
 
 	Slider keyswitchOctaveKnob;
 	std::unique_ptr<SliderAttachment> keyswitchOctaveAttachment;
-	ParameterLabel keyswitchOctaveLabel;
+	Label keyswitchOctaveLabel;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyswitchControlsComponent)
 };

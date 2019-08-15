@@ -1,50 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="GYCcUZ" name="KeyRepeat" projectType="audioplug" jucerVersion="5.4.3"
+<JUCERPROJECT id="GYCcUZ" name="KeyRepeat" projectType="audioplug" jucerVersion="5.4.4"
               companyName="Michael Jan" pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Sampler" pluginRTASCategory="2048"
               pluginAAXCategory="2048" pluginVSTCategory="kPlugCategSynth"
               pluginCode="Keyr" pluginManufacturerCode="Mjan" pluginChannelConfigs="{0,2}">
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
-      <GROUP id="{2FBFFFDF-06B9-AFDC-E66D-7BEA6D1467CC}" name="Components">
-        <FILE id="VtVItY" name="BottomComponent.cpp" compile="1" resource="0"
-              file="Source/Components/BottomComponent.cpp"/>
-        <FILE id="nY4YCp" name="BottomComponent.h" compile="0" resource="0"
-              file="Source/Components/BottomComponent.h"/>
-        <FILE id="lJK6Lq" name="FileDropperComponent.cpp" compile="1" resource="0"
-              file="Source/Components/FileDropperComponent.cpp"/>
-        <FILE id="mTQjhp" name="FileDropperComponent.h" compile="0" resource="0"
-              file="Source/Components/FileDropperComponent.h"/>
-        <FILE id="GbPlZx" name="KeyswitchControlsComponent.cpp" compile="1"
-              resource="0" file="Source/Components/KeyswitchControlsComponent.cpp"/>
-        <FILE id="Jv7XCV" name="KeyswitchControlsComponent.h" compile="0" resource="0"
-              file="Source/Components/KeyswitchControlsComponent.h"/>
-        <FILE id="jiueuh" name="MainComponent.cpp" compile="1" resource="0"
-              file="Source/Components/MainComponent.cpp"/>
-        <FILE id="LMZFo1" name="MainComponent.h" compile="0" resource="0" file="Source/Components/MainComponent.h"/>
-        <FILE id="bO88wA" name="MiddleComponent.cpp" compile="1" resource="0"
-              file="Source/Components/MiddleComponent.cpp"/>
-        <FILE id="geSdMM" name="MiddleComponent.h" compile="0" resource="0"
-              file="Source/Components/MiddleComponent.h"/>
-        <FILE id="CXwNrt" name="MyLookAndFeel.cpp" compile="1" resource="0"
-              file="Source/Components/MyLookAndFeel.cpp"/>
-        <FILE id="S1JQ12" name="MyLookAndFeel.h" compile="0" resource="0" file="Source/Components/MyLookAndFeel.h"/>
-        <FILE id="XOnmsc" name="ParameterLabel.h" compile="0" resource="0"
-              file="Source/Components/ParameterLabel.h"/>
-        <FILE id="O2lwwH" name="SoundControlsComponent.cpp" compile="1" resource="0"
-              file="Source/Components/SoundControlsComponent.cpp"/>
-        <FILE id="cPfEiX" name="SoundControlsComponent.h" compile="0" resource="0"
-              file="Source/Components/SoundControlsComponent.h"/>
-        <FILE id="reG1au" name="TopComponent.cpp" compile="1" resource="0"
-              file="Source/Components/TopComponent.cpp"/>
-        <FILE id="h20aZq" name="TopComponent.h" compile="0" resource="0" file="Source/Components/TopComponent.h"/>
+      <GROUP id="{CA07DA47-3076-A318-8823-ACC9FD088B6B}" name="Fonts">
+        <FILE id="myLfpD" name="Laconic_Bold.otf" compile="0" resource="1"
+              file="Source/Fonts/Laconic_Bold.otf"/>
+        <FILE id="vni5tX" name="Laconic_Font_License.txt" compile="0" resource="0"
+              file="Source/Fonts/Laconic_Font_License.txt"/>
+        <FILE id="EFKmD0" name="Laconic_Light.otf" compile="0" resource="1"
+              file="Source/Fonts/Laconic_Light.otf"/>
+        <FILE id="OhIdjj" name="Laconic_Regular.otf" compile="0" resource="1"
+              file="Source/Fonts/Laconic_Regular.otf"/>
+      </GROUP>
+      <GROUP id="{BE42956D-9500-F2BA-4438-135CA28DA158}" name="Graphics">
+        <FILE id="xJ941M" name="ADSRComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/ADSRComponent.cpp"/>
+        <FILE id="B3luQo" name="ADSRComponent.h" compile="0" resource="0" file="Source/Graphics/ADSRComponent.h"/>
+        <FILE id="BX2ypo" name="BottomComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/BottomComponent.cpp"/>
+        <FILE id="FqMGAR" name="BottomComponent.h" compile="0" resource="0"
+              file="Source/Graphics/BottomComponent.h"/>
+        <FILE id="BwMY6X" name="FileDropperComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/FileDropperComponent.cpp"/>
+        <FILE id="WBqmWo" name="FileDropperComponent.h" compile="0" resource="0"
+              file="Source/Graphics/FileDropperComponent.h"/>
+        <FILE id="LhuSLM" name="KeyswitchComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/KeyswitchComponent.cpp"/>
+        <FILE id="KrwyP6" name="KeyswitchComponent.h" compile="0" resource="0"
+              file="Source/Graphics/KeyswitchComponent.h"/>
+        <FILE id="dWlsH3" name="KeyswitchControlsComponent.cpp" compile="1"
+              resource="0" file="Source/Graphics/KeyswitchControlsComponent.cpp"/>
+        <FILE id="ObNpdx" name="KeyswitchControlsComponent.h" compile="0" resource="0"
+              file="Source/Graphics/KeyswitchControlsComponent.h"/>
+        <FILE id="QhLWlx" name="MainComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/MainComponent.cpp"/>
+        <FILE id="SMFMl7" name="MainComponent.h" compile="0" resource="0" file="Source/Graphics/MainComponent.h"/>
+        <FILE id="QXk8vZ" name="MiddleComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/MiddleComponent.cpp"/>
+        <FILE id="kWEF3q" name="MiddleComponent.h" compile="0" resource="0"
+              file="Source/Graphics/MiddleComponent.h"/>
+        <FILE id="yLZ8fj" name="MyLookAndFeel.cpp" compile="1" resource="0"
+              file="Source/Graphics/MyLookAndFeel.cpp"/>
+        <FILE id="GvilNg" name="MyLookAndFeel.h" compile="0" resource="0" file="Source/Graphics/MyLookAndFeel.h"/>
+        <FILE id="HmHUen" name="SoundControlsComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/SoundControlsComponent.cpp"/>
+        <FILE id="Z4uCEH" name="SoundControlsComponent.h" compile="0" resource="0"
+              file="Source/Graphics/SoundControlsComponent.h"/>
+        <FILE id="l4oC1O" name="TopComponent.cpp" compile="1" resource="0"
+              file="Source/Graphics/TopComponent.cpp"/>
+        <FILE id="F9NglN" name="TopComponent.h" compile="0" resource="0" file="Source/Graphics/TopComponent.h"/>
+        <FILE id="ZhsiEF" name="Utils.cpp" compile="1" resource="0" file="Source/Graphics/Utils.cpp"/>
+        <FILE id="Sw0UsO" name="Utils.h" compile="0" resource="0" file="Source/Graphics/Utils.h"/>
       </GROUP>
       <GROUP id="{16B20DEF-04CD-0605-9898-1855B85C33BC}" name="Processing">
-        <FILE id="l7HtPc" name="KeySwitchManager.cpp" compile="1" resource="0"
-              file="Source/Processing/KeySwitchManager.cpp"/>
-        <FILE id="I34lrq" name="KeySwitchManager.h" compile="0" resource="0"
-              file="Source/Processing/KeySwitchManager.h"/>
+        <FILE id="l7HtPc" name="KeyswitchManager.cpp" compile="1" resource="0"
+              file="Source/Processing/KeyswitchManager.cpp"/>
+        <FILE id="I34lrq" name="KeyswitchManager.h" compile="0" resource="0"
+              file="Source/Processing/KeyswitchManager.h"/>
         <FILE id="CUVvZm" name="PluginEditor.cpp" compile="1" resource="0"
               file="Source/Processing/PluginEditor.cpp"/>
         <FILE id="dnIN0x" name="PluginEditor.h" compile="0" resource="0" file="Source/Processing/PluginEditor.h"/>

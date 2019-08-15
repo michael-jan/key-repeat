@@ -14,10 +14,10 @@
 //==============================================================================
 FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
 	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover),
-	thumbnailCache(2), thumbnail(1<<16, formatManager, thumbnailCache), label("fileDropperLabel", "< Drop In Sample >")
+	thumbnailCache(2), thumbnail(1<<16, formatManager, thumbnailCache), label("fileDropperLabel", "Drag In Sample")
 {
 	formatManager.registerBasicFormats();
-
+	
 	addAndMakeVisible(label);
 	label.setJustificationType(Justification::centred);
 	label.setColour(Label::textColourId, Colours::grey.withAlpha(0.25f));
@@ -28,20 +28,16 @@ FileDropperComponent::~FileDropperComponent() {
 
 void FileDropperComponent::paint(Graphics& g) {
 
-	Colour lightGrey(43, 45, 49);
-	Colour darkGrey(35, 36, 41);
-	Colour orange(255, 150, 0);
-
 	Path roundedBoundsPath;
-	roundedBoundsPath.addRoundedRectangle(getLocalBounds().toFloat(), 10.0f);
+	roundedBoundsPath.addRoundedRectangle(displayBounds.toFloat(), 10.0f);
 
-	g.setColour(darkGrey);
+	g.setColour(MyLookAndFeel::DARK_GREY);
 	g.fillPath(roundedBoundsPath);
 
 	if (thumbnail.getNumChannels() > 0) {
-		g.setColour(orange);
+		g.setColour(Colours::lightblue);
 		thumbnail.drawChannel(g,
-			getLocalBounds().reduced(10),
+			displayBounds.reduced(10),
 			0.0,                                    // start time
 			thumbnail.getTotalLength(),				// end time
 			0,										// channel num
@@ -65,8 +61,12 @@ void FileDropperComponent::paint(Graphics& g) {
 }
 
 void FileDropperComponent::resized() {
-	label.setFont(Font(getHeight() / 5));
-	label.setBounds(getLocalBounds());
+	displayBounds = getLocalBounds()
+		.withTrimmedBottom(getHeight() / 9)
+		.withTrimmedTop(getHeight() / 9);
+
+	label.setFont(Font(getHeight() / 7));
+	label.setBounds(displayBounds);
 }
 
 String FileDropperComponent::getAbsoluteFilePath() const {

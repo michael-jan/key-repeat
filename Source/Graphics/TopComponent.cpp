@@ -19,11 +19,15 @@ TopComponent::TopComponent(KeyRepeatAudioProcessor& p) :
 	panKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
 	panLabel("panLabel", "Pan"),
 	levelKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
-	levelLabel("levelLabel", "Level")
+	levelLabel("levelLabel", "Level"),
+	titleLabel("titleLabel", "Key Repeat"),
+	authorLabel("authorLabel", "by Michael Jan")
 {
 	addAndMakeVisible(pitchLabel);
 	addAndMakeVisible(panLabel);
 	addAndMakeVisible(levelLabel);
+	addAndMakeVisible(titleLabel);
+	addAndMakeVisible(authorLabel);
 
 	addAndMakeVisible(pitchKnob);
 	pitchAttachment.reset(new SliderAttachment(p.getVTS(), "pitch", pitchKnob));
@@ -39,36 +43,38 @@ TopComponent::~TopComponent() {
 }
 
 void TopComponent::paint(Graphics& g) {
-	Colour darkGrey(35, 36, 41);
-
-	Rectangle<int> solidRect = getLocalBounds();
-
-	//ColourGradient gradient(darkGrey.brighter(0.05f), 0, 0, darkGrey, 0, getHeight() * 2/3, false);
-	//g.setGradientFill(gradient);
-	g.setColour(darkGrey);
-	g.fillRect(solidRect);
-
-	g.setColour(darkGrey.brighter(0.2f));
-	g.drawLine(0, getHeight(), getWidth(), getHeight());
-
+	g.setColour(MyLookAndFeel::DARK_GREY);
+	g.fillAll();
 }
 
 void TopComponent::resized() {
-	Rectangle<int> rect = getLocalBounds();
-	//rect.removeFromTop(getHeight() / 9);
-	rect.removeFromRight(getWidth() / 35);
-	rect.removeFromBottom(getHeight() / 4);
+	Rectangle<int> controlsRect = getLocalBounds()
+		.withTrimmedRight(getWidth() / 35)
+		.withTrimmedTop(getHeight() / 32)
+		.withTrimmedBottom(getHeight() * 7/32);
 
 	int knobWidth = getWidth() / 10;
-	int knobReduced = getWidth() / 200;
-	int labelBottom = rect.getHeight() * 49/40;
+	int labelOffset = -(levelLabel.getFont().getHeight() / 2);
 
-	levelKnob.setBounds(rect.removeFromRight(knobWidth));
-	levelLabel.setBounds(levelKnob.getBounds().withBottom(labelBottom));
+	levelKnob.setBounds(controlsRect.removeFromRight(knobWidth));
+	Utils::attachToSlider(levelLabel, levelKnob, labelOffset);
 
-	panKnob.setBounds(rect.removeFromRight(knobWidth));
-	panLabel.setBounds(panKnob.getBounds().withBottom(labelBottom));
+	panKnob.setBounds(controlsRect.removeFromRight(knobWidth));
+	Utils::attachToSlider(panLabel, panKnob, labelOffset);
 
-	pitchKnob.setBounds(rect.removeFromRight(knobWidth));
-	pitchLabel.setBounds(pitchKnob.getBounds().withBottom(labelBottom));
+	pitchKnob.setBounds(controlsRect.removeFromRight(knobWidth));
+	Utils::attachToSlider(pitchLabel, pitchKnob, labelOffset);
+
+	int bigFontSize = getHeight() * 4/9;
+
+	Rectangle<int> titleRect = getLocalBounds()
+		.withTrimmedLeft(getWidth() / 22);
+	titleLabel.setFont(Font(bigFontSize, Font::bold));
+	titleLabel.setJustificationType(Justification::centredLeft);
+	titleLabel.setBounds(titleRect);
+
+	authorLabel.setFont(Font(bigFontSize));
+	authorLabel.setJustificationType(Justification::centredLeft);
+	authorLabel.setAlpha(0.2f);
+	authorLabel.setBounds(titleRect.withTrimmedLeft(Utils::getTextWidth(titleLabel) + bigFontSize / 3));
 }

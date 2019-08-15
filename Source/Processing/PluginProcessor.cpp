@@ -18,7 +18,7 @@ KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
 	humanizeParameter(parameters.getParameterAsValue("humanize")),
 	easyParameter(parameters.getParameterAsValue("easy")),
 	latchParameter(parameters.getParameterAsValue("latch")),
-	keyswitchOctaveParameter(parameters.getParameterAsValue("octave"))
+	keyswitchOctaveParameter(parameters.getParameterAsValue("keyswitchOctave"))
 #ifndef JucePlugin_PreferredChannelConfigurations
      , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -92,7 +92,7 @@ void KeyRepeatAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 	lastNextBeatsIntoMeasure = 0.0;
 	fakeSamplesIntoMeasure = 0.0;
 
-	keySwitchManager.setKeyboardStatePointer(&physicalKeyboardState);
+	keyswitchManager.setKeyboardStatePointer(&physicalKeyboardState);
 
 	synth.setup();
 	synth.setCurrentPlaybackSampleRate(sampleRate);
@@ -177,7 +177,7 @@ void KeyRepeatAudioProcessor::addAllNonKeyswitchMidiMessages(MidiBuffer& newMidi
 	MidiMessage m;
 	int pos;
 	while (midiIterator.getNextEvent(m, pos)) {
-		if (!keySwitchManager.isKeyswitch(m.getNoteNumber())) {
+		if (!keyswitchManager.isKeyswitch(m.getNoteNumber())) {
 			newMidiMessages.addEvent(m, pos);
 		}
 	}
@@ -185,7 +185,7 @@ void KeyRepeatAudioProcessor::addAllNonKeyswitchMidiMessages(MidiBuffer& newMidi
 
 void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info) {
 
-	std::vector<double> *triggers = &keySwitchManager.getCurrentTriggers(swingParameter.getValue());
+	std::vector<double> *triggers = &keyswitchManager.getCurrentTriggers(swingParameter.getValue());
 
 	if (DEBUG_TRIGGER) {
 		DBG(" ");
@@ -207,7 +207,7 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 
 			for (int note = 0; note < NUM_MIDI_KEYS; note++) {
 				for (int midiChannel = 1; midiChannel <= NUM_MIDI_CHANNELS; midiChannel++) {
-					if (physicalKeyboardState.isNoteOn(midiChannel, note) && !keySwitchManager.isKeyswitch(note)) {
+					if (physicalKeyboardState.isNoteOn(midiChannel, note) && !keyswitchManager.isKeyswitch(note)) {
 						newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, midiVelocities[midiChannel][note]), internalSample);
 					}
 				}
@@ -268,7 +268,6 @@ void KeyRepeatAudioProcessor::updatePan(AudioBuffer<float>& buffer) {
 }
 
 void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) {
-
 	ScopedNoDenormals noDenormals;
 
 	for (int i = 0; i < buffer.getNumChannels(); i++) {
@@ -279,10 +278,14 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 	fillProcessBlockInfo(info, buffer);
 
 	updateKeyboardState(midiMessages);
-	keySwitchManager.update();
+
+	keyswitchManager.setLatch(latchParameter.getValue());
+	keyswitchManager.setSeparateTripletButton(easyParameter.getValue());
+	keyswitchManager.setKeyswitchOctave(keyswitchOctaveParameter.getValue());
+	keyswitchManager.update();
 
 	MidiBuffer newMidiMessages;
-	if (keySwitchManager.isRepeatOff()) {
+	if (keyswitchManager.isRepeatOff()) {
 		// if repeat is off, just act like a normal midi sampler
 		addAllNonKeyswitchMidiMessages(newMidiMessages, midiMessages);
 	} else {
@@ -302,7 +305,6 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 
 	// increment the fake samples counter with modular arithmetic
 	fakeSamplesIntoMeasure = std::fmod(fakeSamplesIntoMeasure + info.bufferNumSamples, info.samplesPerMeasure);
-
 }
 
 //==============================================================================
@@ -329,7 +331,15 @@ void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInB
 void KeyRepeatAudioProcessor::loadNewFile(AudioFormatReader *reader) {
 	BigInteger allNotes;
 	allNotes.setRange(0, 128, true);
-	samplerSound = new SamplerSound("samplerSound", *reader, allNotes, 60, 0.00001, 0.0, MAX_SAMPLE_LENGTH_SEC);
+	samplerSound = new SamplerSound(
+		"samplerSound",	// name
+		*reader,		// source
+		allNotes,		// supported midi notes
+		60,				// midi note for normal pitch (middle C)
+		0.00001,		// attack time in seconds
+		0.0,			// release time in seconds
+		MAX_SAMPLE_LENGTH_SEC
+	);
 	synth.addSound(samplerSound);
 }
 

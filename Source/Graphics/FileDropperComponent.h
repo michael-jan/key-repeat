@@ -37,6 +37,7 @@ private:
 	AudioFormatManager formatManager;
 	AudioThumbnailCache thumbnailCache;
 	AudioThumbnail thumbnail;
+	Rectangle<int> displayBounds;
 
 	Label label;
 

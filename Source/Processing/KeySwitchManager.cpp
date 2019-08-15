@@ -8,9 +8,9 @@
   ==============================================================================
 */
 
-#include "KeySwitchManager.h"
+#include "KeyswitchManager.h"
 
-KeySwitchManager::KeySwitchManager() :
+KeyswitchManager::KeyswitchManager() :
 	currentRepeatState(Off),
 	keyswitchOctave(0),
 	separateTripletButton(true),
@@ -20,14 +20,14 @@ KeySwitchManager::KeySwitchManager() :
 	fillWhenToPlayInfo();
 }
 
-KeySwitchManager::~KeySwitchManager() {
+KeyswitchManager::~KeyswitchManager() {
 }
 
-bool KeySwitchManager::isKeyswitch(int midiNode) const {
+bool KeyswitchManager::isKeyswitch(int midiNode) const {
 	return getFirstKeyswitchNoteNumber() <= midiNode && midiNode < getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS;
 }
 
-std::vector<double>& KeySwitchManager::getCurrentTriggers(float swing) {
+std::vector<double>& KeyswitchManager::getCurrentTriggers(float swing) {
 	tempWhenToPlay = whenToPlayInfo[currentRepeatState];
 	if (!isRepeatOff() && !isCurrentRepeatStateTriplet()) {
 		double diff = tempWhenToPlay[1] - tempWhenToPlay[0];
@@ -44,7 +44,7 @@ std::vector<double>& KeySwitchManager::getCurrentTriggers(float swing) {
 }
 
 
-void KeySwitchManager::update() {
+void KeyswitchManager::update() {
 
 	// With latch off, repeat state is reset to Off unless otherwise specified.
 	// With latch on, repeat state simply holds it's previous value until other specified.
@@ -87,27 +87,27 @@ void KeySwitchManager::update() {
 	} 
 }
 
-void KeySwitchManager::setKeyboardStatePointer(MidiKeyboardState *newKeyboardStatePointer) {
+void KeyswitchManager::setKeyboardStatePointer(MidiKeyboardState *newKeyboardStatePointer) {
 	keyboardStatePointer = newKeyboardStatePointer;
 	keyboardStatePointer->addListener(this);
 }
 
-bool KeySwitchManager::isNoteOn(int noteNumber) const {
+bool KeyswitchManager::isNoteOn(int noteNumber) const {
 	return keyboardStatePointer->isNoteOnForChannels(ALL_CHANNELS, noteNumber);
 }
 
-int KeySwitchManager::getOffNoteNumber() const {
+int KeyswitchManager::getOffNoteNumber() const {
 	return getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS - 1;
 }
 
-int KeySwitchManager::getTripletNoteNumber() const {
+int KeyswitchManager::getTripletNoteNumber() const {
 	if (separateTripletButton) {
 		return getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS - 2;
 	}
 	return -1;
 }
 
-void KeySwitchManager::fillWhenToPlayInfo() {
+void KeyswitchManager::fillWhenToPlayInfo() {
 	int playsPerMeasure[] =
 	{ 
 		4,  // Quarter
@@ -136,7 +136,7 @@ void KeySwitchManager::fillWhenToPlayInfo() {
 
 }
 
-void KeySwitchManager::handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
+void KeyswitchManager::handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
 	// if the triplet button is pressed, toggle triplet on current repeat state
 	if (latch && separateTripletButton) {
 		if (source == keyboardStatePointer && currentRepeatState != Off && midiNoteNumber == getTripletNoteNumber()) {
@@ -150,6 +150,6 @@ void KeySwitchManager::handleNoteOn(MidiKeyboardState *source, int midiChannel, 
 	}
 }
 
-void KeySwitchManager::handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
+void KeyswitchManager::handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
 	// do nothing
 }

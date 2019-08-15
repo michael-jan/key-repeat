@@ -1,14 +1,14 @@
-#include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "../Components/FileDropperComponent.h"
-#include "../Components/MyLookAndFeel.h"
 
-KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor& p, LookAndFeel *lookAndFeel)
+KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor& p, LookAndFeel_V4 *lookAndFeel)
 	: AudioProcessorEditor(&p), processor(p), mainComponent(p)
 {
+	LookAndFeel::setDefaultLookAndFeel(lookAndFeel);
 	addAndMakeVisible(mainComponent);
-	setLookAndFeel(lookAndFeel);
-	setSize(700, 400);
+	setSize(
+		Utils::scale(Utils::ORIGINAL_WIDTH),
+		Utils::scale(Utils::ORIGINAL_HEIGHT)
+	);
 }
 
 KeyRepeatAudioProcessorEditor::~KeyRepeatAudioProcessorEditor() {

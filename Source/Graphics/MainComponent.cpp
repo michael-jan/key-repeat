@@ -27,29 +27,8 @@ MainComponent::~MainComponent() {
 }
 
 void MainComponent::paint(Graphics& g) {
-
-	Colour lightWhite(255, 255, 255);
-	Colour darkWhite(215, 215, 215);
-	Colour grey(60, 62, 68);
-
-	//ColourGradient gradient(grey, getWidth() / 2, 0, grey.darker(0.2f), getWidth() / 2, getHeight(), false);
-	//g.setGradientFill(gradient);
-	g.setColour(grey);
+	g.setColour(MyLookAndFeel::GREY);
 	g.fillAll();
-
-	/*
-	Path roundedRectangle;
-	roundedRectangle.addRoundedRectangle(getLocalBounds().toFloat().reduced(5), 12.0f);
-
-	Point<int> zerozero(0, 0);
-	DropShadow ds(darkWhite, 12, zerozero);
-	ds.drawForPath(g, roundedRectangle);
-
-	ColourGradient gradient(lightWhite, getWidth() / 2, 0, darkWhite, getWidth() / 2, getHeight(), true);
-	g.setGradientFill(gradient);
-	g.fillPath(roundedRectangle);
-	*/
-
 }
 
 void MainComponent::resized() {
