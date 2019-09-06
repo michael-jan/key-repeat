@@ -12,7 +12,7 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../Processing/PluginProcessor.h"
-#include "KeyswitchControlsComponent.h"
+#include "KeyswitchComponent.h"
 
 //==============================================================================
 /*
@@ -28,7 +28,7 @@ public:
 private:
 
 	KeyRepeatAudioProcessor& processor;
-	KeyswitchControlsComponent keyswitchControlsComponent;
+	KeyswitchComponent keyswitchComponent;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BottomComponent)
 };

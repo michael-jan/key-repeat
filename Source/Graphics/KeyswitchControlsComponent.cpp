@@ -14,8 +14,8 @@
 //==============================================================================
 KeyswitchControlsComponent::KeyswitchControlsComponent(KeyRepeatAudioProcessor& p) :
 	processor(p),
-	easyLabel("easyLabel", "Mode"),
 	latchLabel("latchLabel", "Latch"),
+	easyLabel("easyLabel", "EZ Triplet"),
 	keyswitchOctaveLabel("keyswitchOctaveLabel", "Keyswitch Octave"),
 	keyswitchOctaveKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox)
 {
@@ -23,13 +23,13 @@ KeyswitchControlsComponent::KeyswitchControlsComponent(KeyRepeatAudioProcessor& 
 	addAndMakeVisible(latchLabel);
 	addAndMakeVisible(keyswitchOctaveLabel);
 
-	easySwitch.setName("easy");
-	addAndMakeVisible(easySwitch);
-	easyAttachment.reset(new ButtonAttachment(p.getVTS(), "easy", easySwitch));
-
 	latchSwitch.setName("latch");
 	addAndMakeVisible(latchSwitch);
 	latchAttachment.reset(new ButtonAttachment(p.getVTS(), "latch", latchSwitch));
+
+	easySwitch.setName("easy");
+	addAndMakeVisible(easySwitch);
+	easyAttachment.reset(new ButtonAttachment(p.getVTS(), "easy", easySwitch));
 
 	addAndMakeVisible(keyswitchOctaveKnob);
 	keyswitchOctaveAttachment.reset(new SliderAttachment(p.getVTS(), "keyswitchOctave", keyswitchOctaveKnob));
@@ -39,12 +39,18 @@ KeyswitchControlsComponent::~KeyswitchControlsComponent() {
 }
 
 void KeyswitchControlsComponent::paint(Graphics& g) {
-	g.setColour(Colours::orange);
-	//g.drawRect(getLocalBounds(), 2.0f);
 }
 
 void KeyswitchControlsComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
-	easySwitch.setBounds(rect.removeFromLeft(rect.getWidth() / 2));
-	latchSwitch.setBounds(rect);
+	int switchHeight = Utils::scale(20);
+	int labelOffset = Utils::scale(3);
+
+	rect.removeFromTop(Utils::scale(37));
+	latchSwitch.setBounds(rect.removeFromTop(switchHeight));
+	Utils::attachToComponent(latchLabel, latchSwitch, labelOffset);
+
+	rect.removeFromTop(Utils::scale(33));
+	easySwitch.setBounds(rect.removeFromTop(switchHeight));
+	Utils::attachToComponent(easyLabel, easySwitch, labelOffset);
 }

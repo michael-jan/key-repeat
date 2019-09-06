@@ -15,19 +15,19 @@
 //==============================================================================
 SoundControlsComponent::SoundControlsComponent(KeyRepeatAudioProcessor& p) :
 	processor(p),
-	swingKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
-	swingLabel("swingLabel", "Swing"),
 	humanizeKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
-	humanizeLabel("humanizeLabel", "Humanize")
+	humanizeLabel("humanizeLabel", "Humanize"),
+	swingKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
+	swingLabel("swingLabel", "Swing")
 {
-	addAndMakeVisible(swingLabel);
 	addAndMakeVisible(humanizeLabel);
-
-	addAndMakeVisible(swingKnob);
-	swingAttachment.reset(new SliderAttachment(p.getVTS(), "swing", swingKnob));
+	addAndMakeVisible(swingLabel);
 
 	addAndMakeVisible(humanizeKnob);
 	humanizeAttachment.reset(new SliderAttachment(p.getVTS(), "humanize", humanizeKnob));
+
+	addAndMakeVisible(swingKnob);
+	swingAttachment.reset(new SliderAttachment(p.getVTS(), "swing", swingKnob));
 }
 
 SoundControlsComponent::~SoundControlsComponent() {
@@ -37,14 +37,13 @@ void SoundControlsComponent::paint(Graphics& g) {
 }
 
 void SoundControlsComponent::resized() {
-	Rectangle<int> rect = getLocalBounds()
-		.reduced(getHeight() / 8)
-		.withTrimmedBottom(getHeight() / 8)
-		.withTrimmedLeft(getWidth() / 70);
+	Rectangle<int> rect = getLocalBounds();
 
-	swingKnob.setBounds(rect.removeFromLeft(rect.getWidth() / 2).reduced(rect.getWidth() / 100));
-	Utils::attachToSlider(swingLabel, swingKnob);
+	rect.removeFromTop(Utils::scale(23));
+	humanizeKnob.setBounds(rect.removeFromTop(Utils::scale(40)));
+	Utils::attachToComponent(humanizeLabel, humanizeKnob, Utils::scale(2));
 
-	humanizeKnob.setBounds(rect.reduced(rect.getWidth() / 100));
-	Utils::attachToSlider(humanizeLabel, humanizeKnob);
+	rect.removeFromTop(Utils::scale(28));
+	swingKnob.setBounds(rect.removeFromTop(Utils::scale(40)));
+	Utils::attachToComponent(swingLabel, swingKnob, Utils::scale(2));
 }

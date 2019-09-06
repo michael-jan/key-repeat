@@ -8,14 +8,14 @@
 
 namespace BinaryData
 {
-    extern const char*   Laconic_Bold_otf;
-    const int            Laconic_Bold_otfSize = 49928;
+    extern const char*   Laconic_Bold_ttf;
+    const int            Laconic_Bold_ttfSize = 54684;
 
-    extern const char*   Laconic_Light_otf;
-    const int            Laconic_Light_otfSize = 32536;
+    extern const char*   Laconic_Light_ttf;
+    const int            Laconic_Light_ttfSize = 43612;
 
-    extern const char*   Laconic_Regular_otf;
-    const int            Laconic_Regular_otfSize = 50540;
+    extern const char*   Laconic_Regular_ttf;
+    const int            Laconic_Regular_ttfSize = 55456;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 3;

@@ -30,13 +30,13 @@ private:
 
 	KeyRepeatAudioProcessor& processor;
 
-	Slider swingKnob;
-	std::unique_ptr<SliderAttachment> swingAttachment;
-	Label swingLabel;
-
 	Slider humanizeKnob;
 	std::unique_ptr<SliderAttachment> humanizeAttachment;
 	Label humanizeLabel;
+
+	Slider swingKnob;
+	std::unique_ptr<SliderAttachment> swingAttachment;
+	Label swingLabel;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundControlsComponent)
 };

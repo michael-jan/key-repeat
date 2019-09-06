@@ -5,6 +5,12 @@ KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProce
 {
 	LookAndFeel::setDefaultLookAndFeel(lookAndFeel);
 	addAndMakeVisible(mainComponent);
+
+	constrainer.setFixedAspectRatio((double) Utils::ORIGINAL_WIDTH / Utils::ORIGINAL_HEIGHT);
+	constrainer.setMinimumWidth(Utils::ORIGINAL_WIDTH);
+	constrainer.setMaximumWidth(Utils::ORIGINAL_WIDTH * 4);
+	setConstrainer(&constrainer);
+	setResizable(false, false);
 	setSize(
 		Utils::scale(Utils::ORIGINAL_WIDTH),
 		Utils::scale(Utils::ORIGINAL_HEIGHT)
@@ -14,10 +20,11 @@ KeyRepeatAudioProcessorEditor::KeyRepeatAudioProcessorEditor(KeyRepeatAudioProce
 KeyRepeatAudioProcessorEditor::~KeyRepeatAudioProcessorEditor() {
 }
 
-void KeyRepeatAudioProcessorEditor::paint (Graphics& g) {
+void KeyRepeatAudioProcessorEditor::paint(Graphics& g) {
 	g.fillAll(Colours::black);
 }
 
 void KeyRepeatAudioProcessorEditor::resized() {
+	Utils::SCALE_FACTOR = (float)getHeight() / Utils::ORIGINAL_HEIGHT;
 	mainComponent.setBounds(getLocalBounds());
 }

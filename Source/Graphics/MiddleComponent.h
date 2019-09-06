@@ -12,9 +12,10 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "../Processing/PluginProcessor.h"
+#include "KeyswitchControlsComponent.h"
 #include "ADSRComponent.h"
-#include "FileDropperComponent.h"
 #include "SoundControlsComponent.h"
+#include "FileDropperComponent.h"
 
 class MiddleShadowComponent : public Component {
 public:
@@ -34,9 +35,10 @@ private:
 
 	KeyRepeatAudioProcessor& processor;
 	MiddleShadowComponent shadowComponent;
+	KeyswitchControlsComponent keyswitchControlsComponent;
 	ADSRComponent adsrComponent;
-	FileDropperComponent fileDropperComponent;
 	SoundControlsComponent soundControlsComponent;
+	FileDropperComponent fileDropperComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MiddleComponent)
 };

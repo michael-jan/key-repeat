@@ -8,14 +8,14 @@
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
       <GROUP id="{CA07DA47-3076-A318-8823-ACC9FD088B6B}" name="Fonts">
-        <FILE id="myLfpD" name="Laconic_Bold.otf" compile="0" resource="1"
-              file="Source/Fonts/Laconic_Bold.otf"/>
+        <FILE id="cVOZV7" name="Laconic_Bold.ttf" compile="0" resource="1"
+              file="Source/Fonts/Laconic_Bold.ttf"/>
+        <FILE id="YPj2ev" name="Laconic_Light.ttf" compile="0" resource="1"
+              file="Source/Fonts/Laconic_Light.ttf"/>
+        <FILE id="NrBOrN" name="Laconic_Regular.ttf" compile="0" resource="1"
+              file="Source/Fonts/Laconic_Regular.ttf"/>
         <FILE id="vni5tX" name="Laconic_Font_License.txt" compile="0" resource="0"
               file="Source/Fonts/Laconic_Font_License.txt"/>
-        <FILE id="EFKmD0" name="Laconic_Light.otf" compile="0" resource="1"
-              file="Source/Fonts/Laconic_Light.otf"/>
-        <FILE id="OhIdjj" name="Laconic_Regular.otf" compile="0" resource="1"
-              file="Source/Fonts/Laconic_Regular.otf"/>
       </GROUP>
       <GROUP id="{BE42956D-9500-F2BA-4438-135CA28DA158}" name="Graphics">
         <FILE id="xJ941M" name="ADSRComponent.cpp" compile="1" resource="0"

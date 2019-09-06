@@ -280,7 +280,7 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 	updateKeyboardState(midiMessages);
 
 	keyswitchManager.setLatch(latchParameter.getValue());
-	keyswitchManager.setSeparateTripletButton(easyParameter.getValue());
+	keyswitchManager.setSeparateTripletButton(!easyParameter.getValue());
 	keyswitchManager.setKeyswitchOctave(keyswitchOctaveParameter.getValue());
 	keyswitchManager.update();
 

@@ -15,14 +15,14 @@
 //==============================================================================
 ADSRComponent::ADSRComponent(KeyRepeatAudioProcessor& p) : 
 	processor(p),
-	attackSlider(Slider::SliderStyle::LinearVertical, Slider::TextEntryBoxPosition::NoTextBox),
-	attackLabel("attackLabel", "Atk"),
-	decaySlider(Slider::SliderStyle::LinearVertical, Slider::TextEntryBoxPosition::NoTextBox),
-	decayLabel("decayLabel", "Dec"),
-	sustainSlider(Slider::SliderStyle::LinearVertical, Slider::TextEntryBoxPosition::NoTextBox),
-	sustainLabel("sustainLabel", "Sus"),
-	releaseSlider(Slider::SliderStyle::LinearVertical, Slider::TextEntryBoxPosition::NoTextBox),
-	releaseLabel("releaseLabel", "Rel")
+	attackSlider(Slider::SliderStyle::LinearBarVertical, Slider::TextEntryBoxPosition::NoTextBox),
+	attackLabel("attackLabel", "A"),
+	decaySlider(Slider::SliderStyle::LinearBarVertical, Slider::TextEntryBoxPosition::NoTextBox),
+	decayLabel("decayLabel", "D"),
+	sustainSlider(Slider::SliderStyle::LinearBarVertical, Slider::TextEntryBoxPosition::NoTextBox),
+	sustainLabel("sustainLabel", "S"),
+	releaseSlider(Slider::SliderStyle::LinearBarVertical, Slider::TextEntryBoxPosition::NoTextBox),
+	releaseLabel("releaseLabel", "R")
 {
 	addAndMakeVisible(attackLabel);
 	addAndMakeVisible(decayLabel);
@@ -50,22 +50,21 @@ void ADSRComponent::paint(Graphics& g) {
 
 void ADSRComponent::resized() {
 	Rectangle<int> rect = getLocalBounds()
-		.reduced(getHeight() / 8)
-		.withTrimmedBottom(getHeight() / 8)
-		.withTrimmedRight(getWidth() / 70);
+		.withTrimmedTop(Utils::scale(26))
+		.withTrimmedBottom(Utils::scale(39));
 
-	int sliderWidth = rect.getWidth() / 4;
-	int sliderReduce = rect.getWidth() / 60;
+	int sliderWidth = Utils::scale(34);
+	int labelOffset = Utils::scale(3);
 
-	attackSlider.setBounds(rect.removeFromLeft(sliderWidth).reduced(sliderReduce));
-	Utils::attachToSlider(attackLabel, attackSlider);
+	attackSlider.setBounds(rect.removeFromLeft(sliderWidth));
+	Utils::attachToComponent(attackLabel, attackSlider, labelOffset);
 
-	decaySlider.setBounds(rect.removeFromLeft(sliderWidth).reduced(sliderReduce));
-	Utils::attachToSlider(decayLabel, decaySlider);
+	decaySlider.setBounds(rect.removeFromLeft(sliderWidth));
+	Utils::attachToComponent(decayLabel, decaySlider, labelOffset);
 
-	sustainSlider.setBounds(rect.removeFromLeft(sliderWidth).reduced(sliderReduce));
-	Utils::attachToSlider(sustainLabel, sustainSlider);
+	sustainSlider.setBounds(rect.removeFromLeft(sliderWidth));
+	Utils::attachToComponent(sustainLabel, sustainSlider, labelOffset);
 
-	releaseSlider.setBounds(rect.removeFromLeft(sliderWidth).reduced(sliderReduce));
-	Utils::attachToSlider(releaseLabel, releaseSlider);
+	releaseSlider.setBounds(rect.removeFromLeft(sliderWidth));
+	Utils::attachToComponent(releaseLabel, releaseSlider, labelOffset);
 }

@@ -20,7 +20,7 @@ FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
 	
 	addAndMakeVisible(label);
 	label.setJustificationType(Justification::centred);
-	label.setColour(Label::textColourId, Colours::grey.withAlpha(0.25f));
+	label.setColour(Label::textColourId, MyLookAndFeel::WHITE.withAlpha(0.15f));
 }
 
 FileDropperComponent::~FileDropperComponent() {
@@ -29,19 +29,21 @@ FileDropperComponent::~FileDropperComponent() {
 void FileDropperComponent::paint(Graphics& g) {
 
 	Path roundedBoundsPath;
-	roundedBoundsPath.addRoundedRectangle(displayBounds.toFloat(), 10.0f);
+	roundedBoundsPath.addRectangle(displayBounds.toFloat());
 
-	g.setColour(MyLookAndFeel::DARK_GREY);
+	g.setColour(MyLookAndFeel::VERY_DARK_GREY);
 	g.fillPath(roundedBoundsPath);
 
 	if (thumbnail.getNumChannels() > 0) {
-		g.setColour(Colours::lightblue);
-		thumbnail.drawChannel(g,
+		g.setColour(MyLookAndFeel::LIGHT_PINK);
+		thumbnail.drawChannel(
+			g,
 			displayBounds.reduced(10),
 			0.0,                                    // start time
 			thumbnail.getTotalLength(),				// end time
 			0,										// channel num
-			1.0f);                                  // vertical zoom
+			1.0f                                    // vertical zoom
+		);
 	}
 
 	if (hoverState == FileDropperComponent::ValidHover) {
@@ -52,20 +54,26 @@ void FileDropperComponent::paint(Graphics& g) {
 	drawInnerShadow(g, roundedBoundsPath);
 
 	g.setColour(Colours::whitesmoke.withAlpha(0.14f));
-	PathStrokeType pathStrokeType(1, PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
+	PathStrokeType pathStrokeType(Utils::scale(1), PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
 	g.strokePath(roundedBoundsPath, pathStrokeType);
 
-	if (!label.isEnabled()) {
+	if (filledState == Filled) {
 		label.setAlpha(0.0f);
+	} else {
+		Path roundedRectanglePath;
+		roundedRectanglePath.addRoundedRectangle(getLocalBounds().reduced(Utils::scale(15)), Utils::scale(15));
+		float dashedLength[2];
+		dashedLength[0] = Utils::scale(10);
+		dashedLength[1] = Utils::scale(15);
+		PathStrokeType dottedPathStrokeType(Utils::scale(1.5f));
+		dottedPathStrokeType.createDashedStroke(roundedRectanglePath, roundedRectanglePath, dashedLength, 2, AffineTransform::translation(0, 0), 4.0);
+		g.strokePath(roundedRectanglePath, dottedPathStrokeType);
 	}
 }
 
 void FileDropperComponent::resized() {
-	displayBounds = getLocalBounds()
-		.withTrimmedBottom(getHeight() / 9)
-		.withTrimmedTop(getHeight() / 9);
-
-	label.setFont(Font(getHeight() / 7));
+	displayBounds = getLocalBounds();
+	label.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(25)));
 	label.setBounds(displayBounds);
 }
 
@@ -93,7 +101,7 @@ bool FileDropperComponent::isInterestedInFileDrag(const StringArray& files) {
 
 void FileDropperComponent::fileDragEnter(const StringArray& files, int x, int y) {
 	if (isInterestedInFileDrag(files)) {
-		label.setAlpha(0.4f);
+		label.setAlpha(0.1f);
 		changeState(filledState, ValidHover);
 	} else {
 		changeState(filledState, InvalidHover);
@@ -144,6 +152,6 @@ void FileDropperComponent::drawInnerShadow(Graphics &g, Path target) {
 	// being drawn outside of the shape to cast the shadow on
 	g.reduceClipRegion(target);
 
-	DropShadow ds(Colour::fromRGB(27,28,31), 5, { 0, 0 });
+	DropShadow ds(Colour::fromRGB(4,5,6).withAlpha(0.8f), Utils::scale(30), { 0, 0 });
 	ds.drawForPath(g, shadowPath);
 }

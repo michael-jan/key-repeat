@@ -12,9 +12,10 @@
 
 const int Utils::ORIGINAL_WIDTH = 660;
 const int Utils::ORIGINAL_HEIGHT = 315;
-const double Utils::SCALE_FACTOR = 1.2;
+const double Utils::DEFAULT_SCALE_FACTOR = 1.5;
+double Utils::SCALE_FACTOR = DEFAULT_SCALE_FACTOR;
 
-int Utils::scale(int dimension) {
+int Utils::scale(float dimension) {
 	return roundToInt(dimension * SCALE_FACTOR);
 }
 
@@ -22,27 +23,29 @@ int Utils::getTextWidth(Label& label) {
 	return label.getFont().getStringWidth(label.getText());
 }
 
-void Utils::attachToSlider(Label& label, Slider& slider, int offset) {
+void Utils::attachToComponent(Label& label, Component& component, int offset) {
 	label.setJustificationType(Justification::centred);
-	label.setFont(Font(17));
+	label.setFont(Font(scale(MyLookAndFeel::LABEL_FONT_SIZE)));
 
-	Rectangle<int> labelBounds = slider.getBounds();
+	Rectangle<int> labelBounds = component.getBounds();
 
 	int originalCentreX = labelBounds.getCentreX();
 	labelBounds.setLeft(originalCentreX - getTextWidth(label));
 	labelBounds.setRight(originalCentreX + getTextWidth(label));
 
-	labelBounds.setTop(slider.getBounds().getBottom() + offset);
-	labelBounds.setBottom(slider.getBounds().getBottom() + label.getFont().getHeight() + offset);
+	labelBounds.setTop(component.getBounds().getBottom() + offset);
+	labelBounds.setBottom(component.getBounds().getBottom() + label.getFont().getHeight() + offset);
 
 	label.setBounds(labelBounds);
 }
 
-void Utils::drawLineShadow(Graphics& g, Line<float> line, int spread) {
+void Utils::drawLineShadow(Graphics& g, Line<float> line, int spread, float alpha) {
 	Path linePath;
 	linePath.addLineSegment(line, 1);
-	DropShadow ds(Colours::black.withAlpha(0.5f), spread / 2, { 0, 0 });
-	ds.drawForPath(g, linePath);
-	DropShadow ds2(Colours::black, spread, { 0, 0 });
-	ds2.drawForPath(g, linePath);
+	drawPathShadow(g, linePath, spread, alpha);
+}
+
+void Utils::drawPathShadow(Graphics& g, Path path, int spread, float alpha) {
+	DropShadow ds(Colours::black.withAlpha(alpha), spread, { 0, 0 });
+	ds.drawForPath(g, path);
 }

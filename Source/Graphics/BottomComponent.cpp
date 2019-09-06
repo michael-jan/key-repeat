@@ -13,10 +13,9 @@
 
 //==============================================================================
 BottomComponent::BottomComponent(KeyRepeatAudioProcessor& p) :
-	processor(p),
-	keyswitchControlsComponent(p)
+	processor(p), keyswitchComponent(p)
 {
-	addAndMakeVisible(keyswitchControlsComponent);
+	addAndMakeVisible(keyswitchComponent);
 }
 
 BottomComponent::~BottomComponent() {
@@ -29,5 +28,7 @@ void BottomComponent::paint(Graphics& g) {
 
 void BottomComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
-	keyswitchControlsComponent.setBounds(rect);
+	keyswitchComponent.setBounds(
+		rect.withSizeKeepingCentre(Utils::scale(350), rect.getHeight())
+	);
 }

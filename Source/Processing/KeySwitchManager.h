@@ -12,6 +12,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+struct KeyswitchDisplayInfoElement {
+	String noteName;
+	String keyswitchName;
+	bool isActive;
+	bool isEnabled;
+};
+
 class KeyswitchManager : public MidiKeyboardStateListener {
 
 public:
@@ -39,6 +46,8 @@ public:
 
 	bool isRepeatOff() const { return currentRepeatState == Off; }
 
+	KeyswitchDisplayInfoElement* getDisplayElements();
+
 private:
 		
 	static const int NUM_REPEAT_NOTES = 10;
@@ -58,6 +67,8 @@ private:
 		SixtyFourthTriplet,
 		Off
 	};
+
+	KeyswitchDisplayInfoElement displayElements[7];
 
 	RepeatState currentRepeatState;
 
@@ -86,5 +97,4 @@ private:
 
 	void handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
 	void handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
-
 };

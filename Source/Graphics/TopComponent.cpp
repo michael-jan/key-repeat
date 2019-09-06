@@ -20,8 +20,8 @@ TopComponent::TopComponent(KeyRepeatAudioProcessor& p) :
 	panLabel("panLabel", "Pan"),
 	levelKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
 	levelLabel("levelLabel", "Level"),
-	titleLabel("titleLabel", "Key Repeat"),
-	authorLabel("authorLabel", "by Michael Jan")
+	titleLabel("titleLabel", "key repeat"),
+	authorLabel("authorLabel", "by michael jan")
 {
 	addAndMakeVisible(pitchLabel);
 	addAndMakeVisible(panLabel);
@@ -30,9 +30,11 @@ TopComponent::TopComponent(KeyRepeatAudioProcessor& p) :
 	addAndMakeVisible(authorLabel);
 
 	addAndMakeVisible(pitchKnob);
+	pitchKnob.getProperties().set("startFromMiddle", true);
 	pitchAttachment.reset(new SliderAttachment(p.getVTS(), "pitch", pitchKnob));
 
 	addAndMakeVisible(panKnob);
+	panKnob.getProperties().set("startFromMiddle", true);
 	panAttachment.reset(new SliderAttachment(p.getVTS(), "pan", panKnob));
 
 	addAndMakeVisible(levelKnob);
@@ -45,36 +47,65 @@ TopComponent::~TopComponent() {
 void TopComponent::paint(Graphics& g) {
 	g.setColour(MyLookAndFeel::DARK_GREY);
 	g.fillAll();
+	
+	Path arrow;
+	Rectangle<float> arrowRectangularPart = getLocalBounds().removeFromLeft(Utils::scale(206)).toFloat();
+	arrow.addRectangle(arrowRectangularPart);
+	arrow.startNewSubPath(arrowRectangularPart.getTopRight().toFloat());
+	arrow.lineTo(arrowRectangularPart.getRight() + Utils::scale(56), arrowRectangularPart.getCentreY());
+	arrow.lineTo(arrowRectangularPart.getBottomRight());
+	arrow.closeSubPath();
+
+	arrow.applyTransform(AffineTransform::translation(Utils::scale(38), 0));
+	Utils::drawPathShadow(g, arrow, Utils::scale(10), 0.08f);
+	g.setColour(MyLookAndFeel::DARK_PINK);
+	g.fillPath(arrow);
+
+	arrow.applyTransform(AffineTransform::translation(Utils::scale(-19), 0));
+	Utils::drawPathShadow(g, arrow, Utils::scale(11), 0.08f);
+	g.setColour(MyLookAndFeel::PINK);
+	g.fillPath(arrow);
+
+	arrow.applyTransform(AffineTransform::translation(Utils::scale(-19) - 1, 0));
+	Utils::drawPathShadow(g, arrow, Utils::scale(12), 0.08f);
+	g.setColour(MyLookAndFeel::LIGHT_PINK);
+	g.fillPath(arrow);
 }
 
 void TopComponent::resized() {
 	Rectangle<int> controlsRect = getLocalBounds()
-		.withTrimmedRight(getWidth() / 35)
-		.withTrimmedTop(getHeight() / 32)
-		.withTrimmedBottom(getHeight() * 7/32);
+		.withTrimmedRight(Utils::scale(15))
+		.withTrimmedTop(Utils::scale(7))
+		.withTrimmedBottom(Utils::scale(22));
 
 	int knobWidth = getWidth() / 10;
-	int labelOffset = -(levelLabel.getFont().getHeight() / 2);
+	int labelOffset = Utils::scale(2);
 
 	levelKnob.setBounds(controlsRect.removeFromRight(knobWidth));
-	Utils::attachToSlider(levelLabel, levelKnob, labelOffset);
+	Utils::attachToComponent(levelLabel, levelKnob, labelOffset);
 
 	panKnob.setBounds(controlsRect.removeFromRight(knobWidth));
-	Utils::attachToSlider(panLabel, panKnob, labelOffset);
+	Utils::attachToComponent(panLabel, panKnob, labelOffset);
 
 	pitchKnob.setBounds(controlsRect.removeFromRight(knobWidth));
-	Utils::attachToSlider(pitchLabel, pitchKnob, labelOffset);
-
-	int bigFontSize = getHeight() * 4/9;
+	Utils::attachToComponent(pitchLabel, pitchKnob, labelOffset);
 
 	Rectangle<int> titleRect = getLocalBounds()
-		.withTrimmedLeft(getWidth() / 22);
-	titleLabel.setFont(Font(bigFontSize, Font::bold));
-	titleLabel.setJustificationType(Justification::centredLeft);
+		.withTrimmedLeft(Utils::scale(11))
+		.withTrimmedTop(Utils::scale(9.5f));
+	titleLabel.setFont(MyLookAndFeel::getFontBold().withHeight(Utils::scale(34)));
+	titleLabel.setJustificationType(Justification::topLeft);
 	titleLabel.setBounds(titleRect);
 
-	authorLabel.setFont(Font(bigFontSize));
-	authorLabel.setJustificationType(Justification::centredLeft);
-	authorLabel.setAlpha(0.2f);
-	authorLabel.setBounds(titleRect.withTrimmedLeft(Utils::getTextWidth(titleLabel) + bigFontSize / 3));
+	static DropShadowEffect dse;
+	dse.setShadowProperties({ MyLookAndFeel::BLACK.withAlpha(0.2f), Utils::scale(4), { Utils::scale(3), Utils::scale(1.5f) } });
+	titleLabel.setComponentEffect(&dse);
+
+	Rectangle<int> authorRect = getLocalBounds()
+		.withTrimmedLeft(Utils::scale(113))
+		.withTrimmedTop(Utils::scale(39.5f));
+	authorLabel.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE)));
+	authorLabel.setJustificationType(Justification::topLeft);
+	authorLabel.setAlpha(0.65f);
+	authorLabel.setBounds(authorRect);
 }

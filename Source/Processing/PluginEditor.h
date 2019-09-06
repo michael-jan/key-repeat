@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include "../Graphics/MainComponent.h"
@@ -18,6 +19,7 @@ public:
 private:
     KeyRepeatAudioProcessor& processor;
 	MainComponent mainComponent;
+	ComponentBoundsConstrainer constrainer;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyRepeatAudioProcessorEditor)
 };

@@ -43,7 +43,6 @@ std::vector<double>& KeyswitchManager::getCurrentTriggers(float swing) {
 	return tempWhenToPlay;
 }
 
-
 void KeyswitchManager::update() {
 
 	// With latch off, repeat state is reset to Off unless otherwise specified.
@@ -134,6 +133,29 @@ void KeyswitchManager::fillWhenToPlayInfo() {
 		whenToPlayInfo.push_back(temp);
 	}
 
+}
+
+KeyswitchDisplayInfoElement* KeyswitchManager::getDisplayElements() {
+	static String noteNames[] = { "C0", "C#0", "D0", "D#0", "E0", "F0", "F#0" };
+	static String keyswitchNamesSeparateTripletButton[] = { "1/4", "1/8", "1/16", "1/32", "1/64", "Trip", "Off" };
+	static String keyswitchNamesNoSeparateTripletButton[] = { "1/8", "1/8T", "1/16", "1/16T", "1/32", "1/32T", "Off" };
+	String *keyswitchNames = separateTripletButton ? keyswitchNamesSeparateTripletButton : keyswitchNamesNoSeparateTripletButton;
+	for (int i = 0; i < NUM_KEYSWITCH_KEYS; i++) {
+		displayElements[i].noteName = noteNames[i];
+		displayElements[i].keyswitchName = keyswitchNames[i];
+		displayElements[i].isEnabled = true;
+	}
+	if (separateTripletButton) {
+		if (currentRepeatState % 2 == 1) { // is triplet
+			displayElements[getTripletNoteNumber() - getFirstKeyswitchNoteNumber()].isActive = true;
+		}
+		displayElements[currentRepeatState / 2].isActive = true;
+	} else {
+		displayElements[currentRepeatState].isActive = true;
+	}
+	displayElements[6].isActive = isNoteOn(getOffNoteNumber());
+	displayElements[getOffNoteNumber() - getFirstKeyswitchNoteNumber()].isEnabled = latch;
+	return displayElements;
 }
 
 void KeyswitchManager::handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
