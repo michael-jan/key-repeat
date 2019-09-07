@@ -14,9 +14,9 @@ With Key Repeat, you get:
 
 ## Quick Start Guide
 
-1. Download the plugin and load it up in your DAW.
-2. After dragging your sample into the plugin, hold down middle-C on your MIDI keyboard to start note-repeating, using the keyswitches (C0-F#0) to control the repeat rate.
-3. Start experimenting!
+1. **Download** the plugin and load it up in your DAW.
+2. **Drag in** your sample, then hold down middle-C on your MIDI keyboard to start note-repeating, using the keyswitches (C0-F#0) to control the repeat rate.
+3. **Experiment** with different patterns!
 
 For a detailed explanation of features and functionality, check out the manaul [WIP]!
 
