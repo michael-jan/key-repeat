@@ -21,6 +21,9 @@ FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
 	addAndMakeVisible(label);
 	label.setJustificationType(Justification::centred);
 	label.setColour(Label::textColourId, MyLookAndFeel::WHITE.withAlpha(0.15f));
+
+	fileDropperShadowComponent.setBufferedToImage(true);
+	addAndMakeVisible(fileDropperShadowComponent);
 }
 
 FileDropperComponent::~FileDropperComponent() {
@@ -51,8 +54,6 @@ void FileDropperComponent::paint(Graphics& g) {
 		g.fillPath(roundedBoundsPath);
 	}
 
-	drawInnerShadow(g, roundedBoundsPath);
-
 	g.setColour(Colours::whitesmoke.withAlpha(0.14f));
 	PathStrokeType pathStrokeType(Utils::scale(1), PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
 	g.strokePath(roundedBoundsPath, pathStrokeType);
@@ -75,6 +76,7 @@ void FileDropperComponent::resized() {
 	displayBounds = getLocalBounds();
 	label.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(25)));
 	label.setBounds(displayBounds);
+	fileDropperShadowComponent.setBounds(displayBounds);
 }
 
 String FileDropperComponent::getAbsoluteFilePath() const {
@@ -101,7 +103,6 @@ bool FileDropperComponent::isInterestedInFileDrag(const StringArray& files) {
 
 void FileDropperComponent::fileDragEnter(const StringArray& files, int x, int y) {
 	if (isInterestedInFileDrag(files)) {
-		label.setAlpha(0.1f);
 		changeState(filledState, ValidHover);
 	} else {
 		changeState(filledState, InvalidHover);
@@ -113,7 +114,6 @@ void FileDropperComponent::fileDragMove(const StringArray& files, int x, int y) 
 }
 
 void FileDropperComponent::fileDragExit(const StringArray& files) {
-	label.setAlpha(1.0f);
 	changeState(filledState, NoHover);
 }
 
@@ -132,13 +132,23 @@ void FileDropperComponent::filesDropped(const StringArray& files, int x, int y) 
 
 void FileDropperComponent::changeListenerCallback(ChangeBroadcaster* source) {
 	if (source == &thumbnail) {
-		repaint();
+		// Repaint is already handled by changeState()
+		// repaint();
 	}
+}
+
+void FileDropperShadowComponent::paint(Graphics& g) {
+	Path boundsPath;
+	boundsPath.addRectangle(getLocalBounds());
+	drawInnerShadow(g, boundsPath);
+}
+
+void FileDropperShadowComponent::resized() {
 }
 
 // Credit goes to CrushedPixel for coming up with this hack.
 // Code originally found here: https://forum.juce.com/t/inner-shadow-or-workarounds/19704/3
-void FileDropperComponent::drawInnerShadow(Graphics &g, Path target) {
+void FileDropperShadowComponent::drawInnerShadow(Graphics &g, Path target) {
 	// resets the Clip Region when the function returns
 	Graphics::ScopedSaveState saveState(g);
 
@@ -152,6 +162,6 @@ void FileDropperComponent::drawInnerShadow(Graphics &g, Path target) {
 	// being drawn outside of the shape to cast the shadow on
 	g.reduceClipRegion(target);
 
-	DropShadow ds(Colour::fromRGB(4,5,6).withAlpha(0.8f), Utils::scale(30), { 0, 0 });
+	DropShadow ds(Colour::fromRGB(4, 5, 6).withAlpha(0.8f), Utils::scale(30), { 0, 0 });
 	ds.drawForPath(g, shadowPath);
 }

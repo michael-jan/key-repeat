@@ -15,6 +15,13 @@
 
 //==============================================================================
 
+class FileDropperShadowComponent : public Component {
+public:
+	void paint(Graphics&) override;
+	void resized() override;
+	void drawInnerShadow(Graphics& g, Path target);
+};
+
 class FileDropperComponent :
 	public Component,
 	public FileDragAndDropTarget,
@@ -39,6 +46,7 @@ private:
 	AudioThumbnail thumbnail;
 	Rectangle<int> displayBounds;
 
+	FileDropperShadowComponent fileDropperShadowComponent;
 	Label label;
 
 	enum FilledState {
@@ -65,8 +73,6 @@ private:
 	void filesDropped(const StringArray& files, int x, int y) override;
 
 	void changeListenerCallback(ChangeBroadcaster* source) override;
-
-	void drawInnerShadow(Graphics& g, Path target);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FileDropperComponent)
 };
