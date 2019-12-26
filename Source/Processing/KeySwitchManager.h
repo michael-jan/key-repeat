@@ -30,7 +30,7 @@ public:
 
 	bool isKeyswitch(int midiNode) const;
 
-	std::vector<double>& getCurrentTriggers(float swing);
+	const std::vector<double>& getCurrentTriggers(float swing);
 	void update();
 
 	void setKeyboardStatePointer(MidiKeyboardState *newKeyboardStatePointer);
@@ -38,10 +38,7 @@ public:
 	int getFirstKeyswitchNoteNumber() const { return DEFAULT_KEYSWITCH_NUM + 12 * keyswitchOctave; }
 	void setKeyswitchOctave(int newKeyswitchOctave) { keyswitchOctave = newKeyswitchOctave; }
 
-	bool isSeparateTripletButton() const { return separateTripletButton; }
 	void setSeparateTripletButton(bool newSeparateTripletButton) { separateTripletButton = newSeparateTripletButton; }
-
-	bool isLatch() const { return latch; }
 	void setLatch(bool newLatch) { latch = newLatch; }
 
 	bool isRepeatOff() const { return currentRepeatState == Off; }
@@ -81,8 +78,10 @@ private:
 
 	// Stores the times (in quarter notes) of when to trigger samples for
 	// each repeat state. Should be filled upon construction.
-	std::vector< std::vector<double> > whenToPlayInfo;
+	// Also, the order of these two apparently matter, and it appears that the reason is more than just destruction order.
+	// Maybe some weird memory bug..
 	std::vector<double> tempWhenToPlay;
+	std::vector< std::vector<double> > whenToPlayInfo;
 
 	bool isNoteOn(int noteNumber) const;
 	int getOffNoteNumber() const;

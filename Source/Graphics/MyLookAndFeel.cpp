@@ -130,7 +130,6 @@ void MyLookAndFeel::drawLinearSliderBackground(Graphics& g, int x, int y, int wi
 	float /*maxSliderPos*/,
 	const Slider::SliderStyle /*style*/, Slider& slider) 
 {
-	DBG("HI");
 	// no-op
 }
 
@@ -163,4 +162,20 @@ void MyLookAndFeel::drawToggleButton(Graphics& g, ToggleButton& button,
 
 	g.setColour(textColor);
 	g.drawFittedText(isOn ? "On" : "Off", sauce.toNearestInt(), Justification::centred, 1);
+}
+
+void NumboxLAF::drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos,
+								 float maxSliderPos, const Slider::SliderStyle style, Slider& slider)
+{
+	auto borderColor = WHITE;
+	auto backgroundColor = LIGHT_GREY;
+
+	Rectangle<float> bounds(x, y, width, height);
+	Rectangle<float> border = bounds.withSizeKeepingCentre(Utils::scale(22), Utils::scale(22));
+	g.setColour(borderColor);
+	g.fillRect(border);
+
+	Rectangle<float> inside = border.reduced(Utils::scale(4));
+	g.setColour(backgroundColor);
+	g.fillRect(inside);
 }

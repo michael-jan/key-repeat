@@ -15,13 +15,10 @@
 KeyswitchControlsComponent::KeyswitchControlsComponent(KeyRepeatAudioProcessor& p) :
 	processor(p),
 	latchLabel("latchLabel", "Latch"),
-	easyLabel("easyLabel", "EZ Triplet"),
-	keyswitchOctaveLabel("keyswitchOctaveLabel", "Keyswitch Octave"),
-	keyswitchOctaveKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox)
+	easyLabel("easyLabel", "EZ Triplet")
 {
 	addAndMakeVisible(easyLabel);
 	addAndMakeVisible(latchLabel);
-	addAndMakeVisible(keyswitchOctaveLabel);
 
 	latchSwitch.setName("latch");
 	addAndMakeVisible(latchSwitch);
@@ -30,9 +27,6 @@ KeyswitchControlsComponent::KeyswitchControlsComponent(KeyRepeatAudioProcessor& 
 	easySwitch.setName("easy");
 	addAndMakeVisible(easySwitch);
 	easyAttachment.reset(new ButtonAttachment(p.getVTS(), "easy", easySwitch));
-
-	addAndMakeVisible(keyswitchOctaveKnob);
-	keyswitchOctaveAttachment.reset(new SliderAttachment(p.getVTS(), "keyswitchOctave", keyswitchOctaveKnob));
 }
 
 KeyswitchControlsComponent::~KeyswitchControlsComponent() {
@@ -44,13 +38,13 @@ void KeyswitchControlsComponent::paint(Graphics& g) {
 void KeyswitchControlsComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
 	int switchHeight = Utils::scale(20);
-	int labelOffset = Utils::scale(3);
+	int labelOffset = Utils::scale(9.5);
 
 	rect.removeFromTop(Utils::scale(37));
 	latchSwitch.setBounds(rect.removeFromTop(switchHeight));
 	Utils::attachToComponent(latchLabel, latchSwitch, labelOffset);
 
-	rect.removeFromTop(Utils::scale(33));
+	rect.removeFromTop(Utils::scale(47));
 	easySwitch.setBounds(rect.removeFromTop(switchHeight));
 	Utils::attachToComponent(easyLabel, easySwitch, labelOffset);
 }

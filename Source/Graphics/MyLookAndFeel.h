@@ -28,7 +28,7 @@ public:
 		float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle,
 		Slider&) override;
 
-	void drawLinearSlider(Graphics&, int x, int y, int width, int height,
+	virtual void drawLinearSlider(Graphics&, int x, int y, int width, int height,
 		float sliderPos, float minSliderPos, float maxSliderPos,
 		const Slider::SliderStyle, Slider&) override;
 
@@ -38,4 +38,14 @@ public:
 
 	void drawToggleButton(Graphics&, ToggleButton&,
 		bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+};
+
+class NumboxLAF : public MyLookAndFeel {
+public:
+
+	//NumboxLAF();
+
+	virtual void drawLinearSlider(Graphics&, int x, int y, int width, int height,
+		float sliderPos, float minSliderPos, float maxSliderPos,
+		const Slider::SliderStyle, Slider&) override;
 };

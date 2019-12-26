@@ -50,8 +50,8 @@ void ADSRComponent::paint(Graphics& g) {
 
 void ADSRComponent::resized() {
 	Rectangle<int> rect = getLocalBounds()
-		.withTrimmedTop(Utils::scale(26))
-		.withTrimmedBottom(Utils::scale(39));
+		.withTrimmedTop(Utils::scale(25))
+		.withTrimmedBottom(Utils::scale(44.5f));
 
 	int sliderWidth = Utils::scale(34);
 	int labelOffset = Utils::scale(3);

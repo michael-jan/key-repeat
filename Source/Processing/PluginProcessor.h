@@ -13,7 +13,7 @@ const int NUM_MIDI_KEYS = 128;
 const int NUM_MIDI_CHANNELS = 16;
 const double MAX_SAMPLE_LENGTH_SEC = 20.0;
 
-const float EPSILON = 0.0001f;
+const float EPSILON = 0.0004f;
 const double PI = 3.141592653589793238463;
 
 class KeyRepeatAudioProcessor :
@@ -58,6 +58,7 @@ public:
 
 	AudioProcessorValueTreeState& getVTS() { return parameters; }
 	KeyswitchManager& getKeyswitchManager() { return keyswitchManager; }
+	NumboxLAF& getNumboxLAF() { return numboxLAF; }
 
 private:
 
@@ -65,8 +66,10 @@ private:
 	MidiKeyboardState physicalKeyboardState;
 	KeyswitchManager keyswitchManager;
 	SamplerSound *samplerSound;
+	Random random;
 
 	MyLookAndFeel myLookAndFeel;
+	NumboxLAF numboxLAF;
 
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;

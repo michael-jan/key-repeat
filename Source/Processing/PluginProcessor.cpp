@@ -29,7 +29,7 @@ KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
                      #endif
                        )
 #endif
-{
+{ 
 }
 
 KeyRepeatAudioProcessor::~KeyRepeatAudioProcessor() {
@@ -183,9 +183,12 @@ void KeyRepeatAudioProcessor::addAllNonKeyswitchMidiMessages(MidiBuffer& newMidi
 	}
 }
 
+/*
+	
+*/
 void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info) {
 
-	std::vector<double> *triggers = &keyswitchManager.getCurrentTriggers(swingParameter.getValue());
+	std::vector<double> triggers = keyswitchManager.getCurrentTriggers(swingParameter.getValue());
 
 	if (DEBUG_TRIGGER) {
 		DBG(" ");
@@ -193,7 +196,7 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 		DBG(info.nextBeatsIntoMeasure);
 	}
 
-	for (double triggerInBeats : *triggers) {
+	for (double triggerInBeats : triggers) {
 		if (info.beatsIntoMeasure - EPSILON <= triggerInBeats && triggerInBeats < info.nextBeatsIntoMeasure - EPSILON) {
 
 			// hack to avoid double-tapping on beat 0 aka beat 4
@@ -208,7 +211,16 @@ void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages,
 			for (int note = 0; note < NUM_MIDI_KEYS; note++) {
 				for (int midiChannel = 1; midiChannel <= NUM_MIDI_CHANNELS; midiChannel++) {
 					if (physicalKeyboardState.isNoteOn(midiChannel, note) && !keyswitchManager.isKeyswitch(note)) {
-						newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, midiVelocities[midiChannel][note]), internalSample);
+						float velOffsetParam = (float)humanizeParameter.getValue();
+
+						// 0.0, 0.5, 1.0  linearly scaled in halves to  0.0, 0.25, 1.0
+						float velOffset = velOffsetParam < 0.5f ? velOffsetParam * 0.5f : (velOffsetParam - 0.5f) * 1.5f + 0.25f;
+
+						velOffset *= 1.5f * (random.nextFloat() - 0.5);
+
+						float vel = jmax(0.0f, jmin(1.0f, midiVelocities[midiChannel][note] + velOffset));
+						newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, vel), internalSample);
+
 					}
 				}
 			}
@@ -321,11 +333,20 @@ void KeyRepeatAudioProcessor::getStateInformation (MemoryBlock& destData) {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+	auto state = parameters.copyState();
+	std::unique_ptr<XmlElement> xml(state.createXml());
+	copyXmlToBinary(*xml, destData);
 }
 
 void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInBytes) {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+	if (!JUCEApplication::isStandaloneApp()) {
+		std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+		if (xmlState.get() != nullptr)
+			if (xmlState->hasTagName(parameters.state.getType()))
+				parameters.replaceState(ValueTree::fromXml(*xmlState));
+	}
 }
 
 void KeyRepeatAudioProcessor::loadNewFile(AudioFormatReader *reader) {
@@ -367,7 +388,7 @@ AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createPar
 	// Bottom controls
 	params.push_back(std::make_unique<AudioParameterBool>("easy", "Easy", false));
 	params.push_back(std::make_unique<AudioParameterBool>("latch", "Latch", false));
-	params.push_back(std::make_unique<AudioParameterInt>("keyswitchOctave", "Keyswitch Octave", 0, 6, 0));
+	params.push_back(std::make_unique<AudioParameterInt>("keyswitchOctave", "Keyswitch Octave", 0, 2, 0));
 
 	return { params.begin(), params.end() };
 }

@@ -39,9 +39,5 @@ private:
 	std::unique_ptr<ButtonAttachment> latchAttachment;
 	Label latchLabel;
 
-	Slider keyswitchOctaveKnob;
-	std::unique_ptr<SliderAttachment> keyswitchOctaveAttachment;
-	Label keyswitchOctaveLabel;
-
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyswitchControlsComponent)
 };

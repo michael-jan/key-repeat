@@ -39,11 +39,11 @@ void SoundControlsComponent::paint(Graphics& g) {
 void SoundControlsComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
 
-	rect.removeFromTop(Utils::scale(23));
+	rect.removeFromTop(Utils::scale(24));
 	humanizeKnob.setBounds(rect.removeFromTop(Utils::scale(40)));
 	Utils::attachToComponent(humanizeLabel, humanizeKnob, Utils::scale(2));
 
-	rect.removeFromTop(Utils::scale(28));
+	rect.removeFromTop(Utils::scale(27));
 	swingKnob.setBounds(rect.removeFromTop(Utils::scale(40)));
 	Utils::attachToComponent(swingLabel, swingKnob, Utils::scale(2));
 }

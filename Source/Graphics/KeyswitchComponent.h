@@ -37,7 +37,7 @@ private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SingleKeyswitchComponent)
 };
 
-class KeyswitchComponent : public Component {
+class KeyswitchComponent : public Component, Timer {
 public:
 	KeyswitchComponent(KeyRepeatAudioProcessor& p);
 	~KeyswitchComponent();
@@ -45,11 +45,15 @@ public:
 	void paint(Graphics&) override;
 	void resized() override;
 
+	void timerCallback() override;
+
 private:
 
 	KeyRepeatAudioProcessor& processor;
 	KeyswitchManager& keyswitchManager;
 	OwnedArray<SingleKeyswitchComponent> keyswitches;
+
+	void updateDisplayElements();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyswitchComponent)
 };

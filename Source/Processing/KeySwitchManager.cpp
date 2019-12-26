@@ -27,24 +27,24 @@ bool KeyswitchManager::isKeyswitch(int midiNode) const {
 	return getFirstKeyswitchNoteNumber() <= midiNode && midiNode < getFirstKeyswitchNoteNumber() + NUM_KEYSWITCH_KEYS;
 }
 
-std::vector<double>& KeyswitchManager::getCurrentTriggers(float swing) {
-	tempWhenToPlay = whenToPlayInfo[currentRepeatState];
+const std::vector<double>& KeyswitchManager::getCurrentTriggers(float swing) {
+	tempWhenToPlay.clear();
+	for (double num : whenToPlayInfo[currentRepeatState]) {
+		tempWhenToPlay.push_back(num);
+	}
+
 	if (!isRepeatOff() && !isCurrentRepeatStateTriplet()) {
 		double diff = tempWhenToPlay[1] - tempWhenToPlay[0];
 		double swingHangTime = swing * diff;
-		bool isIndexOdd = false;
-		for (double& num : tempWhenToPlay) {
-			if (isIndexOdd) {
-				num += swingHangTime;
-			}
-			isIndexOdd = !isIndexOdd;
+		for (int i = 1; i < tempWhenToPlay.size(); i += 2) {
+			tempWhenToPlay[i] += swingHangTime;
 		}
 	}
+
 	return tempWhenToPlay;
 }
 
 void KeyswitchManager::update() {
-
 	// With latch off, repeat state is reset to Off unless otherwise specified.
 	// With latch on, repeat state simply holds it's previous value until other specified.
 	if (!latch) {
@@ -132,29 +132,37 @@ void KeyswitchManager::fillWhenToPlayInfo() {
 		temp.push_back(4.0);
 		whenToPlayInfo.push_back(temp);
 	}
-
 }
 
 KeyswitchDisplayInfoElement* KeyswitchManager::getDisplayElements() {
-	static String noteNames[] = { "C0", "C#0", "D0", "D#0", "E0", "F0", "F#0" };
+	static String noteNames[4][7] = { 
+		{ "C0", "C#0", "D0", "D#0", "E0", "F0", "F#0" },
+		{ "C1", "C#1", "D1", "D#1", "E1", "F1", "F#1" },
+		{ "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2" },
+		{ "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3" }
+	};
 	static String keyswitchNamesSeparateTripletButton[] = { "1/4", "1/8", "1/16", "1/32", "1/64", "Trip", "Off" };
 	static String keyswitchNamesNoSeparateTripletButton[] = { "1/8", "1/8T", "1/16", "1/16T", "1/32", "1/32T", "Off" };
 	String *keyswitchNames = separateTripletButton ? keyswitchNamesSeparateTripletButton : keyswitchNamesNoSeparateTripletButton;
+
 	for (int i = 0; i < NUM_KEYSWITCH_KEYS; i++) {
-		displayElements[i].noteName = noteNames[i];
+		displayElements[i].noteName = noteNames[keyswitchOctave][i];
 		displayElements[i].keyswitchName = keyswitchNames[i];
+		displayElements[i].isActive = false;
 		displayElements[i].isEnabled = true;
 	}
+
 	if (separateTripletButton) {
-		if (currentRepeatState % 2 == 1) { // is triplet
-			displayElements[getTripletNoteNumber() - getFirstKeyswitchNoteNumber()].isActive = true;
-		}
+		int tripletIndex = getTripletNoteNumber() - getFirstKeyswitchNoteNumber();
 		displayElements[currentRepeatState / 2].isActive = true;
+		displayElements[tripletIndex].isActive = currentRepeatState % 2 == 1;
 	} else {
-		displayElements[currentRepeatState].isActive = true;
+		displayElements[currentRepeatState - 2].isActive = true;
 	}
-	displayElements[6].isActive = isNoteOn(getOffNoteNumber());
-	displayElements[getOffNoteNumber() - getFirstKeyswitchNoteNumber()].isEnabled = latch;
+
+	int offIndex = getOffNoteNumber() - getFirstKeyswitchNoteNumber();
+	displayElements[offIndex].isActive = isNoteOn(getOffNoteNumber());
+	displayElements[offIndex].isEnabled = latch;
 	return displayElements;
 }
 
@@ -173,5 +181,5 @@ void KeyswitchManager::handleNoteOn(MidiKeyboardState *source, int midiChannel, 
 }
 
 void KeyswitchManager::handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-	// do nothing
+	// no-op
 }

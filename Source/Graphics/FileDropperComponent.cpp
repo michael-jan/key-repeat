@@ -162,6 +162,6 @@ void FileDropperShadowComponent::drawInnerShadow(Graphics &g, Path target) {
 	// being drawn outside of the shape to cast the shadow on
 	g.reduceClipRegion(target);
 
-	DropShadow ds(Colour::fromRGB(4, 5, 6).withAlpha(0.8f), Utils::scale(30), { 0, 0 });
+	DropShadow ds(MyLookAndFeel::BLACK.withAlpha(0.6f), Utils::scale(30), { 0, 0 });
 	ds.drawForPath(g, shadowPath);
 }
