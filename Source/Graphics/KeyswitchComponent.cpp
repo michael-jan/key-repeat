@@ -39,7 +39,7 @@ void SingleKeyswitchComponent::paint(Graphics& g) {
 
 void SingleKeyswitchComponent::resized() {
 	Rectangle<int> noteBounds = getLocalBounds().withTrimmedTop(Utils::scale(20));
-	noteLabel.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(11)));
+	noteLabel.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
 	noteLabel.setJustificationType(Justification::centredTop);
 	noteLabel.setBounds(noteBounds);
 

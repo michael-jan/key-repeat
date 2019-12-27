@@ -55,19 +55,19 @@ void BottomComponent::resized() {
 	versionLabel.setJustificationType(Justification::centred);
 	versionLabel.setBounds(
 		getLocalBounds()
-		.removeFromBottom(MyLookAndFeel::LABEL_FONT_SIZE + Utils::scale(8))
-		.removeFromRight(Utils::scale(90))
+		.removeFromBottom(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE) + Utils::scale(1.5))
+		.removeFromRight(Utils::scale(100))
 	);
 
 	Rectangle<int> keyswitchOctaveSide = getLocalBounds().removeFromLeft(Utils::scale(64.5));
 	keyswitchOctaveNumbox.setBounds(keyswitchOctaveSide.removeFromTop(rect.getHeight() * 11 / 16));
 	keyswitchOctaveNumbox.setMouseDragSensitivity(Utils::scale(65));
 
-	keyswitchOctaveLabelTop.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(11)));
+	keyswitchOctaveLabelTop.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
 	keyswitchOctaveLabelTop.setJustificationType(Justification::centredTop);
 	keyswitchOctaveLabelTop.setBounds(keyswitchOctaveSide.withBottomY(keyswitchOctaveNumbox.getBottom() + Utils::scale(12)));
 
-	keyswitchOctaveLabelBottom.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(11)));
+	keyswitchOctaveLabelBottom.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
 	keyswitchOctaveLabelBottom.setJustificationType(Justification::centredTop);
 	keyswitchOctaveLabelBottom.setBounds(keyswitchOctaveSide.withBottomY(keyswitchOctaveLabelTop.getBottom() + Utils::scale(10)));
 

@@ -16,9 +16,17 @@
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
-//==============================================================================
-/*
-*/
+class TopLogoComponent : public Component {
+public:
+    TopLogoComponent();
+    ~TopLogoComponent();
+    void paint(Graphics&) override;
+    void resized() override;
+private:
+    Label titleLabel;
+    Label authorLabel;
+};
+
 class TopComponent : public Component {
 public:
 	TopComponent(KeyRepeatAudioProcessor& p);
@@ -42,9 +50,8 @@ private:
 	Slider levelKnob;
 	std::unique_ptr<SliderAttachment> levelAttachment;
 	Label levelLabel;
-
-	Label titleLabel;
-	Label authorLabel;
+    
+    TopLogoComponent topLogoComponent;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopComponent)
 };

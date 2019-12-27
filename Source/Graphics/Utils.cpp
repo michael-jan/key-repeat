@@ -12,7 +12,7 @@
 
 const int Utils::ORIGINAL_WIDTH = 660;
 const int Utils::ORIGINAL_HEIGHT = 315;
-const double Utils::DEFAULT_SCALE_FACTOR = 1.5;
+const double Utils::DEFAULT_SCALE_FACTOR = 1.2;
 double Utils::SCALE_FACTOR = DEFAULT_SCALE_FACTOR;
 
 int Utils::scale(float dimension) {
@@ -36,7 +36,7 @@ void Utils::attachToComponent(Label& label, Component& component, int offset) {
 	labelBounds.setTop(component.getBounds().getBottom() + offset);
 	labelBounds.setBottom(component.getBounds().getBottom() + label.getFont().getHeight() + offset);
 
-	label.setBounds(labelBounds);
+	label.setBounds(labelBounds.translated(0, Utils::scale(2)));
 }
 
 void Utils::drawLineShadow(Graphics& g, Line<float> line, int spread, float alpha) {

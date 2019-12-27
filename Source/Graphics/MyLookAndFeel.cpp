@@ -21,7 +21,8 @@ const Colour MyLookAndFeel::LIGHT_PINK(239, 138, 255);
 const Colour MyLookAndFeel::PINK(235, 115, 255);
 const Colour MyLookAndFeel::DARK_PINK(232, 91, 255);
 
-const float MyLookAndFeel::LABEL_FONT_SIZE = 16.5;
+const float MyLookAndFeel::LABEL_FONT_SIZE = 16;
+const float MyLookAndFeel::SMALL_FONT_SIZE = 10;
 
 MyLookAndFeel::MyLookAndFeel() {
 	setDefaultSansSerifTypeface(getFontRegular().getTypeface());
@@ -161,7 +162,15 @@ void MyLookAndFeel::drawToggleButton(Graphics& g, ToggleButton& button,
 	g.fillRect(sauce);
 
 	g.setColour(textColor);
-	g.drawFittedText(isOn ? "On" : "Off", sauce.toNearestInt(), Justification::centred, 1);
+    g.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
+    sauce.removeFromTop(Utils::scale(2.0f));
+	g.drawFittedText(isOn ? "On" : "Off", sauce.toNearestInt(), Justification::centred, 1.0f);
+}
+
+NumboxLAF::NumboxLAF() {
+    setDefaultSansSerifTypeface(getFontRegular().getTypeface());
+    setColour(Label::textColourId, WHITE);
+    setColour(Slider::textBoxOutlineColourId, WHITE.withAlpha(0.0f));
 }
 
 void NumboxLAF::drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos,
@@ -179,3 +188,18 @@ void NumboxLAF::drawLinearSlider(Graphics& g, int x, int y, int width, int heigh
 	g.setColour(backgroundColor);
 	g.fillRect(inside);
 }
+
+Font NumboxLAF::getLabelFont(Label& label) {
+    return getFontLight().withHeight(Utils::scale(NumboxLAF::SMALL_FONT_SIZE));
+}
+
+Slider::SliderLayout NumboxLAF::getSliderLayout (Slider& slider)
+{
+    Slider::SliderLayout layout;
+    
+    layout.textBoxBounds = slider.getBounds().translated(0, Utils::scale(1));
+    layout.sliderBounds = slider.getBounds();
+
+    return layout;
+}
+

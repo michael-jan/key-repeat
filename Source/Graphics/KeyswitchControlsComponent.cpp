@@ -38,13 +38,13 @@ void KeyswitchControlsComponent::paint(Graphics& g) {
 void KeyswitchControlsComponent::resized() {
 	Rectangle<int> rect = getLocalBounds();
 	int switchHeight = Utils::scale(20);
-	int labelOffset = Utils::scale(9.5);
+	int labelOffset = Utils::scale(10);
 
-	rect.removeFromTop(Utils::scale(37));
+	rect.removeFromTop(Utils::scale(37.5));
 	latchSwitch.setBounds(rect.removeFromTop(switchHeight));
-	Utils::attachToComponent(latchLabel, latchSwitch, labelOffset);
+	Utils::attachToComponent(latchLabel, latchSwitch, labelOffset - Utils::scale(1));
 
-	rect.removeFromTop(Utils::scale(47));
+	rect.removeFromTop(Utils::scale(46));
 	easySwitch.setBounds(rect.removeFromTop(switchHeight));
-	Utils::attachToComponent(easyLabel, easySwitch, labelOffset);
+	Utils::attachToComponent(easyLabel, easySwitch, labelOffset + Utils::scale(1));
 }

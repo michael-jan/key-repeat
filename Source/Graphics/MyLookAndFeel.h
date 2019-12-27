@@ -16,7 +16,7 @@ class MyLookAndFeel : public LookAndFeel_V4 {
 
 public:
 	static const Colour WHITE, LIGHT_GREY, GREY, DARK_GREY, VERY_DARK_GREY, BLACK, LIGHT_PINK, PINK, DARK_PINK;
-	static const float LABEL_FONT_SIZE;
+	static const float LABEL_FONT_SIZE, SMALL_FONT_SIZE;
 
 	MyLookAndFeel();
 
@@ -43,9 +43,13 @@ public:
 class NumboxLAF : public MyLookAndFeel {
 public:
 
-	//NumboxLAF();
+	NumboxLAF();
 
-	virtual void drawLinearSlider(Graphics&, int x, int y, int width, int height,
+	void drawLinearSlider(Graphics&, int x, int y, int width, int height,
 		float sliderPos, float minSliderPos, float maxSliderPos,
 		const Slider::SliderStyle, Slider&) override;
+    
+    Font getLabelFont(Label &label) override;
+    
+    Slider::SliderLayout getSliderLayout (Slider&) override;
 };
