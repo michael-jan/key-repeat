@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="GYCcUZ" name="KeyRepeat" projectType="audioplug" jucerVersion="5.4.5"
+<JUCERPROJECT id="GYCcUZ" name="KeyRepeat" projectType="audioplug" jucerVersion="5.4.4"
               companyName="Michael Jan" pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Sampler" pluginRTASCategory="2048"
               pluginAAXCategory="2048" pluginVSTCategory="kPlugCategSynth"
               pluginCode="Keyr" pluginManufacturerCode="Mjan" pluginChannelConfigs="{0,2}"
-              pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3" pluginAUMainType="'augn'"
-              projectLineFeed="&#10;">
+              pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3" pluginAUMainType="'augn'">
   <MAINGROUP id="vUij4k" name="KeyRepeat">
     <GROUP id="{44D6EB9E-65B5-3B86-AA77-D6747DF9FD9D}" name="Source">
       <GROUP id="{CA07DA47-3076-A318-8823-ACC9FD088B6B}" name="Fonts">

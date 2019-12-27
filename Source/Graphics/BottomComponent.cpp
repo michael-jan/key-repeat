@@ -52,10 +52,10 @@ void BottomComponent::resized() {
 
 	versionLabel.setFont(Font(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE)));
 	versionLabel.setAlpha(0.15f);
-	versionLabel.setJustificationType(Justification::centred);
+	versionLabel.setJustificationType(Justification::centredRight);
 	versionLabel.setBounds(
 		getLocalBounds()
-		.removeFromBottom(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE) + Utils::scale(1.5))
+		.removeFromBottom(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE) + Utils::scale(1))
 		.removeFromRight(Utils::scale(100))
 	);
 

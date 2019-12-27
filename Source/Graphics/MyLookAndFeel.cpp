@@ -9,6 +9,7 @@
 */
 
 #include "MyLookAndFeel.h"
+#include "Utils.h"
 
 const Colour MyLookAndFeel::WHITE(243, 245, 246);
 const Colour MyLookAndFeel::LIGHT_GREY(178, 182, 203);
@@ -21,8 +22,8 @@ const Colour MyLookAndFeel::LIGHT_PINK(239, 138, 255);
 const Colour MyLookAndFeel::PINK(235, 115, 255);
 const Colour MyLookAndFeel::DARK_PINK(232, 91, 255);
 
-const float MyLookAndFeel::LABEL_FONT_SIZE = 16;
-const float MyLookAndFeel::SMALL_FONT_SIZE = 10;
+const float MyLookAndFeel::LABEL_FONT_SIZE = Utils::winMac(16.5, 16.0);
+const float MyLookAndFeel::SMALL_FONT_SIZE = Utils::winMac(11.0, 10.0);
 
 MyLookAndFeel::MyLookAndFeel() {
 	setDefaultSansSerifTypeface(getFontRegular().getTypeface());
@@ -163,7 +164,7 @@ void MyLookAndFeel::drawToggleButton(Graphics& g, ToggleButton& button,
 
 	g.setColour(textColor);
     g.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
-    sauce.removeFromTop(Utils::scale(2.0f));
+    sauce.removeFromTop(Utils::scale(Utils::winMac(0.0f, 2.0f)));
 	g.drawFittedText(isOn ? "On" : "Off", sauce.toNearestInt(), Justification::centred, 1.0f);
 }
 
@@ -197,7 +198,7 @@ Slider::SliderLayout NumboxLAF::getSliderLayout (Slider& slider)
 {
     Slider::SliderLayout layout;
     
-    layout.textBoxBounds = slider.getBounds().translated(0, Utils::scale(1));
+    layout.textBoxBounds = slider.getBounds().translated(0, Utils::scale(Utils::winMac(0, 1)));
     layout.sliderBounds = slider.getBounds();
 
     return layout;

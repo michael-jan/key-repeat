@@ -64,8 +64,8 @@ void FileDropperComponent::paint(Graphics& g) {
 		Path roundedRectanglePath;
 		roundedRectanglePath.addRoundedRectangle(getLocalBounds().reduced(Utils::scale(15)), Utils::scale(15));
 		float dashedLength[2];
-		dashedLength[0] = Utils::scale(10);
-		dashedLength[1] = Utils::scale(15);
+		dashedLength[0] = Utils::scale(12);
+		dashedLength[1] = Utils::scale(16);
 		PathStrokeType dottedPathStrokeType(Utils::scale(1.5f));
 		dottedPathStrokeType.createDashedStroke(roundedRectanglePath, roundedRectanglePath, dashedLength, 2, AffineTransform::translation(0, 0), 4.0);
 		g.strokePath(roundedRectanglePath, dottedPathStrokeType);

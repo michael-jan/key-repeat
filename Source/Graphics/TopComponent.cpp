@@ -122,7 +122,7 @@ void TopLogoComponent::resized() {
     titleLabel.setComponentEffect(&dse);
 
     Rectangle<int> authorRect = getLocalBounds()
-        .withTrimmedRight(getLocalBounds().getWidth() * 0.5)
+        .withTrimmedRight(getLocalBounds().getWidth() * Utils::winMac(0.52, 0.51))
         .withTrimmedTop(Utils::scale(39.5f));
     authorLabel.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE)));
     authorLabel.setJustificationType(Justification::centredTop);
