@@ -45,6 +45,7 @@ private:
 	AudioThumbnailCache thumbnailCache;
 	AudioThumbnail thumbnail;
 	Rectangle<int> displayBounds;
+    String absoluteFilePath;
 
 	FileDropperShadowComponent fileDropperShadowComponent;
 	Label label;
@@ -64,7 +65,6 @@ private:
 	HoverState hoverState;
 	void changeState(FilledState filledState, HoverState hoverState);
 
-	String absoluteFilePath;
 
 	bool isInterestedInFileDrag(const StringArray& files) override;
 	void fileDragEnter(const StringArray& files, int x, int y) override;

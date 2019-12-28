@@ -31,13 +31,13 @@ private:
 
 	KeyRepeatAudioProcessor& processor;
 
+    ToggleButton latchSwitch;
+    std::unique_ptr<ButtonAttachment> latchAttachment;
+    Label latchLabel;
+    
 	ToggleButton easySwitch;
 	std::unique_ptr<ButtonAttachment> easyAttachment;
 	Label easyLabel;
-
-	ToggleButton latchSwitch;
-	std::unique_ptr<ButtonAttachment> latchAttachment;
-	Label latchLabel;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyswitchControlsComponent)
 };

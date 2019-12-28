@@ -14,13 +14,13 @@
 //==============================================================================
 MainComponent::MainComponent(KeyRepeatAudioProcessor& p) :
 	processor(p),
-	bottomComponent(p),
+	topComponent(p),
 	middleComponent(p),
-	topComponent(p)
+	bottomComponent(p)
 {
-	addAndMakeVisible(bottomComponent);
-	addAndMakeVisible(middleComponent);
 	addAndMakeVisible(topComponent);
+	addAndMakeVisible(middleComponent);
+	addAndMakeVisible(bottomComponent);
 }
 
 MainComponent::~MainComponent() {

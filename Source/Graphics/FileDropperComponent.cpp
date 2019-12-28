@@ -13,8 +13,13 @@
 
 //==============================================================================
 FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
-	processor(p), absoluteFilePath(""), filledState(Unfilled), hoverState(NoHover),
-	thumbnailCache(2), thumbnail(1<<16, formatManager, thumbnailCache), label("fileDropperLabel", "Drag In Sample")
+    processor(p),
+	thumbnailCache(2),
+    thumbnail(1<<16, formatManager, thumbnailCache),
+    absoluteFilePath(""),
+    label("fileDropperLabel", "Drag In Sample"),
+    filledState(Unfilled),
+    hoverState(NoHover)
 {
 	formatManager.registerBasicFormats();
 	

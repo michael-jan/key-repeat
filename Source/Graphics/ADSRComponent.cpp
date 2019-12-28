@@ -54,7 +54,7 @@ void ADSRComponent::resized() {
 		.withTrimmedBottom(Utils::scale(44.5f));
 
 	int sliderWidth = Utils::scale(34);
-	int labelOffset = Utils::scale(3);
+	int labelOffset = Utils::scale(3.3);
 
 	attackSlider.setBounds(rect.removeFromLeft(sliderWidth));
 	Utils::attachToComponent(attackLabel, attackSlider, labelOffset);

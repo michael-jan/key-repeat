@@ -12,7 +12,7 @@
 
 const int Utils::ORIGINAL_WIDTH = 660;
 const int Utils::ORIGINAL_HEIGHT = 315;
-const double Utils::DEFAULT_SCALE_FACTOR = winMac(1.4, 1.2);
+const double Utils::DEFAULT_SCALE_FACTOR = winMac(1.4, 1.2*2);
 double Utils::SCALE_FACTOR = DEFAULT_SCALE_FACTOR;
 
 int Utils::scale(float dimension) {

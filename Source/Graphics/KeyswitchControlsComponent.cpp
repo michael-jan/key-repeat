@@ -46,5 +46,5 @@ void KeyswitchControlsComponent::resized() {
 
 	rect.removeFromTop(Utils::scale(46));
 	easySwitch.setBounds(rect.removeFromTop(switchHeight));
-	Utils::attachToComponent(easyLabel, easySwitch, labelOffset + Utils::scale(1));
+	Utils::attachToComponent(easyLabel, easySwitch, labelOffset + Utils::scale(0.4));
 }

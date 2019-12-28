@@ -38,13 +38,13 @@ private:
 	std::unique_ptr<SliderAttachment> decayAttachment;
 	Label decayLabel;
 
+    Slider sustainSlider;
+    std::unique_ptr<SliderAttachment> sustainAttachment;
+    Label sustainLabel;
+
 	Slider releaseSlider;
 	std::unique_ptr<SliderAttachment> releaseAttachment;
 	Label releaseLabel;
-
-	Slider sustainSlider;
-	std::unique_ptr<SliderAttachment> sustainAttachment;
-	Label sustainLabel;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ADSRComponent)
 };
