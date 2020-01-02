@@ -4,21 +4,11 @@
 KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
 	parameters(*this, nullptr, Identifier("PARAMETERS"), createParameterLayout()),
 	samplerSound(nullptr),
-	pitchParameter(parameters.getParameterAsValue("pitch")),
-	panParameter(parameters.getParameterAsValue("pan")),
-	levelParameter(parameters.getParameterAsValue("level")),
+    audioThumbnailCache(2),
+    audioThumbnail(1, audioFormatManager, audioThumbnailCache),
 	prevLevel((float) levelParameter.getValue()),
 	prevPanLeftLevel(std::sin(PI)),
-	prevPanRightLevel(std::sin(PI)),
-	attackParameter(parameters.getParameterAsValue("attack")),
-	decayParameter(parameters.getParameterAsValue("decay")),
-	sustainParameter(parameters.getParameterAsValue("sustain")),
-	releaseParameter(parameters.getParameterAsValue("release")),
-	swingParameter(parameters.getParameterAsValue("swing")),
-	humanizeParameter(parameters.getParameterAsValue("humanize")),
-	easyParameter(parameters.getParameterAsValue("easy")),
-	latchParameter(parameters.getParameterAsValue("latch")),
-	keyswitchOctaveParameter(parameters.getParameterAsValue("keyswitchOctave"))
+	prevPanRightLevel(std::sin(PI))
 #ifndef JucePlugin_PreferredChannelConfigurations
      , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -29,7 +19,9 @@ KeyRepeatAudioProcessor::KeyRepeatAudioProcessor() :
                      #endif
                        )
 #endif
-{ 
+{
+    audioFormatManager.registerBasicFormats();
+    linkParameterValues();
 }
 
 KeyRepeatAudioProcessor::~KeyRepeatAudioProcessor() {
@@ -183,51 +175,36 @@ void KeyRepeatAudioProcessor::addAllNonKeyswitchMidiMessages(MidiBuffer& newMidi
 	}
 }
 
-/*
-	
-*/
 void KeyRepeatAudioProcessor::transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info) {
-
 	std::vector<double> triggers = keyswitchManager.getCurrentTriggers(swingParameter.getValue());
-
-	if (DEBUG_TRIGGER) {
-		DBG(" ");
-		DBG(info.beatsIntoMeasure);
-		DBG(info.nextBeatsIntoMeasure);
-	}
-
-	for (double triggerInBeats : triggers) {
+	for (double& triggerInBeats : triggers) {
 		if (info.beatsIntoMeasure - EPSILON <= triggerInBeats && triggerInBeats < info.nextBeatsIntoMeasure - EPSILON) {
-
-			// hack to avoid double-tapping on beat 0 aka beat 4
+            
+			// hack to avoid double-tapping on beat 0/beat 4
 			if (wasLastHitOnFour && std::fabs(triggerInBeats) < EPSILON) continue;
 			if (std::fabs(triggerInBeats - 4.0) < EPSILON) wasLastHitOnFour = true;
 			else wasLastHitOnFour = false;
-
+            
 			// we want our note repeats to be sample-accurate
 			int internalSample = (int) ((info.samplesPerMeasure * triggerInBeats / 4) - info.samplesIntoMeasure);
-			if (DEBUG_TRIGGER) { DBG("triggered, internalSample=" + std::to_string(internalSample)); }
 
 			for (int note = 0; note < NUM_MIDI_KEYS; note++) {
 				for (int midiChannel = 1; midiChannel <= NUM_MIDI_CHANNELS; midiChannel++) {
 					if (physicalKeyboardState.isNoteOn(midiChannel, note) && !keyswitchManager.isKeyswitch(note)) {
+                        
+                        // humanize parameter
+                        // 0.0, 0.5, 1.0  linearly scaled in halves to  0.0, 0.25, 1.0
 						float velOffsetParam = (float)humanizeParameter.getValue();
-
-						// 0.0, 0.5, 1.0  linearly scaled in halves to  0.0, 0.25, 1.0
 						float velOffset = velOffsetParam < 0.5f ? velOffsetParam * 0.5f : (velOffsetParam - 0.5f) * 1.5f + 0.25f;
-
 						velOffset *= 1.5f * (random.nextFloat() - 0.5);
 
 						float vel = jmax(0.0f, jmin(1.0f, midiVelocities[midiChannel][note] + velOffset));
 						newMidiMessages.addEvent(MidiMessage::noteOn(midiChannel, note, vel), internalSample);
-
 					}
 				}
 			}
-
 		}
 	}
-
 }
 
 void KeyRepeatAudioProcessor::updateADSR() {
@@ -319,7 +296,6 @@ void KeyRepeatAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffe
 	fakeSamplesIntoMeasure = std::fmod(fakeSamplesIntoMeasure + info.bufferNumSamples, info.samplesPerMeasure);
 }
 
-//==============================================================================
 bool KeyRepeatAudioProcessor::hasEditor() const {
     return true; // (change this to false if you choose to not supply an editor)
 }
@@ -328,40 +304,95 @@ AudioProcessorEditor* KeyRepeatAudioProcessor::createEditor() {
     return new KeyRepeatAudioProcessorEditor(*this, &myLookAndFeel);
 }
 
-//==============================================================================
 void KeyRepeatAudioProcessor::getStateInformation (MemoryBlock& destData) {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    MemoryBlock audioBlock;
+    MemoryBlock parametersBlock;
+        
+    // write audio data to temp block
+    if (audioFormatReader) {
+        WavAudioFormat wavAudioFormat;
+        std::unique_ptr<AudioFormatWriter> audioFormatWriter(
+            wavAudioFormat.createWriterFor(
+                new MemoryOutputStream(audioBlock, false),
+                audioFormatReader->sampleRate,
+                audioFormatReader->numChannels,
+                audioFormatReader->bitsPerSample,
+                audioFormatReader->metadataValues,
+                0
+            )
+        );
+        // Apparently writing from the the AudioReader means errors but from the SampleBuffer is fine...
+        // audioFormatWriter->writeFromAudioReader(*audioFormatReader, 0, -1);
+        audioFormatWriter->writeFromAudioSampleBuffer(audioBuffer, 0, audioBuffer.getNumSamples());
+        audioFormatWriter->flush();
+    }
+    size_t audioBlockSize = audioBlock.getSize();
+
+    // write parameters data temp block
 	auto state = parameters.copyState();
 	std::unique_ptr<XmlElement> xml(state.createXml());
-	copyXmlToBinary(*xml, destData);
+	copyXmlToBinary(*xml, parametersBlock);
+    size_t parametersBlockSize = parametersBlock.getSize();
+    
+    // append temp blocks to actual data block
+    destData.append(&audioBlockSize, sizeof(size_t));
+    destData.append(&parametersBlockSize, sizeof(size_t));
+    destData.append(audioBlock.getData(), audioBlockSize);
+    destData.append(parametersBlock.getData(), parametersBlockSize);
 }
 
-void KeyRepeatAudioProcessor::setStateInformation (const void* data, int sizeInBytes) {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
-	if (!JUCEApplication::isStandaloneApp()) {
-		std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-		if (xmlState.get() != nullptr)
-			if (xmlState->hasTagName(parameters.state.getType()))
-				parameters.replaceState(ValueTree::fromXml(*xmlState));
-	}
+void KeyRepeatAudioProcessor::setStateInformation (const void *data, int sizeInBytes) {
+    if (!JUCEApplication::isStandaloneApp()) {
+        size_t audioBlockSize      = ((size_t *) data)[0];
+        size_t parametersBlockSize = ((size_t *) data)[1];
+        data = (size_t *) data + 2;
+
+        // read audio data
+        if (audioBlockSize > 0) {
+            audioFormatReader.reset(audioFormatManager.createReaderFor(new MemoryInputStream(data, audioBlockSize, false)));
+            changeSound();
+        }
+        data = (char *) data + audioBlockSize;
+        
+        // reader parameter data
+		std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, (int) parametersBlockSize));
+        if (xmlState.get() && xmlState->hasTagName(parameters.state.getType())) {
+            parameters.replaceState(ValueTree::fromXml(*xmlState));
+            linkParameterValues();
+        }
+    }
 }
 
-void KeyRepeatAudioProcessor::loadNewFile(AudioFormatReader *reader) {
-	BigInteger allNotes;
-	allNotes.setRange(0, 128, true);
-	samplerSound = new SamplerSound(
-		"samplerSound",	// name
-		*reader,		// source
-		allNotes,		// supported midi notes
-		60,				// midi note for normal pitch (middle C)
-		0.00001,		// attack time in seconds
-		0.0,			// release time in seconds
-		MAX_SAMPLE_LENGTH_SEC
-	);
-	synth.addSound(samplerSound);
+void KeyRepeatAudioProcessor::loadNewFile(String filePath) {
+    audioFormatReader.reset(audioFormatManager.createReaderFor(filePath)); // reset audioFormatReader
+    changeSound();
+}
+
+void KeyRepeatAudioProcessor::changeSound() {
+    // reset audioBuffer
+    AudioBuffer<float> tempBuf(audioFormatReader->numChannels, (int) audioFormatReader->lengthInSamples);
+    audioFormatReader->read(&tempBuf, 0, (int) audioFormatReader->lengthInSamples, 0, true, true); // read from reader into tempBuf
+    audioBuffer = tempBuf;
+    
+    // reset audioThumbnail
+    audioThumbnail.reset(audioBuffer.getNumChannels(), getSampleRate(), audioBuffer.getNumSamples());
+    audioThumbnail.addBlock(0, audioBuffer, 0, audioBuffer.getNumSamples());
+
+    // add sound to synth
+    if (audioFormatReader) {
+        BigInteger allNotes;
+        allNotes.setRange(0, 128, true);
+        samplerSound = new SamplerSound(
+            "samplerSound",     // name
+            *audioFormatReader, // source
+            allNotes,           // supported midi notes
+            60,                 // midi note for normal pitch (middle C)
+            0.00001,            // attack time in seconds
+            0.0,                // release time in seconds
+            MAX_SAMPLE_LENGTH_SEC
+        );
+        synth.addSound(samplerSound);
+    }
 }
 
 AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createParameterLayout() {
@@ -389,8 +420,23 @@ AudioProcessorValueTreeState::ParameterLayout KeyRepeatAudioProcessor::createPar
 	params.push_back(std::make_unique<AudioParameterBool>("easy", "Easy", false));
 	params.push_back(std::make_unique<AudioParameterBool>("latch", "Latch", false));
 	params.push_back(std::make_unique<AudioParameterInt>("keyswitchOctave", "Keyswitch Octave", 0, 2, 0));
-
+    
 	return { params.begin(), params.end() };
+}
+
+void KeyRepeatAudioProcessor::linkParameterValues() {
+    pitchParameter.referTo(parameters.getParameterAsValue("pitch"));
+    panParameter.referTo(parameters.getParameterAsValue("pan"));
+    levelParameter.referTo(parameters.getParameterAsValue("level"));
+    attackParameter.referTo(parameters.getParameterAsValue("attack"));
+    decayParameter.referTo(parameters.getParameterAsValue("decay"));
+    sustainParameter.referTo(parameters.getParameterAsValue("sustain"));
+    releaseParameter.referTo(parameters.getParameterAsValue("release"));
+    swingParameter.referTo(parameters.getParameterAsValue("swing"));
+    humanizeParameter.referTo(parameters.getParameterAsValue("humanize"));
+    easyParameter.referTo(parameters.getParameterAsValue("easy"));
+    latchParameter.referTo(parameters.getParameterAsValue("latch"));
+    keyswitchOctaveParameter.referTo(parameters.getParameterAsValue("keyswitchOctave"));
 }
 
 //==============================================================================

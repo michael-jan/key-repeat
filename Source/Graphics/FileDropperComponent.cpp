@@ -14,18 +14,13 @@
 //==============================================================================
 FileDropperComponent::FileDropperComponent(KeyRepeatAudioProcessor& p) :
     processor(p),
-	thumbnailCache(2),
-    thumbnail(1<<16, formatManager, thumbnailCache),
-    absoluteFilePath(""),
     label("fileDropperLabel", "Drag In Sample"),
     filledState(Unfilled),
     hoverState(NoHover)
 {
-	formatManager.registerBasicFormats();
-	
 	addAndMakeVisible(label);
 	label.setJustificationType(Justification::centred);
-	label.setColour(Label::textColourId, MyLookAndFeel::WHITE.withAlpha(0.15f));
+	label.setColour(Label::textColourId, MyLookAndFeel::WHITE);
 
 	fileDropperShadowComponent.setBufferedToImage(true);
 	addAndMakeVisible(fileDropperShadowComponent);
@@ -35,46 +30,46 @@ FileDropperComponent::~FileDropperComponent() {
 }
 
 void FileDropperComponent::paint(Graphics& g) {
-
 	Path roundedBoundsPath;
 	roundedBoundsPath.addRectangle(displayBounds.toFloat());
 
 	g.setColour(MyLookAndFeel::VERY_DARK_GREY);
 	g.fillPath(roundedBoundsPath);
-
+    
+    g.setColour(Colours::whitesmoke.withAlpha(0.14f));
+    PathStrokeType pathStrokeType(Utils::scale(1), PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
+    g.strokePath(roundedBoundsPath, pathStrokeType);
+    
+    AudioThumbnail& thumbnail = processor.getAudioThumbnail();
 	if (thumbnail.getNumChannels() > 0) {
+        // Draw audio thumbnail (waveform)
+        label.setAlpha(0.0f);
 		g.setColour(MyLookAndFeel::LIGHT_PINK);
 		thumbnail.drawChannel(
 			g,
-			displayBounds.reduced(10),
+			displayBounds.reduced(0),
 			0.0,                                    // start time
 			thumbnail.getTotalLength(),				// end time
 			0,										// channel num
 			1.0f                                    // vertical zoom
 		);
-	}
-
-	if (hoverState == FileDropperComponent::ValidHover) {
-		g.setColour(Colours::black.withAlpha(0.12f));
-		g.fillPath(roundedBoundsPath);
-	}
-
-	g.setColour(Colours::whitesmoke.withAlpha(0.14f));
-	PathStrokeType pathStrokeType(Utils::scale(1), PathStrokeType::JointStyle::curved, PathStrokeType::EndCapStyle::rounded);
-	g.strokePath(roundedBoundsPath, pathStrokeType);
-
-	if (filledState == Filled) {
-		label.setAlpha(0.0f);
-	} else {
-		Path roundedRectanglePath;
-		roundedRectanglePath.addRoundedRectangle(getLocalBounds().reduced(Utils::scale(15)), Utils::scale(15));
-		float dashedLength[2];
-		dashedLength[0] = Utils::scale(12);
-		dashedLength[1] = Utils::scale(Utils::winMac(16, 18));
-		PathStrokeType dottedPathStrokeType(Utils::scale(1.5f));
-		dottedPathStrokeType.createDashedStroke(roundedRectanglePath, roundedRectanglePath, dashedLength, 2, AffineTransform::translation(0, 0), 4.0);
-		g.strokePath(roundedRectanglePath, dottedPathStrokeType);
-	}
+    } else {
+        // Draw placeholder for waveform
+        label.setAlpha(0.15f);
+        Path roundedRectanglePath;
+        roundedRectanglePath.addRoundedRectangle(getLocalBounds().reduced(Utils::scale(15)), Utils::scale(15));
+        float dashedLength[2];
+        dashedLength[0] = Utils::scale(12);
+        dashedLength[1] = Utils::scale(Utils::winMac(16, 18));
+        PathStrokeType dottedPathStrokeType(Utils::scale(1.5f));
+        dottedPathStrokeType.createDashedStroke(roundedRectanglePath, roundedRectanglePath, dashedLength, 2, AffineTransform::translation(0, 0), 4.0);
+        g.strokePath(roundedRectanglePath, dottedPathStrokeType);
+    }
+    
+    if (hoverState == FileDropperComponent::ValidHover) {
+        g.setColour(Colours::black.withAlpha(0.12f));
+        g.fillPath(roundedBoundsPath);
+    }
 }
 
 void FileDropperComponent::resized() {
@@ -83,11 +78,6 @@ void FileDropperComponent::resized() {
 	label.setBounds(displayBounds);
 	fileDropperShadowComponent.setBounds(displayBounds);
 }
-
-String FileDropperComponent::getAbsoluteFilePath() const {
-	return absoluteFilePath;
-}
-
 
 void FileDropperComponent::changeState(FilledState newFilledState, HoverState newHoverState) {
 	if (filledState != newFilledState || hoverState != newHoverState) {
@@ -123,24 +113,11 @@ void FileDropperComponent::fileDragExit(const StringArray& files) {
 }
 
 void FileDropperComponent::filesDropped(const StringArray& files, int x, int y) {
-	label.setEnabled(false);
-	changeState(Filled, NoHover);
-	File file(files[0]);
-	AudioFormatReader *reader = formatManager.createReaderFor(file);
-	if (reader != nullptr) {
-		thumbnail.setSource(new FileInputSource(file));
-		processor.loadNewFile(reader);
-		delete reader;
-	}
+    processor.loadNewFile(files[0]);
+    changeState(Filled, NoHover);
 }
-/* End FileDragAndDropTarget callbacks */
 
-void FileDropperComponent::changeListenerCallback(ChangeBroadcaster* source) {
-	if (source == &thumbnail) {
-		// Repaint is already handled by changeState()
-		// repaint();
-	}
-}
+/* End FileDragAndDropTarget callbacks */
 
 void FileDropperShadowComponent::paint(Graphics& g) {
 	Path boundsPath;

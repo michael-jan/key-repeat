@@ -138,8 +138,7 @@ KeyswitchDisplayInfoElement* KeyswitchManager::getDisplayElements() {
 	static String noteNames[4][7] = { 
 		{ "C0", "C#0", "D0", "D#0", "E0", "F0", "F#0" },
 		{ "C1", "C#1", "D1", "D#1", "E1", "F1", "F#1" },
-		{ "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2" },
-		{ "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3" }
+		{ "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2" }
 	};
 	static String keyswitchNamesSeparateTripletButton[] = { "1/4", "1/8", "1/16", "1/32", "1/64", "Trip", "Off" };
 	static String keyswitchNamesNoSeparateTripletButton[] = { "1/8", "1/8T", "1/16", "1/16T", "1/32", "1/32T", "Off" };
@@ -152,15 +151,19 @@ KeyswitchDisplayInfoElement* KeyswitchManager::getDisplayElements() {
 		displayElements[i].isEnabled = true;
 	}
 
+    int offIndex = getOffNoteNumber() - getFirstKeyswitchNoteNumber();
+
 	if (separateTripletButton) {
 		int tripletIndex = getTripletNoteNumber() - getFirstKeyswitchNoteNumber();
 		displayElements[currentRepeatState / 2].isActive = true;
 		displayElements[tripletIndex].isActive = currentRepeatState % 2 == 1;
 	} else {
-		displayElements[currentRepeatState - 2].isActive = true;
+        // Ideally this should be just currentRepeatState - 2, but the jmin catches an
+        // out-of-bounds that probably occurs in the edge case where the separateTripletButton flag
+        // is stale for a moment before updating.
+		displayElements[jmin(currentRepeatState - 2, NUM_KEYSWITCH_KEYS - 1)].isActive = true;
 	}
 
-	int offIndex = getOffNoteNumber() - getFirstKeyswitchNoteNumber();
 	displayElements[offIndex].isActive = isNoteOn(getOffNoteNumber());
 	displayElements[offIndex].isEnabled = latch;
 	return displayElements;

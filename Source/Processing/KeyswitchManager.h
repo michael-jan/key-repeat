@@ -43,7 +43,7 @@ public:
 
 	bool isRepeatOff() const { return currentRepeatState == Off; }
 
-	KeyswitchDisplayInfoElement* getDisplayElements();
+	KeyswitchDisplayInfoElement *getDisplayElements();
 
 private:
 		

@@ -6,14 +6,12 @@
 #include "KeyswitchManager.h"
 #include "../Graphics/MyLookAndFeel.h"
 
-const bool DEBUG_TRIGGER = false;
-
 const int ALL_CHANNELS = 0xFFFFFFFF;
 const int NUM_MIDI_KEYS = 128;
 const int NUM_MIDI_CHANNELS = 16;
 const double MAX_SAMPLE_LENGTH_SEC = 20.0;
 
-const float EPSILON = 0.0004f;
+const float EPSILON = 0.00001f;
 const double PI = 3.141592653589793238463;
 
 class KeyRepeatAudioProcessor :
@@ -54,11 +52,12 @@ public:
 	void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-	void loadNewFile(AudioFormatReader *reader);
+	void loadNewFile(String filePath);
 
 	AudioProcessorValueTreeState& getVTS() { return parameters; }
 	KeyswitchManager& getKeyswitchManager() { return keyswitchManager; }
 	NumboxLAF& getNumboxLAF() { return numboxLAF; }
+    AudioThumbnail& getAudioThumbnail() { return audioThumbnail; }
 
 private:
 
@@ -70,6 +69,13 @@ private:
 
 	MyLookAndFeel myLookAndFeel;
 	NumboxLAF numboxLAF;
+    
+    // for the user-selected sample
+    AudioFormatManager audioFormatManager;
+    AudioThumbnailCache audioThumbnailCache;
+    AudioThumbnail audioThumbnail;
+    std::unique_ptr<AudioFormatReader> audioFormatReader;
+    AudioBuffer<float> audioBuffer;
 
 	// used when not playing/recording in timeline
 	double fakeSamplesIntoMeasure;
@@ -81,19 +87,21 @@ private:
 	double lastNextBeatsIntoMeasure;
 	bool wasLastHitOnFour;
 
-
 	void fillProcessBlockInfo(ProcessBlockInfo& info, const AudioBuffer<float>& buffer);
 	void updateKeyboardState(const MidiBuffer& midiMessages);
 	void addAllNonKeyswitchMidiMessages(MidiBuffer& newMidiMessages, const MidiBuffer& midiMessages);
 	void transformMidiMessages(MidiBuffer& newMidiMessages, const ProcessBlockInfo& info);
 
+    // called once per audio callback
 	void updateADSR();
 	void updatePitch(MidiBuffer& midiMessages);
 	void updateLevel(AudioBuffer<float>& buffer);
 	void updatePan(AudioBuffer<float>& buffer);
-
-
+    
+    void changeSound();
+    
 	AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    void linkParameterValues();
 
 	Value pitchParameter;
 	Value panParameter;
@@ -114,6 +122,6 @@ private:
 	Value easyParameter;
 	Value latchParameter;
 	Value keyswitchOctaveParameter;
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyRepeatAudioProcessor)
 };
