@@ -53,7 +53,7 @@ void TopComponent::resized() {
 		.withTrimmedTop(Utils::scale(7))
 		.withTrimmedBottom(Utils::scale(22));
 
-	int knobWidth = getWidth() / 10;
+	int knobWidth = getWidth() / 11;
 	int labelOffset = Utils::scale(2);
 
 	levelKnob.setBounds(controlsRect.removeFromRight(knobWidth));
@@ -89,21 +89,21 @@ void TopLogoComponent::paint(Graphics& g) {
     Rectangle<float> arrowRectangularPart = getLocalBounds().removeFromLeft(Utils::scale(206)).toFloat();
     arrow.addRectangle(arrowRectangularPart);
     arrow.startNewSubPath(arrowRectangularPart.getTopRight().toFloat());
-    arrow.lineTo(arrowRectangularPart.getRight() + Utils::scale(56), arrowRectangularPart.getCentreY());
+    arrow.lineTo(arrowRectangularPart.getRight() + Utils::scale(45), arrowRectangularPart.getCentreY());
     arrow.lineTo(arrowRectangularPart.getBottomRight());
     arrow.closeSubPath();
 
-    arrow.applyTransform(AffineTransform::translation(Utils::scale(38), 0));
+    arrow.applyTransform(AffineTransform::translation(Utils::scale(34), 0));
     Utils::drawPathShadow(g, arrow, Utils::scale(10), 0.08f);
     g.setColour(MyLookAndFeel::DARK_PINK);
     g.fillPath(arrow);
 
-    arrow.applyTransform(AffineTransform::translation(Utils::scale(-19), 0));
+    arrow.applyTransform(AffineTransform::translation(Utils::scale(-17), 0));
     Utils::drawPathShadow(g, arrow, Utils::scale(11), 0.08f);
     g.setColour(MyLookAndFeel::PINK);
     g.fillPath(arrow);
 
-    arrow.applyTransform(AffineTransform::translation(Utils::scale(-19) - 1, 0));
+    arrow.applyTransform(AffineTransform::translation(Utils::scale(-17) - 1, 0));
     Utils::drawPathShadow(g, arrow, Utils::scale(12), 0.08f);
     g.setColour(MyLookAndFeel::LIGHT_PINK);
     g.fillPath(arrow);

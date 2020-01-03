@@ -57,10 +57,8 @@ void FileDropperComponent::paint(Graphics& g) {
         // Draw placeholder for waveform
         label.setAlpha(0.15f);
         Path roundedRectanglePath;
-        roundedRectanglePath.addRoundedRectangle(getLocalBounds().reduced(Utils::scale(15)), Utils::scale(15));
-        float dashedLength[2];
-        dashedLength[0] = Utils::scale(12);
-        dashedLength[1] = Utils::scale(Utils::winMac(16, 18));
+        roundedRectanglePath.addRoundedRectangle(getLocalBounds().reduced(Utils::scale(15)), Utils::scale(14.5));
+        float dashedLength[] = { (float) Utils::scale(12), (float) Utils::scale(14) };
         PathStrokeType dottedPathStrokeType(Utils::scale(1.5f));
         dottedPathStrokeType.createDashedStroke(roundedRectanglePath, roundedRectanglePath, dashedLength, 2, AffineTransform::translation(0, 0), 4.0);
         g.strokePath(roundedRectanglePath, dottedPathStrokeType);
@@ -144,6 +142,6 @@ void FileDropperShadowComponent::drawInnerShadow(Graphics &g, Path target) {
 	// being drawn outside of the shape to cast the shadow on
 	g.reduceClipRegion(target);
 
-	DropShadow ds(MyLookAndFeel::BLACK.withAlpha(0.6f), Utils::scale(30), { 0, 0 });
+	DropShadow ds(MyLookAndFeel::BLACK.withAlpha(0.4f), Utils::scale(55), { 0, 0 });
 	ds.drawForPath(g, shadowPath);
 }

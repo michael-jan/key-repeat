@@ -50,9 +50,9 @@ void MiddleShadowComponent::paint(Graphics& g) {
 	Line<float> bottomLine(0, getHeight(), getWidth(), getHeight());
 	Line<float> rightLine(getWidth() / 2, 0, getWidth() / 2, getHeight());
 	Utils::drawLineShadow(g, topLine, Utils::scale(12), 0.7f);
-	Utils::drawLineShadow(g, topLineSmallerForArrow1, Utils::scale(14), 0.1f);
-	Utils::drawLineShadow(g, topLineSmallerForArrow2, Utils::scale(12), 0.1f);
-	Utils::drawLineShadow(g, topLineSmallerForArrow3, Utils::scale(10), 0.3f);
+	Utils::drawLineShadow(g, topLineSmallerForArrow1, Utils::scale(18), 0.1f);
+	Utils::drawLineShadow(g, topLineSmallerForArrow2, Utils::scale(16), 0.1f);
+	Utils::drawLineShadow(g, topLineSmallerForArrow3, Utils::scale(14), 0.3f);
 	Utils::drawLineShadow(g, bottomLine, Utils::scale(12), 0.7f);
 	Utils::drawLineShadow(g, rightLine, Utils::scale(12), 0.7f);
 }
