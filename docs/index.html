@@ -6,26 +6,33 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
+        <title>Key Repeat (VST/AU)</title>
+        <link rel="stylesheet" href="css/style.css">
     </head>
 
     <body>
         <div class="top-container">
-            <h1>Key Repeat</h1>
-            <h2>VST / AU</h2>
-            <nav>
-                <ul>
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">Download</a></li>
-                    <li><a href="#">Manual</a></li>
-                </ul>
-            </nav>
-            <img src="images/plugin-screenshot.png" alt="Key Repeat plugin screenshot">
-            <h3>Key Repeat is a free beat repeat sampler.</h3>
-            <h3>Use it to record note repeats and stutters in a DAW.</h3>
+            <header class="top-container-inside">
+                <div>
+                    <h1 class="logo">Key Repeat</h1>
+                    <h2 class="logo">VST / AU</h2>    
+                </div>
+                <nav>
+                    <ul class = "menu">
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Download</a></li>
+                        <li><a href="#">Manual</a></li>
+                    </ul>
+                </nav>
+            </header>
         </div>
 
-        <div class="features">
+        <div class="hero-container">
+            <img src="images/plugin-screenshot.png" alt="Key Repeat plugin screenshot" class="screenshot">
+            <h3>Key Repeat is a free beat repeat sampler.<br>Use it to record note repeats and stutters in a DAW.</h3>
+        </div>
+
+        <div class="features-container">
             <h4 class="white">FEATURES</h4>
             <ul>
                 <li>
@@ -43,11 +50,29 @@
             </ul>
         </div>
 
-        <div class="download">
+        <div class="download-container">
             <h4 class="color">DOWNLOAD</h4>
-            <p>Key Repeat is free and <a href="#">open</a> source. The plugin is available in VST3 and AU formats, and must be run in a digital audio workstation (DAW).</p>
+            <p>Key Repeat is free and <a href="https://github.com/michael-jan/key-repeat'">open source</a>. The plugin is available in VST3 and AU formats, and must be run in a digital audio workstation (DAW).</p>
             <p>We support Windows 7/8/10 and macOS Sierra or newer.</p>
-            <p>If you run into any issues, please <a href="#">contact us</a>.</p>
+            <span>
+                <img src="images/windows.svg" alt="Windows logo">
+                <button class="transparent dark">VST3</button>
+            </span>
+            <span>
+                <img src="images/apple.svg" alt="Apple logo">
+                <button class="transparent dark">VST3</button>
+                <button class="transparent dark">AU</button>
+            </span>
+            <p>If you run into any issues, please <a href="mailto:michaeljancontact@gmail.com">contact us</a>.</p>
+        </div>
+
+        <div class="manual-container">
+            <button class="filled light">Open Manual</button>
+            <button class="transparent light" onclick="window.location.href = 'https://github.com/michael-jan/key-repeat'">View Code on Github</button>
+        </div>
+
+        <div class="bottom-container">
+            <p class="light-text">Made by Michael Jan</p>
         </div>
     </body>
 
