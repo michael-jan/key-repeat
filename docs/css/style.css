@@ -88,8 +88,9 @@ header {
 
 h1 {
     font-size: 2em;
+    font-weight: bold;
     text-shadow: 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.1);
-    margin-top: 0.35em;
+    margin-top: 0.5em;
     margin-left: 0.6em;
 }
 
@@ -97,7 +98,7 @@ h2 {
     font-size: 1em;
     font-weight: normal;
     text-shadow: 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.1);
-    margin-top: -1.7em;
+    margin-top: -0.7em;
     margin-left: -5em;
 }
 
@@ -105,9 +106,7 @@ h3 {
     font-size: calc(0.7vw + 1.03em);
     font-weight: normal;
     line-height: 1.4em;
-    margin-top: 0;
-    margin-left: 0.2em;
-    margin-right: 0.2em;
+    margin: 0 0.2em calc(0.2vw + 0.1em) 0.2em;
 }
 
 h4 {
@@ -115,9 +114,9 @@ h4 {
     font-weight: bold;
     font-size: calc(0.2vw + 1.4em);
     text-align: center;
-    padding-top: calc(1.5% + 18px);
+    padding-top: calc(0.4% + 18px);
     margin-top: 0;
-    margin-bottom: calc(1.5% + 9px);
+    padding-top: calc(0.4% + 18px);
 }
 
 h5 {
@@ -138,12 +137,12 @@ h5 {
 .features-container {
     margin-top: calc(3.5% + 30px);
     padding-bottom: calc(1% + 25px);
+    margin-bottom: 0px;
 }
 
 .card {
     background: var(--light-color);
-    width: 85%;
-    margin: 22px auto 20px auto;
+    margin: 20px auto 20px auto;
     padding: 20px;
     border-radius: 20px;
 }
@@ -151,12 +150,14 @@ h5 {
 .download-container {
     text-align: center;
     max-width: 600px;
-    margin: auto
+    margin: 0px auto 20px auto;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 .icon {
     width: 1.5em;
-    transform: translateY(5px);
+    transform: translateY(-2px);
 }
 
 .links { 
@@ -199,8 +200,8 @@ h5 {
 }
 
 .manual-container {
-    margin-top: calc(3.5% + 30px);
-    padding-bottom: calc(60px);
+    margin-top: calc(0.5% + 20px);
+    padding-bottom: calc(35px);
     text-align: center;
 }
 
@@ -239,19 +240,23 @@ h5 {
     transition-duration: 0.2s;
 }
 
-@media only screen and (min-width: 800px) {
+.bottom-container {
+    background: rgb(61,60,64);
+    background: linear-gradient(50deg, rgba(61,60,64,1) 0%, rgba(74,72,78,1) 100%);
+    height: 100px;
+    color: var(--light-color);
+    text-align: center;
+    padding: 40px;
+}
+
+@media only screen and (min-width: 1200px) {
     .features-container {
-        padding-left: 10px;
-        padding-right: 10px;
-        margin: 0 auto;
+        margin-bottom: 25px;
     }
+}
+
+@media only screen and (max-width: 1200px) {
     .card {
-        width: 70%;
-        margin: 20px;
-        min-height: 21vw;
-    }
-    .features-container ul {
-        display: flex;
-        align-items: center;
+        max-width: 550px;
     }
 }
