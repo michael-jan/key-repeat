@@ -4,7 +4,9 @@
 :root {
     --main-bg-color: #fafaff;
     --black-color: #434343;
+    --grey-color: #6f6f6f;
     --white-color: #ffffff;
+    --light-color: rgba(255, 255, 255, 0.8);
     --color-1: rgb(246,142,255);
     --color-2: rgb(179,143,255);
 }
@@ -22,8 +24,10 @@ body {
 }
 
 p {
-    font-size: 1em;
-    line-height: 1em;
+    font-size: 1.05em;
+    line-height: 1.45em;
+    padding: 0;
+    margin: 0;
 }
 
 ul {
@@ -43,7 +47,7 @@ ul {
 
 .gradient-1 {
     background: rgb(234,149,255);
-    background: linear-gradient(50deg, rgba(234,149,255,1) 25%, rgba(179,143,255,1) 100%);
+    background: linear-gradient(80deg, rgba(234,149,255,1) 30%, rgba(179,143,255,1) 100%);
 }
 
 .black {
@@ -55,8 +59,7 @@ ul {
 }
 
 .light {
-    color: var(--white-color);
-    opacity: 0.8;
+    color: var(--light-color);
 }
 
 .color {
@@ -110,9 +113,18 @@ h3 {
 h4 {
     font-family: 'Athiti', sans-serif;
     font-weight: bold;
-    font-size: calc(0.3vw + 1.2em);
+    font-size: calc(0.2vw + 1.4em);
     text-align: center;
-    padding-top: calc(1.5% + 15px);
+    padding-top: calc(1.5% + 18px);
+    margin-top: 0;
+    margin-bottom: calc(1.5% + 9px);
+}
+
+h5 {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 9px;
 }
 
 .screenshot {
@@ -124,6 +136,122 @@ h4 {
 }
 
 .features-container {
-    margin-top: calc(3.5% + 25px);
+    margin-top: calc(3.5% + 30px);
+    padding-bottom: calc(1% + 25px);
 }
 
+.card {
+    background: var(--light-color);
+    width: 85%;
+    margin: 22px auto 20px auto;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.download-container {
+    text-align: center;
+    max-width: 600px;
+    margin: auto
+}
+
+.icon {
+    width: 1.5em;
+    transform: translateY(5px);
+}
+
+.links { 
+    margin: 35px auto;
+}
+
+.download-container button {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0 0 5px 10px;
+    width: 100px;
+    border-radius: 10px;
+    font-size: 1.05em;
+    text-align: center;
+    color: var(--grey-color);
+    transition-duration: 0.2s;
+}
+
+.download-container button:hover {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0 0 5px 10px;
+    width: 100px;
+    border-radius: 10px;
+    font-size: 1.05em;
+    text-align: center;
+    background-color: var(--black-color);
+    color: var(--light-color);
+    transition-duration: 0.2s;
+}
+
+.transparent {
+    border-color: var(--black-color);
+    background: transparent;
+    color: var(--black-color);
+}
+
+.ghost {
+    visibility: hidden;    
+}
+
+.manual-container {
+    margin-top: calc(3.5% + 30px);
+    padding-bottom: calc(60px);
+    text-align: center;
+}
+
+.manual-container button {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 5px 0 5px 0;
+    width: 200px;
+    border-radius: 10px;
+    font-size: 1.05em;
+    text-align: center;
+    border-color: var(--light-color);
+}
+
+.btn-filled {
+    background: var(--light-color);
+    color: rgba(67, 67, 67, 0.8);
+    transition-duration: 0.2s;
+}
+
+.btn-filled:hover {
+    background: transparent;
+    color: var(--light-color);
+    transition-duration: 0.2s;
+}
+
+.btn-light-transparent {
+    background: transparent;
+    color: var(--light-color);
+    transition-duration: 0.2s;
+}
+
+.btn-light-transparent:hover {
+    background: var(--light-color);
+    color: rgba(67, 67, 67, 0.8);
+    transition-duration: 0.2s;
+}
+
+@media only screen and (min-width: 800px) {
+    .features-container {
+        padding-left: 10px;
+        padding-right: 10px;
+        margin: 0 auto;
+    }
+    .card {
+        width: 70%;
+        margin: 20px;
+        min-height: 21vw;
+    }
+    .features-container ul {
+        display: flex;
+        align-items: center;
+    }
+}
