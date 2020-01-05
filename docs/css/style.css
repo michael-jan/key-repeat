@@ -12,15 +12,14 @@
 }
 
 body {
-    margin: 0;
-    background: var(--main-bg-color);
     font-family: 'Nunito', sans-serif;
+    background: #ECEFFF;
 }
 
-.max-width {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1400px;
+.whole-site {
+    margin: auto;
+    background: var(--main-bg-color);
+    max-width: 1200px;
 }
 
 p {
@@ -50,6 +49,11 @@ ul {
     background: linear-gradient(80deg, rgba(234,149,255,1) 30%, rgba(179,143,255,1) 100%);
 }
 
+.gradient-2 {
+    background: rgb(234,149,255);
+    background: linear-gradient(80deg, rgba(179,143,255,1) 0%, rgba(234,149,255,1) 100%);
+}
+
 .black {
     color: var(--black-color);
 }
@@ -70,7 +74,7 @@ ul {
 }
 
 .box-shadow {
-    box-shadow: 0.0em 0.0em 0.6em rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.3);
 }
 
 header {
@@ -111,8 +115,8 @@ h3 {
 
 h4 {
     font-family: 'Athiti', sans-serif;
-    font-weight: bold;
     font-size: calc(0.2vw + 1.4em);
+    font-weight: bold;
     text-align: center;
     padding-top: calc(0.4% + 18px);
     margin-top: 0;
@@ -122,13 +126,14 @@ h4 {
 h5 {
     text-align: center;
     font-size: 1.2em;
+    font-weight: bold;
     margin-top: 0;
     margin-bottom: 9px;
 }
 
 .screenshot {
     width: 90%;
-    max-width: 900px;
+    max-width: 800px;
     box-shadow: 0em 0em 1.5em rgba(0, 0, 0, 0.2);
     margin-top: calc(3% + 30px);
     margin-bottom: calc(2.5%);
@@ -158,6 +163,8 @@ h5 {
 .icon {
     width: 1.5em;
     transform: translateY(-2px);
+    /* trick to set color of svg to var(--black-color) */
+    filter: invert(24%) sepia(0%) saturate(0%) hue-rotate(188deg) brightness(91%) contrast(85%);
 }
 
 .links { 
@@ -165,11 +172,13 @@ h5 {
 }
 
 .download-container button {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin: 0 0 5px 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin: 0 0 10px 10px;
     width: 100px;
     border-radius: 10px;
+    border-color: transparent;
+    box-shadow: 0 0 0 1pt var(--black-color);
     font-size: 1.05em;
     text-align: center;
     color: var(--grey-color);
@@ -190,8 +199,8 @@ h5 {
 }
 
 .transparent {
-    border-color: var(--black-color);
-    background: transparent;
+    border: 1px solid var(--black-color);
+    background-color: transparent;
     color: var(--black-color);
 }
 
@@ -211,33 +220,39 @@ h5 {
     margin: 5px 0 5px 0;
     width: 200px;
     border-radius: 10px;
+    border-color: transparent;
+    box-shadow: 0 0 0 1pt var(--light-color);
     font-size: 1.05em;
     text-align: center;
-    border-color: var(--light-color);
+    transition-duration: 0.2s;
+}
+
+.dark {
+    border: 1px solid var(--black-color);
+}
+
+button:focus {
+    outline: none;
 }
 
 .btn-filled {
-    background: var(--light-color);
+    background-color: var(--light-color);
     color: rgba(67, 67, 67, 0.8);
-    transition-duration: 0.2s;
 }
 
 .btn-filled:hover {
-    background: transparent;
+    background-color: transparent;
     color: var(--light-color);
-    transition-duration: 0.2s;
 }
 
 .btn-light-transparent {
-    background: transparent;
+    background-color: transparent;
     color: var(--light-color);
-    transition-duration: 0.2s;
 }
 
 .btn-light-transparent:hover {
-    background: var(--light-color);
+    background-color: var(--light-color);
     color: rgba(67, 67, 67, 0.8);
-    transition-duration: 0.2s;
 }
 
 .bottom-container {
@@ -249,12 +264,18 @@ h5 {
     padding: 2em;
 }
 
+/* big screens */
 @media only screen and (min-width: 1200px) {
+    .whole-site {
+        margin: 35px auto;
+        box-shadow: 0 0 0.8em rgba(0, 0, 0, 0.15);
+    }
     .features-container {
         margin-bottom: 25px;
     }
 }
 
+/* small screens */
 @media only screen and (max-width: 1200px) {
     .card {
         max-width: 550px;
