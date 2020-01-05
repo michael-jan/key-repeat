@@ -186,16 +186,8 @@ h5 {
 }
 
 .download-container button:hover {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin: 0 0 5px 10px;
-    width: 100px;
-    border-radius: 10px;
-    font-size: 1.05em;
-    text-align: center;
     background-color: var(--black-color);
     color: var(--light-color);
-    transition-duration: 0.2s;
 }
 
 .transparent {
