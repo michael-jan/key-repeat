@@ -7,88 +7,102 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Key Repeat (VST/AU)</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
 
     <body>
-        <div class="whole-site">
-            <header class="gradient-1 box-shadow">
-                <div>
+        <div class="whole-site container">
+
+            <div class="gradient-1 box-shadow mb-3 row">
+                <div class="col-12">
                     <h1 class="white">Key Repeat</h1>
                     <h2 class="light">VST / AU</h2>    
+                    <nav>
+                        <ul class="menu mobile-hide">
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Download</a></li>
+                            <li><a href="#">Manual</a></li>
+                        </ul>
+                    </nav>
                 </div>
-                <nav>
-                    <ul class = "menu mobile-hide">
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Download</a></li>
-                        <li><a href="#">Manual</a></li>
-                    </ul>
-                </nav>
-            </header>
-
-            <div class="hero-container">
-                <img src="images/plugin-screenshot.png" alt="Key Repeat plugin screenshot" class="screenshot animated fadeInUp">
-                <h3 class="black">Key Repeat is a free beat repeat sampler.<br>Use it to record note repeats and stutters in a DAW.</h3>
             </div>
 
-            <div class="features-container gradient-1 box-shadow col-lg-12">
-                <h4 class="light">FEATURES</h4>
-                <ul class="black">
-                    <li class="col-lg-4">
-                        <div class="card">
-                            <h5>Simple and intuitive</h5>
-                            <p>Drag in any audio sample and Key Repeat automatically syncs to your DAW’s tempo. Creating hi-hat patterns, snare rolls, and stutters has never been easier.</p>
-                        </div>
-                    </li>
-                    <li class="col-lg-4">
-                        <div class="card">
+
+            <div class="hero-container row">
+                <div class="col-12">
+                    <img src="images/plugin-screenshot.png" alt="Key Repeat plugin screenshot" class="screenshot animated fadeInUp mt-5">
+                    <h3 class="black mt-4">Key Repeat is a free beat repeat sampler.<br>Use it to record note repeats and stutters in a DAW.</h3>
+                </div>
+            </div>
+
+
+            <div class="features-container gradient-1 box-shadow black text-center mt-5 row">
+                <div class="col-12 mt-4"> 
+                    <h4 class="light mb-3">FEATURES</h4> 
+                    <div class="ml-1 mr-1 row">
+                        <div class="col-lg-4 col-12 mt-0 mb-4"> <div class="card text-left p-3">
+                                <h5>Simple and intuitive</h5>
+                                <p>Drag in any audio sample and Key Repeat automatically syncs to your DAW’s tempo. Creating hi-hat patterns, snare rolls, and stutters has never been easier.</p>
+                        </div> </div>
+                        <div class="col-lg-4 col-12 mt-0 mb-4"> <div class="card text-left p-3">
                             <h5>Keyswitch controlled repeats</h5>
                             <p>Key Repeat lets you adjust repeat rate on the fly using keyswitches. Although they default to C0 thru F#0, they can be modified to suit the size of your keyboard.</p>
-                        </div>
-                    </li>
-                    <li class="col-lg-4">
-                        <div class="card">
+                        </div> </div>
+                        <div class="col-lg-4 col-12 mt-0 mb-4"> <div class="card text-left p-3">
                             <h5>Lightweight yet customizable</h5>
                             <p>Key Repeat leaves a minimal memory/CPU footprint, yet comes with a complete set of controls. Try our Latch and EZ Triplet modes, and pick the one that’s most intuitive for you!</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="download-container">
-                <h4 class="color">DOWNLOAD</h4>
-                <p>Key Repeat is free and <a href="https://github.com/michael-jan/key-repeat'">open source</a>. The plugin is available in VST3 and AU formats, and must be run in a digital audio workstation (DAW).</p>
-                <br>
-                <p>We support Windows 7/8/10 and macOS Sierra or newer.</p>
-                <div class="links">
-                    <span>
-                        <img src="images/windows.svg" alt="Windows logo" class="icon">
-                        <button class="transparent dark">VST3</button>
-                        <button class="ghost"></button>
-                    </span>
-                    <br>
-                    <span>
-                        <img src="images/apple.svg" alt="Apple logo" class="icon">
-                        <button class="transparent dark">VST3</button>
-                        <button class="transparent dark">AU</button>
-                    </span>
+                        </div> </div>
+                    </div>
                 </div>
-                <p>If you run into any issues, please <a href="mailto:michaeljancontact@gmail.com">contact us</a>. We'd love to help you get up and running!</p>
             </div>
 
-            <div class="manual-container box-shadow gradient-2">
-                <h4 class="light">MANUAL</h4>
-                <button class="btn-filled">Open Manual</button>
-                <br>
-                <button class="btn-light-transparent" onclick="window.location.href = 'https://github.com/michael-jan/key-repeat'">View Code on Github</button>
+
+            <div class="download-container mx-auto row">
+                <div class="col-12">
+                    <div class="col-12 mt-4 mb-3"> <h4 class="color">DOWNLOAD</h4> </div>
+                    <p>Key Repeat is free and <a href="https://github.com/michael-jan/key-repeat">open source</a>. The plugin is available in VST3 and AU formats, and must be run in a digital audio workstation (DAW).</p>
+                    <p>We support Windows 7/8/10 and macOS Sierra or newer.</p>
+                    <div class="links">
+                        <span>
+                            <img src="images/windows.svg" alt="Windows logo" class="icon mr-2">
+                            <button class="transparent dark mr-2 mb-2">VST3</button>
+                            <button class="ghost dark mr-2 mb-2"></button>
+                        </span>
+                        <br>
+                        <span>
+                            <img src="images/apple.svg" alt="Apple logo" class="icon mr-2">
+                            <button class="transparent dark dark mr-2 mb-2 mt-1">VST3</button>
+                            <button class="transparent dark dark mr-2 mb-2 mt-1">AU</button>
+                        </span>
+                    </div>
+                    <p>If you run into any issues, please <a href="mailto:michaeljancontact@gmail.com">contact us</a>. We'd love to help you get up and running!</p>
+                </div>
             </div>
 
-            <div class="bottom-container box-shadow">
-                <p class="light-text">Made by Michael Jan</p>
-            </div>     
-        </div>                             
+
+            <div class="manual-container box-shadow gradient-2 mt-4 text-center row">
+                <div class="col-12 mb-5">
+                    <div class="col-12 mt-4 mb-3"> <h4 class="light">MANUAL</h4> </div>
+                    <button class="btn-filled m-1">Open Manual</button>
+                    <button class="btn-light-transparent m-1" onclick="window.location.href='https://github.com/michael-jan/key-repeat'">View Code on Github</button>
+                </div>
+            </div>
+
+
+            <div class="bottom-container box-shadow row">
+                <div class="col-12 mt-4">
+                    <p class="light-text mt-2">Made by Michael Jan</p>
+                </div>
+            </div>  
+
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
     </body>
 
 </html>

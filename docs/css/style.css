@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css?family=Athiti:700&display=swap');
 
 :root {
-    --main-bg-color: #fafaff;
-    --black-color: #434343;
-    --grey-color: #6f6f6f;
-    --white-color: #ffffff;
-    --light-color: rgba(255, 255, 255, 0.8);
-    --color-1: rgb(246,142,255);
-    --color-2: rgb(179,143,255);
+    --main-bg-color:    #fafaff;
+    --black-color:      #434343;
+    --grey-color:       #6f6f6f;
+    --white-color:      #ffffff;
+    --light-color:      rgba(255, 255, 255, 0.8);
+    --color-1:          rgb(246,142,255);
+    --color-2:          rgb(179,143,255);
 }
 
 body {
@@ -25,18 +25,13 @@ body {
 p {
     font-size: 1.05em;
     line-height: 1.45em;
-    padding: 0;
-    margin: 0;
 }
 
 ul {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
 }
 
 .menu {
-    padding-top: 45%;
     font-size: 1.5em;
 }
 
@@ -94,70 +89,55 @@ h1 {
     font-size: 2em;
     font-weight: bold;
     text-shadow: 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.1);
-    margin-top: 0.5em;
-    margin-left: 0.6em;
+    margin-top: 0.3em;
+    margin-bottom: -0.02em;
 }
 
 h2 {
     font-size: 1em;
     font-weight: normal;
     text-shadow: 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.1);
-    margin-top: -0.7em;
-    margin-left: -5em;
+    margin-left: 0.12em;
+    margin-bottom: 0.97em;
 }
 
 h3 {
-    font-size: calc(0.7vw + 1.03em);
+    font-size: calc(0.65vw + 1.03em);
     font-weight: normal;
     line-height: 1.4em;
-    margin: 0 0.2em calc(0.2vw + 0.1em) 0.2em;
 }
 
 h4 {
     font-family: 'Athiti', sans-serif;
     font-size: calc(0.2vw + 1.4em);
     font-weight: bold;
-    text-align: center;
-    padding-top: calc(0.4% + 18px);
-    margin-top: 0;
-    padding-top: calc(0.4% + 18px);
 }
 
 h5 {
     text-align: center;
     font-size: 1.2em;
     font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 9px;
 }
 
 .screenshot {
     width: 90%;
     max-width: 800px;
     box-shadow: 0em 0em 1.5em rgba(0, 0, 0, 0.25);
-    margin-top: calc(3% + 30px);
-    margin-bottom: calc(2.5%);
 }
 
 .features-container {
-    margin-top: calc(3.5% + 30px);
+    position: relative;
     padding-bottom: calc(1% + 25px);
-    margin-bottom: 0px;
 }
 
 .card {
     background: var(--light-color);
-    margin: 20px auto 20px auto;
-    padding: 20px;
     border-radius: 20px;
 }
 
 .download-container {
     text-align: center;
     max-width: 600px;
-    margin: 0px auto 20px auto;
-    padding-right: 10px;
-    padding-left: 10px;
 }
 
 .icon {
@@ -172,9 +152,6 @@ h5 {
 }
 
 .download-container button {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin: 0 0 10px 10px;
     width: 100px;
     border-radius: 10px;
     border-color: transparent;
@@ -200,16 +177,7 @@ h5 {
     visibility: hidden;    
 }
 
-.manual-container {
-    margin-top: calc(0.5% + 20px);
-    padding-bottom: calc(35px);
-    text-align: center;
-}
-
 .manual-container button {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin: 5px 0 5px 0;
     width: 200px;
     border-radius: 10px;
     border-color: transparent;
@@ -251,25 +219,17 @@ button:focus {
     height: 5.5em;
     color: var(--light-color);
     text-align: center;
-    padding: 2em;
     background: rgb(61,60,64);
     background: linear-gradient(50deg, rgba(61,60,64,1) 0%, rgba(74,72,78,1) 100%);
 }
 
-/* big screens */
+/* large screens */
 @media only screen and (min-width: 1200px) {
     .whole-site {
         margin: 35px auto;
         box-shadow: 0 0 0.8em rgba(0, 0, 0, 0.15);
     }
-    .features-container {
-        margin-bottom: 25px;
-    }
-}
-
-/* small screens */
-@media only screen and (max-width: 1200px) {
-    .card {
-        max-width: 550px;
+    h3 {
+        font-size: 1.5em;
     }
 }
