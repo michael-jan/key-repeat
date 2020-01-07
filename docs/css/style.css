@@ -109,7 +109,7 @@ h3 {
 
 h4 {
     font-family: 'Athiti', sans-serif;
-    font-size: calc(0.2vw + 1.4em);
+    font-size: 1.5em;
     font-weight: bold;
 }
 
@@ -231,5 +231,15 @@ button:focus {
     }
     h3 {
         font-size: 1.5em;
+    }
+}
+
+/* large screens */
+@media only screen and (max-width: 960px) {
+    .screenshot {
+        margin: 25px auto -8px auto !important; 
+    }
+    .features-container {
+        margin-top: 26px !important;
     }
 }
