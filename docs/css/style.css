@@ -7,7 +7,7 @@
     --grey-color:       #6f6f6f;
     --white-color:      #ffffff;
     --light-color:      rgba(255, 255, 255, 0.8);
-    --color-1:          rgb(246,142,255);
+    --color-1:          rgb(239,138,255);
     --color-2:          rgb(179,143,255);
 }
 
@@ -40,13 +40,13 @@ ul {
 }
 
 .gradient-1 {
-    background: rgb(234,149,255);
-    background: linear-gradient(80deg, rgba(234,149,255,1) 30%, rgba(179,143,255,1) 100%);
+    background: rgb(239,138,255);
+    background: linear-gradient(80deg, rgb(239,138,255,1) 30%, rgba(179,143,255,1) 100%);
 }
 
 .gradient-2 {
-    background: rgb(234,149,255);
-    background: linear-gradient(80deg, rgba(179,143,255,1) 0%, rgba(234,149,255,1) 100%);
+    background: rgb(239,138,255);
+    background: linear-gradient(80deg, rgba(179,143,255,1) 0%, rgb(239,138,255,1) 100%);
 }
 
 .black {
@@ -219,9 +219,9 @@ button:focus {
     height: 5.5em;
     color: var(--light-color);
     text-align: center;
-    background: rgb(61,60,64);
-    background: linear-gradient(50deg, rgba(61,60,64,1) 0%, rgba(74,72,78,1) 100%);
-}
+    background: rgb(83,85,97);
+    background: linear-gradient(50deg, rgba(83,85,97,1) 0%, rgba(96,98,111,1) 100%);
+    }
 
 /* large screens */
 @media only screen and (min-width: 1200px) {
