@@ -1,24 +1,17 @@
 # Key Repeat
 
-MPC-style note repeat in a free VST.
+Key Repeat is an open source beat repeat sampler. 
 
-![](Screenies/screenshot1.png)
+![](docs/images/plugin-screenshot.png)
 
-Key Repeat is a free and lightweight audio sampler plugin inspired by "note repeat" functionality of the [Akai MPC](https://www.akaipro.com/products/mpc-series "The Akai MPC is a series of hardware samplers produced by Akai"). This project is currently a **work in progress**. Downloads in VST3, AU[v3], and AAX formats will be available soon!
+## Official Website
+For downloads and more info, check out our [official site](https://michael-jan.github.io/key-repeat/ "Key Repeat's official website")! Key Repeat is available in VST3 and AU formats on both Windows and Mac.
 
-## Why Key Repeat?
-With Key Repeat, you get:
-* **Efficiency.** Drag in a sample and start recording note-repeats instantly. Key Repeat syncs itself to your DAW's tempo.
-* **Ease of Use.** Turn on EZ Triplet mode and never hold two keyswitches again! See the manual [WIP] for more info.
-* **Control.** Whether it's through tweaking your sample's ADSR envelope, throwing in some humanization, or adding in a slight swing, Key Repeat puts you in control of your sound.
+## Build
+Key Repeat was developed in C++ using the JUCE audio framework. Here's how to build the project yourself:
+1. Download [JUCE](https://shop.juce.com/get-juce "Get JUCE").
+2. Open `key-repeat.jucer` in the Projucer.
+3. Use the Projucer to generate a Visual Studio project on Windows or XCode project on Mac.
+4. Use your IDE's built tool to build the project.
 
-## Quick Start Guide
-
-1. **Download** the plugin and load it up in your DAW.
-2. **Drag in** your sample, then hold down middle-C on your MIDI keyboard to start note-repeating, using the keyswitches (C0-F#0) to control the repeat rate.
-3. **Experiment** with different patterns!
-
-For a detailed explanation of features and functionality, check out the manaul [WIP]!
-
-## Download
-Downloads in VST3, AU[v3], and AAX formats will be available soon!
+Note that with Visual Studio on Windows, you can only build the Windows-compatible VST3. With XCode on Mac, you can build the Mac-compatible VST3 and AU.
