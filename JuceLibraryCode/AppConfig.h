@@ -382,7 +382,7 @@
  #define JucePlugin_Vst3Category           "Instrument|Sampler"
 #endif
 #ifndef  JucePlugin_AUMainType
- #define JucePlugin_AUMainType             'augn'
+ #define JucePlugin_AUMainType             'aumu'
 #endif
 #ifndef  JucePlugin_AUSubType
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
