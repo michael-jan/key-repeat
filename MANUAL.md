@@ -25,7 +25,7 @@ By default, C0 thru F#0 are the designated "keyswitches" which you'll use to adj
 To play or record note repeats, hold down both a keyswitch and a playback key simultaneously. The plugin will sync its tempo with your DAW.
 
 ## Controls
-Key Repeat provides a complete set of controls that let you customize your sound and workflow.
+Key Repeat provides a complete set of controls that lets you customize your sound and workflow.
 
 ### Modes
 <b>Latch</b>: With latch mode turned off, you won't hear note repeats unless you are currently holding both a keyswitch and a playback key. With latch mode turned on, the keyswitches become "sticky." So, if you let go of a keyswitch, note repeats will continue playing as long as you're still holding down a playback key. 
