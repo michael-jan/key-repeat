@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-	MainComponent.h
-	Created: 31 May 2019 9:12:52am
-	Author:  Michael Jan
+    MainComponent.h
+    Created: 31 May 2019 9:12:52am
+    Author:  Michael Jan
 
   ==============================================================================
 */
@@ -21,20 +21,20 @@
 /*
 */
 class MainComponent :
-	public Component
+    public Component
 {
 public:
-	MainComponent(KeyRepeatAudioProcessor& p);
-	~MainComponent();
+    MainComponent(KeyRepeatAudioProcessor& p);
+    ~MainComponent();
 
-	void paint(Graphics&) override;
-	void resized() override;
+    void paint(Graphics&) override;
+    void resized() override;
 
 private:
-	KeyRepeatAudioProcessor& processor;
-	TopComponent topComponent;
-	MiddleComponent middleComponent;
-	BottomComponent bottomComponent;
+    KeyRepeatAudioProcessor& processor;
+    TopComponent topComponent;
+    MiddleComponent middleComponent;
+    BottomComponent bottomComponent;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

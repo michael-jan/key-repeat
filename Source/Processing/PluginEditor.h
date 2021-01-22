@@ -7,7 +7,7 @@
 #include "../Graphics/Utils.h"
 
 class KeyRepeatAudioProcessorEditor :
-	public AudioProcessorEditor
+    public AudioProcessorEditor
 {
 public:
     KeyRepeatAudioProcessorEditor(KeyRepeatAudioProcessor&, LookAndFeel_V4 *lookAndFeel);
@@ -18,8 +18,8 @@ public:
 
 private:
     KeyRepeatAudioProcessor& processor;
-	MainComponent mainComponent;
-	ComponentBoundsConstrainer constrainer;
+    MainComponent mainComponent;
+    ComponentBoundsConstrainer constrainer;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyRepeatAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyRepeatAudioProcessorEditor)
 };

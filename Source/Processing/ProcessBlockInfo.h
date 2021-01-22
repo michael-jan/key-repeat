@@ -11,14 +11,14 @@
 #pragma once
 
 /*
-	Meant to store info that is updated every time processBlock() is called.
+    Meant to store info that is updated every time processBlock() is called.
 */
 struct ProcessBlockInfo {
-	double samplesPerSecond;
-	double samplesPerBeat;
-	double samplesPerMeasure;
-	double beatsIntoMeasure;
-	double samplesIntoMeasure;
-	double nextBeatsIntoMeasure;
-	int bufferNumSamples;
+    double samplesPerSecond;
+    double samplesPerBeat;
+    double samplesPerMeasure;
+    double beatsIntoMeasure;
+    double samplesIntoMeasure;
+    double nextBeatsIntoMeasure;
+    int bufferNumSamples;
 };

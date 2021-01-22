@@ -15,39 +15,39 @@
 class MyLookAndFeel : public LookAndFeel_V4 {
 
 public:
-	static const Colour WHITE, LIGHT_GREY, GREY, DARK_GREY, VERY_DARK_GREY, BLACK, LIGHT_PINK, PINK, DARK_PINK;
-	static const float LABEL_FONT_SIZE, SMALL_FONT_SIZE;
+    static const Colour WHITE, LIGHT_GREY, GREY, DARK_GREY, VERY_DARK_GREY, BLACK, LIGHT_PINK, PINK, DARK_PINK;
+    static const float LABEL_FONT_SIZE, SMALL_FONT_SIZE;
 
-	MyLookAndFeel();
+    MyLookAndFeel();
 
-	static const Font& getFontLight();
-	static const Font& getFontRegular();
-	static const Font& getFontBold();
+    static const Font& getFontLight();
+    static const Font& getFontRegular();
+    static const Font& getFontBold();
 
-	void drawRotarySlider(Graphics&, int x, int y, int width, int height,
-		float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle,
-		Slider&) override;
+    void drawRotarySlider(Graphics&, int x, int y, int width, int height,
+        float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle,
+        Slider&) override;
 
-	virtual void drawLinearSlider(Graphics&, int x, int y, int width, int height,
-		float sliderPos, float minSliderPos, float maxSliderPos,
-		const Slider::SliderStyle, Slider&) override;
+    virtual void drawLinearSlider(Graphics&, int x, int y, int width, int height,
+        float sliderPos, float minSliderPos, float maxSliderPos,
+        const Slider::SliderStyle, Slider&) override;
 
-	void drawLinearSliderBackground(Graphics&, int x, int y, int width, int height,
-		float sliderPos, float minSliderPos, float maxSliderPos,
-		const Slider::SliderStyle, Slider&) override;
+    void drawLinearSliderBackground(Graphics&, int x, int y, int width, int height,
+        float sliderPos, float minSliderPos, float maxSliderPos,
+        const Slider::SliderStyle, Slider&) override;
 
-	void drawToggleButton(Graphics&, ToggleButton&,
-		bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+    void drawToggleButton(Graphics&, ToggleButton&,
+        bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 };
 
 class NumboxLAF : public MyLookAndFeel {
 public:
 
-	NumboxLAF();
+    NumboxLAF();
 
-	void drawLinearSlider(Graphics&, int x, int y, int width, int height,
-		float sliderPos, float minSliderPos, float maxSliderPos,
-		const Slider::SliderStyle, Slider&) override;
+    void drawLinearSlider(Graphics&, int x, int y, int width, int height,
+        float sliderPos, float minSliderPos, float maxSliderPos,
+        const Slider::SliderStyle, Slider&) override;
     
     Font getLabelFont(Label &label) override;
     

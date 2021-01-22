@@ -19,8 +19,8 @@
 
 class MiddleShadowComponent : public Component {
 public:
-	void paint(Graphics&) override;
-	void resized() override;
+    void paint(Graphics&) override;
+    void resized() override;
 };
 
 class MiddleComponent : public Component {
@@ -33,12 +33,12 @@ public:
 
 private:
 
-	KeyRepeatAudioProcessor& processor;
-	MiddleShadowComponent shadowComponent;
-	KeyswitchControlsComponent keyswitchControlsComponent;
-	ADSRComponent adsrComponent;
-	SoundControlsComponent soundControlsComponent;
-	FileDropperComponent fileDropperComponent;
+    KeyRepeatAudioProcessor& processor;
+    MiddleShadowComponent shadowComponent;
+    KeyswitchControlsComponent keyswitchControlsComponent;
+    ADSRComponent adsrComponent;
+    SoundControlsComponent soundControlsComponent;
+    FileDropperComponent fileDropperComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MiddleComponent)
 };

@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-	TopComponent.cpp
-	Created: 1 Jun 2019 8:32:14pm
-	Author:  Michael Jan
+    TopComponent.cpp
+    Created: 1 Jun 2019 8:32:14pm
+    Author:  Michael Jan
 
   ==============================================================================
 */
@@ -12,58 +12,58 @@
 #include "TopComponent.h"
 
 TopComponent::TopComponent(KeyRepeatAudioProcessor& p) :
-	processor(p),
-	pitchKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
-	pitchLabel("pitchLabel", "Pitch"),
-	panKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
-	panLabel("panLabel", "Pan"),
-	levelKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
-	levelLabel("levelLabel", "Level")
+    processor(p),
+    pitchKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
+    pitchLabel("pitchLabel", "Pitch"),
+    panKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
+    panLabel("panLabel", "Pan"),
+    levelKnob(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox),
+    levelLabel("levelLabel", "Level")
 {
     addAndMakeVisible(topLogoComponent);
     topLogoComponent.setBufferedToImage(true);
 
-	addAndMakeVisible(pitchLabel);
-	addAndMakeVisible(panLabel);
-	addAndMakeVisible(levelLabel);
+    addAndMakeVisible(pitchLabel);
+    addAndMakeVisible(panLabel);
+    addAndMakeVisible(levelLabel);
 
-	addAndMakeVisible(pitchKnob);
-	pitchKnob.getProperties().set("startFromMiddle", true);
-	pitchAttachment.reset(new SliderAttachment(p.getVTS(), "pitch", pitchKnob));
+    addAndMakeVisible(pitchKnob);
+    pitchKnob.getProperties().set("startFromMiddle", true);
+    pitchAttachment.reset(new SliderAttachment(p.getVTS(), "pitch", pitchKnob));
 
-	addAndMakeVisible(panKnob);
-	panKnob.getProperties().set("startFromMiddle", true);
-	panAttachment.reset(new SliderAttachment(p.getVTS(), "pan", panKnob));
+    addAndMakeVisible(panKnob);
+    panKnob.getProperties().set("startFromMiddle", true);
+    panAttachment.reset(new SliderAttachment(p.getVTS(), "pan", panKnob));
 
-	addAndMakeVisible(levelKnob);
-	levelAttachment.reset(new SliderAttachment(p.getVTS(), "level", levelKnob));
+    addAndMakeVisible(levelKnob);
+    levelAttachment.reset(new SliderAttachment(p.getVTS(), "level", levelKnob));
 }
 
 TopComponent::~TopComponent() {
 }
 
 void TopComponent::paint(Graphics& g) {
-	g.setColour(MyLookAndFeel::DARK_GREY);
-	g.fillAll();
+    g.setColour(MyLookAndFeel::DARK_GREY);
+    g.fillAll();
 }
 
 void TopComponent::resized() {
-	Rectangle<int> controlsRect = getLocalBounds()
-		.withTrimmedRight(Utils::scale(15))
-		.withTrimmedTop(Utils::scale(7))
-		.withTrimmedBottom(Utils::scale(22));
+    Rectangle<int> controlsRect = getLocalBounds()
+        .withTrimmedRight(Utils::scale(15))
+        .withTrimmedTop(Utils::scale(7))
+        .withTrimmedBottom(Utils::scale(22));
 
-	int knobWidth = getWidth() / 11;
-	int labelOffset = Utils::scale(2);
+    int knobWidth = getWidth() / 11;
+    int labelOffset = Utils::scale(2);
 
-	levelKnob.setBounds(controlsRect.removeFromRight(knobWidth));
-	Utils::attachToComponent(levelLabel, levelKnob, labelOffset);
+    levelKnob.setBounds(controlsRect.removeFromRight(knobWidth));
+    Utils::attachToComponent(levelLabel, levelKnob, labelOffset);
 
-	panKnob.setBounds(controlsRect.removeFromRight(knobWidth));
-	Utils::attachToComponent(panLabel, panKnob, labelOffset);
+    panKnob.setBounds(controlsRect.removeFromRight(knobWidth));
+    Utils::attachToComponent(panLabel, panKnob, labelOffset);
 
-	pitchKnob.setBounds(controlsRect.removeFromRight(knobWidth));
-	Utils::attachToComponent(pitchLabel, pitchKnob, labelOffset);
+    pitchKnob.setBounds(controlsRect.removeFromRight(knobWidth));
+    Utils::attachToComponent(pitchLabel, pitchKnob, labelOffset);
 
     topLogoComponent.setBounds(getLocalBounds());
 }

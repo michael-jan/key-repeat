@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-	ADSRComponent.h
-	Created: 19 Jun 2019 12:23:07pm
-	Author:  Michael Jan
+    ADSRComponent.h
+    Created: 19 Jun 2019 12:23:07pm
+    Author:  Michael Jan
 
   ==============================================================================
 */
@@ -20,31 +20,31 @@ typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 */
 class ADSRComponent : public Component {
 public:
-	ADSRComponent(KeyRepeatAudioProcessor& p);
-	~ADSRComponent();
+    ADSRComponent(KeyRepeatAudioProcessor& p);
+    ~ADSRComponent();
 
-	void paint(Graphics&) override;
-	void resized() override;
+    void paint(Graphics&) override;
+    void resized() override;
 
 private:
-	
-	KeyRepeatAudioProcessor& processor;
+    
+    KeyRepeatAudioProcessor& processor;
 
-	Slider attackSlider;
-	std::unique_ptr<SliderAttachment> attackAttachment;
-	Label attackLabel;
+    Slider attackSlider;
+    std::unique_ptr<SliderAttachment> attackAttachment;
+    Label attackLabel;
 
-	Slider decaySlider;
-	std::unique_ptr<SliderAttachment> decayAttachment;
-	Label decayLabel;
+    Slider decaySlider;
+    std::unique_ptr<SliderAttachment> decayAttachment;
+    Label decayLabel;
 
     Slider sustainSlider;
     std::unique_ptr<SliderAttachment> sustainAttachment;
     Label sustainLabel;
 
-	Slider releaseSlider;
-	std::unique_ptr<SliderAttachment> releaseAttachment;
-	Label releaseLabel;
+    Slider releaseSlider;
+    std::unique_ptr<SliderAttachment> releaseAttachment;
+    Label releaseLabel;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ADSRComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ADSRComponent)
 };

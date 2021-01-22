@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-	BottomComponent.cpp
-	Created: 1 Jun 2019 8:32:26pm
-	Author:  Michael Jan
+    BottomComponent.cpp
+    Created: 1 Jun 2019 8:32:26pm
+    Author:  Michael Jan
 
   ==============================================================================
 */
@@ -13,62 +13,62 @@
 
 //==============================================================================
 BottomComponent::BottomComponent(KeyRepeatAudioProcessor& p) :
-	processor(p),
-	keyswitchComponent(p),
-	keyswitchOctaveLabelTop("keyswitchOctaveTop"),
-	keyswitchOctaveLabelBottom("keyswitchOctaveBottom")
+    processor(p),
+    keyswitchComponent(p),
+    keyswitchOctaveLabelTop("keyswitchOctaveTop"),
+    keyswitchOctaveLabelBottom("keyswitchOctaveBottom")
 {
-	versionLabel.setText(std::string("Version ") + ProjectInfo::versionString, NotificationType::dontSendNotification);
-	addAndMakeVisible(versionLabel);
-	addAndMakeVisible(keyswitchComponent);
+    versionLabel.setText(std::string("Version ") + ProjectInfo::versionString, NotificationType::dontSendNotification);
+    addAndMakeVisible(versionLabel);
+    addAndMakeVisible(keyswitchComponent);
 
-	keyswitchOctaveLabelTop.setText("Keyswitch", NotificationType::dontSendNotification);
-	addAndMakeVisible(keyswitchOctaveLabelTop);
+    keyswitchOctaveLabelTop.setText("Keyswitch", NotificationType::dontSendNotification);
+    addAndMakeVisible(keyswitchOctaveLabelTop);
 
-	keyswitchOctaveLabelBottom.setText("Octave", NotificationType::dontSendNotification);
-	addAndMakeVisible(keyswitchOctaveLabelBottom);
+    keyswitchOctaveLabelBottom.setText("Octave", NotificationType::dontSendNotification);
+    addAndMakeVisible(keyswitchOctaveLabelBottom);
 
-	keyswitchOctaveNumbox.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
-	keyswitchOctaveNumbox.setSliderSnapsToMousePosition(false);
-	keyswitchOctaveNumbox.setTextBoxIsEditable(false);
-	keyswitchOctaveNumbox.setLookAndFeel(&p.getNumboxLAF());
-	addAndMakeVisible(keyswitchOctaveNumbox);
-	keyswitchOctaveAttachment.reset(new SliderAttachment(p.getVTS(), "keyswitchOctave", keyswitchOctaveNumbox));
+    keyswitchOctaveNumbox.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    keyswitchOctaveNumbox.setSliderSnapsToMousePosition(false);
+    keyswitchOctaveNumbox.setTextBoxIsEditable(false);
+    keyswitchOctaveNumbox.setLookAndFeel(&p.getNumboxLAF());
+    addAndMakeVisible(keyswitchOctaveNumbox);
+    keyswitchOctaveAttachment.reset(new SliderAttachment(p.getVTS(), "keyswitchOctave", keyswitchOctaveNumbox));
 }
 
 BottomComponent::~BottomComponent() {
 }
 
 void BottomComponent::paint(Graphics& g) {
-	g.setColour(MyLookAndFeel::DARK_GREY);
-	g.fillAll();
+    g.setColour(MyLookAndFeel::DARK_GREY);
+    g.fillAll();
 }
 
 void BottomComponent::resized() {
-	Rectangle<int> rect = getLocalBounds();
-	keyswitchComponent.setBounds(
-		rect.withSizeKeepingCentre(Utils::scale(350), rect.getHeight())
-	);
+    Rectangle<int> rect = getLocalBounds();
+    keyswitchComponent.setBounds(
+        rect.withSizeKeepingCentre(Utils::scale(350), rect.getHeight())
+    );
 
-	versionLabel.setFont(Font(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE)));
-	versionLabel.setAlpha(0.15f);
-	versionLabel.setJustificationType(Justification::centredRight);
-	versionLabel.setBounds(
-		getLocalBounds()
-		.removeFromBottom(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE) + Utils::scale(1))
-		.removeFromRight(Utils::scale(100))
-	);
+    versionLabel.setFont(Font(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE)));
+    versionLabel.setAlpha(0.15f);
+    versionLabel.setJustificationType(Justification::centredRight);
+    versionLabel.setBounds(
+        getLocalBounds()
+        .removeFromBottom(Utils::scale(MyLookAndFeel::LABEL_FONT_SIZE) + Utils::scale(1))
+        .removeFromRight(Utils::scale(100))
+    );
 
-	Rectangle<int> keyswitchOctaveSide = getLocalBounds().removeFromLeft(Utils::scale(64.5));
-	keyswitchOctaveNumbox.setBounds(keyswitchOctaveSide.removeFromTop(rect.getHeight() * 11 / 16));
-	keyswitchOctaveNumbox.setMouseDragSensitivity(Utils::scale(65));
+    Rectangle<int> keyswitchOctaveSide = getLocalBounds().removeFromLeft(Utils::scale(64.5));
+    keyswitchOctaveNumbox.setBounds(keyswitchOctaveSide.removeFromTop(rect.getHeight() * 11 / 16));
+    keyswitchOctaveNumbox.setMouseDragSensitivity(Utils::scale(65));
 
-	keyswitchOctaveLabelTop.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
-	keyswitchOctaveLabelTop.setJustificationType(Justification::centredTop);
-	keyswitchOctaveLabelTop.setBounds(keyswitchOctaveSide.withBottomY(keyswitchOctaveNumbox.getBottom() + Utils::scale(12)));
+    keyswitchOctaveLabelTop.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
+    keyswitchOctaveLabelTop.setJustificationType(Justification::centredTop);
+    keyswitchOctaveLabelTop.setBounds(keyswitchOctaveSide.withBottomY(keyswitchOctaveNumbox.getBottom() + Utils::scale(12)));
 
-	keyswitchOctaveLabelBottom.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
-	keyswitchOctaveLabelBottom.setJustificationType(Justification::centredTop);
-	keyswitchOctaveLabelBottom.setBounds(keyswitchOctaveSide.withBottomY(keyswitchOctaveLabelTop.getBottom() + Utils::scale(10)));
+    keyswitchOctaveLabelBottom.setFont(MyLookAndFeel::getFontLight().withHeight(Utils::scale(MyLookAndFeel::SMALL_FONT_SIZE)));
+    keyswitchOctaveLabelBottom.setJustificationType(Justification::centredTop);
+    keyswitchOctaveLabelBottom.setBounds(keyswitchOctaveSide.withBottomY(keyswitchOctaveLabelTop.getBottom() + Utils::scale(10)));
 
 }

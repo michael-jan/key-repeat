@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-	TopComponent.h
-	Created: 1 Jun 2019 8:32:14pm
-	Author:  Michael Jan
+    TopComponent.h
+    Created: 1 Jun 2019 8:32:14pm
+    Author:  Michael Jan
 
   ==============================================================================
 */
@@ -29,29 +29,29 @@ private:
 
 class TopComponent : public Component {
 public:
-	TopComponent(KeyRepeatAudioProcessor& p);
-	~TopComponent();
+    TopComponent(KeyRepeatAudioProcessor& p);
+    ~TopComponent();
 
-	void paint(Graphics&) override;
-	void resized() override;
+    void paint(Graphics&) override;
+    void resized() override;
 
 private:
 
-	KeyRepeatAudioProcessor& processor;
+    KeyRepeatAudioProcessor& processor;
 
-	Slider pitchKnob;
-	std::unique_ptr<SliderAttachment> pitchAttachment;
-	Label pitchLabel;
+    Slider pitchKnob;
+    std::unique_ptr<SliderAttachment> pitchAttachment;
+    Label pitchLabel;
 
-	Slider panKnob;
-	std::unique_ptr<SliderAttachment> panAttachment;
-	Label panLabel;
+    Slider panKnob;
+    std::unique_ptr<SliderAttachment> panAttachment;
+    Label panLabel;
 
-	Slider levelKnob;
-	std::unique_ptr<SliderAttachment> levelAttachment;
-	Label levelLabel;
+    Slider levelKnob;
+    std::unique_ptr<SliderAttachment> levelAttachment;
+    Label levelLabel;
     
     TopLogoComponent topLogoComponent;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TopComponent)
 };

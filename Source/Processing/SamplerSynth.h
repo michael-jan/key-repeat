@@ -12,13 +12,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 /*
-	Synth that plays sampled sounds.
+    Synth that plays sampled sounds.
 */
 class SamplerSynth : public Synthesiser {
 
 public:
 
-	void setup();
+    void setup();
 
 private:
 

@@ -13,8 +13,8 @@
 
 void SamplerSynth::setup() {
 
-	for (int i = 0; i < MAX_VOICES; i++) {
-		addVoice(new SamplerVoice());
-	}
+    for (int i = 0; i < MAX_VOICES; i++) {
+        addVoice(new SamplerVoice());
+    }
 
 }

@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-	KeyswitchControlsComponent.h
-	Created: 15 Jun 2019 2:52:58pm
-	Author:  Michael Jan
+    KeyswitchControlsComponent.h
+    Created: 15 Jun 2019 2:52:58pm
+    Author:  Michael Jan
 
   ==============================================================================
 */
@@ -21,23 +21,23 @@ typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 */
 class KeyswitchControlsComponent : public Component {
 public:
-	KeyswitchControlsComponent(KeyRepeatAudioProcessor& p);
-	~KeyswitchControlsComponent();
+    KeyswitchControlsComponent(KeyRepeatAudioProcessor& p);
+    ~KeyswitchControlsComponent();
 
-	void paint(Graphics&) override;
-	void resized() override;
+    void paint(Graphics&) override;
+    void resized() override;
 
 private:
 
-	KeyRepeatAudioProcessor& processor;
+    KeyRepeatAudioProcessor& processor;
 
     ToggleButton latchSwitch;
     std::unique_ptr<ButtonAttachment> latchAttachment;
     Label latchLabel;
     
-	ToggleButton easySwitch;
-	std::unique_ptr<ButtonAttachment> easyAttachment;
-	Label easyLabel;
+    ToggleButton easySwitch;
+    std::unique_ptr<ButtonAttachment> easyAttachment;
+    Label easyLabel;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyswitchControlsComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyswitchControlsComponent)
 };
